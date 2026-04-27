@@ -1,0 +1,2 @@
+# Val for SSL – trengst ofte for urllib på mac sitt innebygde Python: pip install -r requirements.txt
+certifi>=2024.0.0

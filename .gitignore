@@ -22,5 +22,15 @@ node_modules/
 .vscode/
 .idea/
 
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# Generert data frå pipeline
+utdata/*.csv
+
 # macOS misc
 *.swp

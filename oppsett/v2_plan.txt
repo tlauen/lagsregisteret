@@ -1,0 +1,19 @@
+# Planlagt for versjon 2: ekstra søkjeord / mønster i namn
+# Ikkje brukt av skripta enno — dokumentasjon for vidare arbeid.
+
+# Lag-typar
+grendelag
+grendalag
+bygdalag
+bygdelag
+bygde- og  (m.a.o. yngre mønster: bygde-/bygdalag)
+
+# Hus / samlingsstad (ofte eigne oppføringar i register)
+ungdomshus
+grendehus
+grendahus
+bygdehus
+bygdahus
+samfunnshus
+
+# Merk: mange "samfunnshus" er ikkje ungdomslag — treng tydelegare reglar i v2.

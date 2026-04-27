@@ -1,0 +1,15 @@
+# Eitt søkjeord/fragment per line til Brreg API: GET .../enheter?navn=...
+# Tomme line og line som byrjar med # blir hoppa over.
+# Utvid når de finn gap i treff.
+
+ungdomslag
+ungdomsforening
+ungdoms- og
+bygde- og ungdoms
+U.L
+U.L.
+UL
+bondeungdom
+bygdelag
+bygde- og
+grende

@@ -1,0 +1,1475 @@
+<!DOCTYPE html>
+<html lang="nn">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Lagsregisteret</title>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/gridjs/dist/theme/mermaid.min.css"
+    />
+    <style>
+      :root {
+        --bak: #0f1419;
+        --kort: #1a2028;
+        --tekst: #e6edf3;
+        --dempa: #8b9cad;
+        --lenkje: #58a6ff;
+        --ramme: #30363d;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        font-family: system-ui, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+        background: var(--bak);
+        color: var(--tekst);
+        margin: 0;
+        line-height: 1.5;
+        min-height: 100vh;
+      }
+      .hovud {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 1.5rem 1rem 3rem;
+      }
+      h1 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin: 0 0 0.5rem 0;
+      }
+      .leiar {
+        color: var(--dempa);
+        font-size: 0.95rem;
+        margin: 0 0 1.25rem 0;
+      }
+      .verkty {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem 1.25rem;
+        align-items: center;
+        margin-bottom: 1rem;
+        color: var(--dempa);
+        font-size: 0.9rem;
+      }
+      .verkty label {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+      }
+      .verkty select {
+        background: var(--kort);
+        color: var(--tekst);
+        border: 1px solid var(--ramme);
+        border-radius: 6px;
+        padding: 0.35rem 0.5rem;
+        min-width: 10rem;
+      }
+      .verkty-rad-2 {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        gap: 0.35rem 0.75rem;
+        width: 100%;
+        margin-top: 0.35rem;
+        color: var(--dempa);
+        font-size: 0.88rem;
+      }
+      .verkty-rad-2[hidden] {
+        display: none !important;
+      }
+      .verkty-rad-2 > details {
+        flex: 1 1 100%;
+        max-width: 100%;
+      }
+      .verkty-rad-2 summary {
+        cursor: pointer;
+        color: var(--lenkje);
+        user-select: none;
+        list-style: none;
+      }
+      .verkty-rad-2 summary::-webkit-details-marker {
+        display: none;
+      }
+      .verkty-rad-2 details[open] summary {
+        margin-bottom: 0.4rem;
+      }
+      .kolonne_kryss {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.3rem 1rem;
+        padding: 0.35rem 0 0;
+        max-width: 55rem;
+      }
+      .kolonne_kryss label {
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+        cursor: pointer;
+        white-space: nowrap;
+      }
+      .kolonne_kryss input {
+        width: 0.9rem;
+        height: 0.9rem;
+        accent-color: var(--lenkje);
+        margin: 0;
+      }
+      .feil {
+        background: #3d1f1f;
+        border: 1px solid #7a2e2e;
+        border-radius: 8px;
+        padding: 1rem;
+        color: #f0c4c4;
+        margin: 0 0 1rem 0;
+      }
+      .register-brett {
+        overflow-x: auto;
+        overflow-y: visible;
+        max-width: 100%;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-gutter: stable;
+        margin: 0 0 0.5rem 0;
+        padding: 0.15rem 0.15rem 0.35rem;
+        outline: none;
+        border-radius: 8px;
+      }
+      .register-brett:focus-visible {
+        box-shadow: 0 0 0 2px var(--lenkje);
+      }
+      .dempa-ny {
+        color: var(--dempa);
+        font-size: 0.85rem;
+        margin: 0 0 0.75rem 0;
+      }
+      .dempa_status {
+        color: var(--dempa);
+        font-size: 0.86rem;
+      }
+      .leiar-hjelp {
+        color: var(--dempa);
+        font-size: 0.85rem;
+        margin: -0.5rem 0 1rem 0;
+      }
+      .leiar-hjelp kbd {
+        background: var(--kort);
+        border: 1px solid var(--ramme);
+        border-radius: 4px;
+        padding: 0.1em 0.4em;
+        font-size: 0.88em;
+      }
+      .gridjs-wrapper {
+        border-radius: 8px;
+        overflow: visible;
+        border: 1px solid var(--ramme);
+      }
+      #register {
+        min-height: 8rem;
+      }
+      .register-brett .gridjs-container {
+        width: max-content !important;
+        min-width: 100% !important;
+        max-width: none !important;
+      }
+      .register-brett table.gridjs-table {
+        width: max-content !important;
+        min-width: 100%;
+        table-layout: auto !important;
+      }
+      .register-brett th.gridjs-th,
+      .register-brett td.gridjs-td {
+        max-width: none !important;
+        white-space: nowrap;
+      }
+      a {
+        color: var(--lenkje);
+      }
+      a:hover {
+        text-decoration: underline;
+      }
+      .gridjs-container {
+        color: var(--tekst) !important;
+      }
+      .gridjs-tbody,
+      .gridjs-thead,
+      .gridjs-head,
+      .gridjs-footer,
+      table.gridjs-table,
+      th.gridjs-th,
+      .gridjs-table td {
+        background: var(--kort) !important;
+        color: var(--tekst) !important;
+        border-color: var(--ramme) !important;
+      }
+      .gridjs-tbody tr:hover {
+        background: #252b33 !important;
+      }
+      .register-brett .gridjs-tbody tr:has(.rad-merke-gron) > td,
+      tr:has(.rad-merke-gron) > td {
+        background: rgba(35, 134, 54, 0.22) !important;
+        color: var(--tekst) !important;
+        border-color: var(--ramme) !important;
+      }
+      .register-brett .gridjs-tbody tr:has(.rad-merke-gron):hover > td,
+      tr:has(.rad-merke-gron):hover > td {
+        background: rgba(35, 134, 54, 0.34) !important;
+      }
+      .register-brett .gridjs-tbody tr:has(.rad-merke-raud) > td,
+      tr:has(.rad-merke-raud) > td {
+        background: rgba(220, 80, 80, 0.22) !important;
+        color: var(--tekst) !important;
+        border-color: var(--ramme) !important;
+      }
+      .register-brett .gridjs-tbody tr:has(.rad-merke-raud):hover > td,
+      tr:has(.rad-merke-raud):hover > td {
+        background: rgba(220, 80, 80, 0.32) !important;
+      }
+      .rad-merke-gron {
+        color: #b4f0c0;
+        font-weight: 500;
+      }
+      .rad-merke-raud {
+        color: #f0b4b4;
+        font-weight: 500;
+      }
+      .dome-gron-tekst {
+        color: #3fb950;
+      }
+      .dome-raud-tekst {
+        color: #f85149;
+      }
+      .gridjs-search-input,
+      input.gridjs-input,
+      .gridjs-search-input input {
+        background: var(--bak) !important;
+        color: var(--tekst) !important;
+        border: 1px solid var(--ramme) !important;
+        border-radius: 6px;
+        padding: 0.4rem 0.6rem;
+      }
+      .gridjs-pages button {
+        color: var(--tekst) !important;
+      }
+      .register-fleire {
+        margin: 0.5rem 0 0.25rem;
+        padding: 0 0.1rem;
+      }
+      .register-fleire button {
+        background: var(--kort);
+        color: var(--lenkje);
+        border: 1px solid var(--ramme);
+        border-radius: 8px;
+        padding: 0.4rem 0.8rem;
+        font-size: 0.9rem;
+        cursor: pointer;
+      }
+      .register-fleire button:hover {
+        background: #2d333b;
+        color: #79c0ff;
+      }
+      .merke-nu {
+        color: #3fb950;
+        font-weight: 500;
+      }
+      .merke-ut,
+      .merke-nedlagt {
+        color: #f85149;
+        font-weight: 500;
+      }
+      .verkty input[type="checkbox"] {
+        width: 1rem;
+        height: 1rem;
+        accent-color: var(--lenkje);
+      }
+      .verkty-rediger {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.5rem 0.75rem;
+        width: 100%;
+        margin-top: 0.15rem;
+      }
+      .verkty-rediger[hidden] {
+        display: none !important;
+      }
+      .verkty-inp {
+        background: var(--kort);
+        color: var(--tekst);
+        border: 1px solid var(--ramme);
+        border-radius: 6px;
+        padding: 0.35rem 0.5rem;
+        min-width: 6rem;
+        max-width: 18rem;
+        font: inherit;
+        font-size: 0.88rem;
+      }
+      .verkty #inline_lagre {
+        background: #238636;
+        color: #fff;
+        border: 1px solid #2ea043;
+        border-radius: 6px;
+        padding: 0.4rem 0.8rem;
+        font: inherit;
+        cursor: pointer;
+        font-size: 0.9rem;
+      }
+      .verkty #last_ned_manuell {
+        background: #21262d;
+        color: var(--tekst);
+        border: 1px solid var(--ramme);
+        border-radius: 6px;
+        padding: 0.4rem 0.75rem;
+        font: inherit;
+        cursor: pointer;
+        font-size: 0.9rem;
+      }
+      .verkty #last_ned_manuell:hover {
+        filter: brightness(1.08);
+      }
+      select.nu-velj,
+      .register-brett select.nu-velj {
+        background: var(--kort) !important;
+        color: var(--tekst) !important;
+        border: 1px solid var(--ramme) !important;
+        border-radius: 6px;
+        padding: 0.2rem 0.35rem;
+        font: inherit;
+        font-size: 0.86rem;
+        min-width: 8.5rem;
+        max-width: 12rem;
+      }
+      .register-brett textarea.merknad-velj {
+        display: block;
+        box-sizing: border-box;
+        min-width: 10rem;
+        max-width: 22rem;
+        width: 100%;
+        min-height: 2.4rem;
+        max-height: 6rem;
+        background: var(--kort) !important;
+        color: var(--tekst) !important;
+        border: 1px solid var(--ramme) !important;
+        border-radius: 6px;
+        padding: 0.25rem 0.4rem;
+        font: inherit;
+        font-size: 0.86rem;
+        line-height: 1.35;
+        resize: vertical;
+        vertical-align: top;
+        white-space: pre-wrap;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="hovud">
+      <h1>Lagsregisteret</h1>
+      <p class="leiar">
+        Søk i alle felt, snevre etter fylke og <strong>status</strong> (medlem
+        / utmeld / nedlagt), eller bruk
+        <strong>Rediger i lista</strong> for å setja medlemsstatus, utmelding
+        og luka ut rett i tabellen — <strong>utan innlogging</strong>: endringar
+        vert lagra lokalt i nettlesaren, og du kan lasta ned
+        <code>manuell_status.json</code> når du vil sjekkja inn i repositoriet.
+        Laga du <strong>lukar ut</strong> (ikkje ungdomslag / ikkje frilynde) er
+        skjulte som standard — bruk avkryssinga for å sjå dei. Du kan også
+        redigere <code>data/manuell_status.json</code> rett i git eller bruk
+        <code>skript/sett_lag_status.py</code>;
+        <a href="admin.html" style="color: var(--lenkje)">admin-sida</a> er
+        valfri (same som Vercel‑push, treng passord).
+      </p>
+      <p class="leiar-hjelp">
+        Brei tabell: dra vassrett under tabellen, eller bruk
+        <kbd>Tab</kbd> + piltast / mus med skroll. Rader heilt i
+        <strong class="dome-gron-tekst">grøn tone</strong> = treff i
+        <a href="https://www.ungdomslag.no/lokallag" rel="noopener noreferrer"
+          >lokallaglista (NU) vs. dette registeret</a
+        >
+        (automatisk <code>nu: medlem</code> i manuell data), eller
+        <code>nu: medlem</code> i fila. <strong class="dome-raud-tekst"
+          >Raud tone</strong> for <code>utmeld</code> — eller
+        <code>nedlagt</code>. Utmelding gjev føretré over grønt.
+      </p>
+      <div id="feil" class="feil" style="display: none" hidden></div>
+      <div class="verkty">
+        <label for="fylke_val">
+          Fylke
+          <select id="fylke_val" title="Vis berre laga i eitt fylke">
+            <option value="alle">— alle —</option>
+          </select>
+        </label>
+        <label for="nu_val">
+          Status
+          <select id="nu_val" title="Medlem, utmeld eller nedlagt (NU)">
+            <option value="alle">— alle —</option>
+            <option value="ukjent">Ukjent / ikkje sett</option>
+            <option value="medlem">Medlem</option>
+            <option value="utmeld">Utmeld</option>
+            <option value="nedlagt_f">Nedlagt</option>
+          </select>
+        </label>
+        <label class="verkty-skjul" for="vis_skjul">
+          <input type="checkbox" id="vis_skjul" />
+          Vis luka ut (ikkje i hovudlista)
+        </label>
+        <label class="verkty-skjul" for="rediger_i_lista">
+          <input type="checkbox" id="rediger_i_lista" />
+          Rediger i lista
+        </label>
+        <span id="tal_rader" aria-live="polite"></span>
+      </div>
+      <div class="verkty-rad-2" id="kolonne_verkty_omgrepp">
+        <details id="det_kolonnar" class="dempa-ny" style="margin: 0">
+          <summary>Vis / skjul kolonnar</summary>
+          <div id="kolonne_kryss" class="kolonne_kryss" aria-label="Vel synlege kolonnar"></div>
+        </details>
+      </div>
+      <div id="rediger_felt" class="verkty-rediger" hidden>
+        <span class="dempa_status" style="flex: 1 1 12rem"
+          >Endringar vert lagra i denne nettlesaren (ikkje på GitHub automatisk).</span
+        >
+        <button type="button" id="last_ned_manuell">Last ned manuell_status.json</button>
+        <details class="verkty-vercel" id="det_vercel_push" style="flex: 1 1 100%; margin: 0">
+          <summary>Valfri: push til Git over Vercel (brukar og passord)</summary>
+          <div
+            class="verkty-rediger"
+            style="margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid var(--ramme)"
+          >
+            <input
+              type="url"
+              class="verkty-inp"
+              id="inline_api"
+              name="api"
+              placeholder="Vercel-URL (f.eks. https://…vercel.app)"
+              title="Rota til Vercel-API, same som i admin"
+              autocomplete="url"
+            />
+            <input
+              type="text"
+              class="verkty-inp"
+              id="inline_brukar"
+              placeholder="Brukar"
+              autocomplete="username"
+            />
+            <input
+              type="password"
+              class="verkty-inp"
+              id="inline_pass"
+              placeholder="Passord"
+              autocomplete="current-password"
+            />
+            <button type="button" id="inline_lagre">Lagre til Git</button>
+            <span id="inline_lagre_status" class="dempa_status" aria-live="polite"></span>
+          </div>
+        </details>
+      </div>
+      <p class="dempa-ny" id="dempa_rediger" hidden>
+        Vel per rad. Fil vert lagra lokalt; last ned JSON for git, eventuelt push
+        i feltet under.
+      </p>
+      <div
+        class="register-brett"
+        tabindex="0"
+        role="region"
+        aria-label="Registertabell. Bruk vassrett rulling dersom ikkje alle kolonnar syns."
+      >
+        <div id="register"></div>
+        <p class="register-fleire" id="register_fleire_omkring">
+          <button type="button" id="last_inn_fleire_reg" hidden>
+            Last inn fleire
+          </button>
+        </p>
+      </div>
+      <section id="nu_manglar_omtrekk" class="nu-manglar" hidden>
+        <h2 class="u_manglar_tittel" style="font-size: 1.1rem; font-weight: 600; margin: 1.5rem 0 0.5rem">
+          Lokallag på ungdomslag.no utan treff i dette Brreg‑registeret
+        </h2>
+        <p class="dempa-ny" id="nu_manglar_merk" style="margin: 0 0 0.5rem"></p>
+        <ul
+          id="nu_manglar_liste"
+          class="dempa-ny"
+          style="padding-left: 1.2rem; margin: 0; max-width: 42em"
+        ></ul>
+      </section>
+    </div>
+    <script src="js/lagreg_nettoppsett.js"></script>
+    <script src="https://unpkg.com/papaparse@5.4.1/papaparse.min.js"></script>
+    <script src="https://unpkg.com/gridjs@6.2.0/dist/gridjs.umd.js"></script>
+    <script>
+      (function () {
+        "use strict";
+
+        var LAGREG_KOL_SYNLEG = "lagreg_kolonner_synleg";
+        var kolonner = [
+          { nøkk: "__status__", titt: "Status" },
+          { nøkk: "i_hovudlista", titt: "I hovudlista" },
+          { nøkk: "lagsnavn", titt: "Lag" },
+          { nøkk: "merknad_hand", titt: "Merknad" },
+          { nøkk: "orgnr", titt: "Org.nr" },
+          { nøkk: "kommune", titt: "Kommune" },
+          { nøkk: "fylke", titt: "Fylke" },
+          { nøkk: "adresse", titt: "Adresse" },
+          { nøkk: "postnummer", titt: "Postnr" },
+          { nøkk: "poststed", titt: "Poststed" },
+          { nøkk: "nettstad", titt: "Nettstad" },
+          { nøkk: "kjelde_url", titt: "Kjelde" },
+          { nøkk: "henta_dato", titt: "Henta" },
+        ];
+
+        var heileSett = [];
+        var gridDyr = null;
+        var GRID_RADER_PÅ_OPPSTART = 50;
+        var gridSynsGrense = GRID_RADER_PÅ_OPPSTART;
+        function nulleGridFleirSyn() {
+          gridSynsGrense = GRID_RADER_PÅ_OPPSTART;
+        }
+        var manuellGrunnKart = {};
+        var nulOrgnFraListe = null;
+        var LAGR_API_LAGRING = "lagreg_api_grunnurl";
+        var LAGREG_MANUELL_LOKAL = "lagreg_manuell_status_lokal";
+
+        function lesLokalManuellKartRå() {
+          try {
+            var t = localStorage.getItem(LAGREG_MANUELL_LOKAL);
+            if (!t) return null;
+            var p = JSON.parse(t);
+            if (p == null || typeof p !== "object" || Array.isArray(p)) {
+              return null;
+            }
+            return p;
+          } catch (e) {
+            return null;
+          }
+        }
+
+        function flettNettOgLokalManuell(Grunn) {
+          var l = lesLokalManuellKartRå();
+          if (!l) return Grunn;
+          var reintL = reintStatusKart(l);
+          var ut = JSON.parse(JSON.stringify(Grunn));
+          Object.keys(reintL).forEach(function (k) {
+            ut[k] = reintL[k];
+          });
+          return ut;
+        }
+
+        function skrivLokalManuell() {
+          if (!fårRedigerILista()) return;
+          try {
+            localStorage.setItem(
+              LAGREG_MANUELL_LOKAL,
+              JSON.stringify(byggManuellObjekt())
+            );
+          } catch (e) {
+            /* gjev opp */
+          }
+        }
+
+        function lastNedManuellJson() {
+          var txt = JSON.stringify(byggManuellObjekt(), null, 2) + "\n";
+          var blob = new Blob([txt], { type: "application/json;charset=utf-8" });
+          var a = document.createElement("a");
+          a.href = URL.createObjectURL(blob);
+          a.download = "manuell_status.json";
+          a.click();
+          setTimeout(function () {
+            try {
+              URL.revokeObjectURL(a.href);
+            } catch (e) {
+              /* */
+            }
+          }, 2e3);
+        }
+
+        function fåKolId(nøkk) {
+          return "kolsyn_" + nøkk.replace(/[^a-zA-Z0-9]+/g, "_");
+        }
+
+        function fåDefaultSynlegKart() {
+          var o = {};
+          kolonner.forEach(function (k) {
+            o[k.nøkk] = true;
+          });
+          return o;
+        }
+
+        function lesSynlegFraLagr() {
+          try {
+            var r = localStorage.getItem(LAGREG_KOL_SYNLEG);
+            if (!r) return null;
+            var p = JSON.parse(r);
+            if (p == null || typeof p !== "object" || Array.isArray(p)) return null;
+            return p;
+          } catch (e) {
+            return null;
+          }
+        }
+
+        function fåSynlegKart() {
+          var o = fåDefaultSynlegKart();
+          var l = lesSynlegFraLagr();
+          if (l) {
+            Object.keys(o).forEach(function (k) {
+              if (Object.prototype.hasOwnProperty.call(l, k)) o[k] = !!l[k];
+            });
+          }
+          return o;
+        }
+
+        function lagreSynlegKart(kart) {
+          try {
+            localStorage.setItem(LAGREG_KOL_SYNLEG, JSON.stringify(kart));
+          } catch (e) {
+            /* gjev opp */
+          }
+        }
+
+        function fåAktiveKolonner() {
+          var red = fårRedigerILista();
+          var syn = fåSynlegKart();
+          var ut = kolonner.filter(function (k) {
+            if (syn[k.nøkk] === false) {
+              return false;
+            }
+            if (k.nøkk === "i_hovudlista" && !red) {
+              return false;
+            }
+            return true;
+          });
+          if (ut.length === 0) {
+            return kolonner.filter(function (k) {
+              return k.nøkk === "lagsnavn";
+            });
+          }
+          return ut;
+        }
+
+        function byggKolonnePanel() {
+          var boks = document.getElementById("kolonne_kryss");
+          if (!boks) return;
+          boks.textContent = "";
+          var red = fårRedigerILista();
+          var kart = fåSynlegKart();
+          kolonner.forEach(function (k) {
+            if (k.nøkk === "i_hovudlista" && !red) {
+              return;
+            }
+            var id = fåKolId(k.nøkk);
+            var lab = document.createElement("label");
+            var inp = document.createElement("input");
+            inp.type = "checkbox";
+            inp.id = id;
+            inp.checked = kart[k.nøkk] !== false;
+            inp.setAttribute("data-nøkk", k.nøkk);
+            var sp = document.createElement("span");
+            sp.textContent = k.titt;
+            lab.appendChild(inp);
+            lab.appendChild(sp);
+            inp.addEventListener("change", function () {
+              var n = fåDefaultSynlegKart();
+              var o = fåSynlegKart();
+              Object.keys(n).forEach(function (x) {
+                n[x] = o[x] !== false;
+              });
+              n[k.nøkk] = inp.checked;
+              var talSynleg = 0;
+              Object.keys(n).forEach(function (x) {
+                if (n[x]) talSynleg += 1;
+              });
+              if (talSynleg === 0) {
+                inp.checked = true;
+                n[k.nøkk] = true;
+                return;
+              }
+              lagreSynlegKart(n);
+              teiknaRegister();
+            });
+            boks.appendChild(lab);
+          });
+        }
+
+        function fårRedigerILista() {
+          var a = document.getElementById("rediger_i_lista");
+          return a && a.checked;
+        }
+
+        function sikreTekst(s) {
+          if (s == null) return "";
+          return String(s);
+        }
+
+        function vikHtml(s) {
+          return sikreTekst(s)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;");
+        }
+
+        function statusVerdiFøreVelj(r) {
+          if (r.nedlagt_flag) return "nedlagt";
+          if (r.nu_raw === "utmeld") return "utmeld";
+          if (r.nu_raw === "medlem") return "medlem";
+          return "";
+        }
+
+        function statusCelle(r) {
+          if (fårRedigerILista()) {
+            return statusCelleInteraktiv(r);
+          }
+          if (r.nedlagt_flag) {
+            return gridjs.html(
+              '<span class="merke-nedlagt">' + vikHtml("Nedlagt") + "</span>"
+            );
+          }
+          var raw = r.nu_raw;
+          if (!raw) {
+            return "—";
+          }
+          var t = r.nu_vis_tekst;
+          var merke =
+            raw === "medlem"
+              ? "merke-nu"
+              : raw === "utmeld"
+                ? "merke-ut"
+                : "";
+          return merke
+            ? gridjs.html(
+                '<span class="' + merke + '">' + vikHtml(t) + "</span>"
+              )
+            : "—";
+        }
+
+        function statusCelleInteraktiv(r) {
+          var o = reintO(r);
+          if (o.length !== 9) {
+            return "—";
+          }
+          var v = statusVerdiFøreVelj(r);
+          var s =
+            '<select class="nu-velj" data-o="' +
+            vikHtml(o) +
+            '" aria-label="Status for ' +
+            vikHtml(sikreTekst(r.lagsnavn)) +
+            '">' +
+            "<option" +
+            (v === "" ? " selected" : "") +
+            ' value="">—</option>' +
+            "<option" +
+            (v === "medlem" ? " selected" : "") +
+            ' value="medlem">Medlem</option>' +
+            "<option" +
+            (v === "utmeld" ? " selected" : "") +
+            ' value="utmeld">Utmeld</option>' +
+            "<option" +
+            (v === "nedlagt" ? " selected" : "") +
+            ' value="nedlagt">Nedlagt</option>' +
+            "</select>";
+          return gridjs.html(s);
+        }
+
+        function hovudCelle(r) {
+          if (fårRedigerILista()) {
+            return hovudCelleInteraktiv(r);
+          }
+          return r.skjul_flag ? "Nei (luka ut)" : "Ja";
+        }
+
+        function hovudCelleInteraktiv(r) {
+          var o = reintO(r);
+          if (o.length !== 9) {
+            return "—";
+          }
+          var iLista = !r.skjul_flag;
+          return gridjs.html(
+            '<input type="checkbox" class="input-i-lista" data-o="' +
+              vikHtml(o) +
+              '" title="Vis i hovudlista"' +
+              (iLista ? " checked" : "") +
+              " />"
+          );
+        }
+
+        function merknadCelle(r) {
+          if (fårRedigerILista()) {
+            return merknadCelleInteraktiv(r);
+          }
+          var rå = sikreTekst(r.merknad_hand);
+          if (!rå.trim()) {
+            return "—";
+          }
+          return rå;
+        }
+
+        function merknadCelleInteraktiv(r) {
+          var o = reintO(r);
+          if (o.length !== 9) {
+            return "—";
+          }
+          var m = sikreTekst(r.merknad_hand);
+          return gridjs.html(
+            '<textarea class="merknad-velj" data-o="' +
+              vikHtml(o) +
+              '" rows="2" spellcheck="true" aria-label="Merknad for ' +
+              vikHtml(sikreTekst(r.lagsnavn)) +
+              '">' +
+              vikHtml(m) +
+              "</textarea>"
+          );
+        }
+
+        function reintO(r) {
+          var t = sikreTekst(r && r.orgnr).replace(/\D/g, "");
+          return t.length >= 9 ? t.slice(0, 9) : t;
+        }
+
+        function reintOrgNrSet(ruv) {
+          var s = new Set();
+          if (!ruv || ruv.orgnrar == null) return s;
+          var l = ruv.orgnrar;
+          if (Object.prototype.toString.call(l) !== "[object Array]") {
+            return s;
+          }
+          l.forEach(function (x) {
+            var t = sikreTekst(x).replace(/\D/g, "");
+            if (t.length === 9) s.add(t);
+          });
+          return s;
+        }
+
+        function reintStatusKart(ruv) {
+          var reint = {};
+          if (!ruv || typeof ruv !== "object") return reint;
+          Object.keys(ruv).forEach(function (k) {
+            if (/^\d{9}$/.test(k)) reint[k] = ruv[k];
+          });
+          return reint;
+        }
+
+        function fiksNuEtterKjelde(r) {
+          var o = reintO(r);
+          if (o.length !== 9) {
+            r.nu_vis_tekst = "";
+            reknRadGron(r);
+            return;
+          }
+          if (r.nu_raw === "utmeld") {
+            r.nedlagt_flag = false;
+            r.nu_vis_tekst = "Utmeld";
+            reknRadGron(r);
+            return;
+          }
+          if (r.nedlagt_flag) {
+            r.nu_raw = r.nu_raw === "medlem" ? "medlem" : "";
+            r.nu_vis_tekst = "Nedlagt";
+            reknRadGron(r);
+            return;
+          }
+          var iNu = nulOrgnFraListe && nulOrgnFraListe.has(o);
+          if (iNu) {
+            r.nu_raw = "medlem";
+          } else if (r.nu_raw === "medlem") {
+            r.nu_raw = "medlem";
+          } else {
+            r.nu_raw = "";
+          }
+          r.nu_vis_tekst = r.nu_raw === "medlem" ? "Medlem" : "";
+          reknRadGron(r);
+        }
+
+        function slaaSamanStatus(felt, kart, orgnrFraNuliste) {
+          nulOrgnFraListe = orgnrFraNuliste;
+          return felt.map(function (r) {
+            var t = sikreTekst(r.orgnr).replace(/\D/g, "");
+            var o = t.length >= 9 ? t.slice(0, 9) : t;
+            var st = o.length === 9 ? kart[o] || {} : {};
+            if (typeof st !== "object" || st === null) st = {};
+            r.nedlagt_flag = st.nedlagt === true;
+            var nmu = sikreTekst(st.nu).trim().toLowerCase();
+            if (nmu === "veg_inn") {
+              nmu = "";
+            }
+            if (nmu === "utmeld") {
+              r.nu_raw = "utmeld";
+              r.nedlagt_flag = false;
+            } else {
+              var iNu =
+                o.length === 9 && orgnrFraNuliste && orgnrFraNuliste.has(o);
+              if (iNu && !r.nedlagt_flag) {
+                r.nu_raw = "medlem";
+              } else if (nmu === "medlem") {
+                r.nu_raw = "medlem";
+              } else {
+                r.nu_raw = "";
+              }
+            }
+            if (r.nedlagt_flag) {
+              r.nu_vis_tekst = "Nedlagt";
+            } else if (r.nu_raw === "medlem") {
+              r.nu_vis_tekst = "Medlem";
+            } else if (r.nu_raw === "utmeld") {
+              r.nu_vis_tekst = "Utmeld";
+            } else {
+              r.nu_vis_tekst = "";
+            }
+            r.merknad_hand = sikreTekst(st.merknad);
+            r.skjul_flag = st.skjul === true;
+            reknRadGron(r);
+            return r;
+          });
+        }
+
+        function reknRadGron(r) {
+          r.rad_nu_gron = r.nu_raw === "medlem" && !r.nedlagt_flag;
+        }
+
+        function kandidatFylkeRader() {
+          var v = document.getElementById("vis_skjul");
+          var vis = v && v.checked;
+          return heileSett.filter(function (r) {
+            return vis || !r.skjul_flag;
+          });
+        }
+
+        function lenkjeCelle(tekst) {
+          var t = sikreTekst(tekst).trim();
+          if (!t) return t;
+          if (/^https?:\/\//i.test(t)) {
+            try {
+              var domene = t.replace(/^https?:\/\//, "").split("/")[0];
+              if (domene.length > 28) domene = domene.slice(0, 26) + "…";
+              return gridjs.html(
+                '<a href="' +
+                  t.replace(/"/g, "&quot;") +
+                  '">' +
+                  "opne" +
+                  "</a> <span style=\"color:#8b9cad;font-size:0.88em;\">" +
+                  domene +
+                  "</span>"
+              );
+            } catch (e) {
+              return t;
+            }
+          }
+          return t;
+        }
+
+        function raderTilTavleData(rader) {
+          var akt = fåAktiveKolonner();
+          return rader.map(function (r) {
+            return akt.map(function (k) {
+              if (k.nøkk === "lagsnavn") {
+                var navn = sikreTekst(r.lagsnavn);
+                var raud = r.nu_raw === "utmeld" || r.nedlagt_flag;
+                var gron = r.rad_nu_gron;
+                var kl = raud
+                  ? "rad-merke-raud"
+                  : gron
+                    ? "rad-merke-gron"
+                    : "";
+                if (kl) {
+                  return gridjs.html(
+                    '<span class="' + kl + '">' + vikHtml(navn) + "</span>"
+                  );
+                }
+                return navn;
+              }
+              if (k.nøkk === "__status__") return statusCelle(r);
+              if (k.nøkk === "merknad_hand") return merknadCelle(r);
+              if (k.nøkk === "i_hovudlista") return hovudCelle(r);
+              if (k.nøkk === "nettstad" || k.nøkk === "kjelde_url")
+                return lenkjeCelle(r[k.nøkk]);
+              return sikreTekst(r[k.nøkk]);
+            });
+          });
+        }
+
+        function byggFylkeVal() {
+          var s = new Set();
+          kandidatFylkeRader().forEach(function (r) {
+            var f = sikreTekst(r.fylke).trim();
+            if (f) s.add(f);
+          });
+          var lista = Array.from(s).sort(function (a, b) {
+            return a.localeCompare(b, "no");
+          });
+          var sel = document.getElementById("fylke_val");
+          while (sel.options.length > 1) sel.remove(1);
+          lista.forEach(function (f) {
+            var o = document.createElement("option");
+            o.value = f;
+            o.textContent = f;
+            sel.appendChild(o);
+          });
+        }
+
+        function filtrerRader() {
+          var fylke = document.getElementById("fylke_val").value;
+          var nuF = document.getElementById("nu_val").value;
+          var v = document.getElementById("vis_skjul");
+          var visSkjul = v && v.checked;
+          var d = heileSett.filter(function (r) {
+            return visSkjul || !r.skjul_flag;
+          });
+          if (fylke !== "alle") {
+            d = d.filter(function (r) {
+              return sikreTekst(r.fylke).trim() === fylke;
+            });
+          }
+          if (nuF !== "alle") {
+            if (nuF === "ukjent") {
+              d = d.filter(function (r) {
+                return !r.nedlagt_flag && !r.nu_raw;
+              });
+            } else if (nuF === "medlem") {
+              d = d.filter(function (r) {
+                return r.nu_raw === "medlem" && !r.nedlagt_flag;
+              });
+            } else if (nuF === "nedlagt_f") {
+              d = d.filter(function (r) {
+                return r.nedlagt_flag;
+              });
+            } else {
+              d = d.filter(function (r) {
+                return r.nu_raw === nuF;
+              });
+            }
+          }
+          return d;
+        }
+
+        function byggManuellObjekt() {
+          var ut = {};
+          heileSett.forEach(function (r) {
+            var o = reintO(r);
+            if (o.length !== 9) return;
+            var b = {};
+            if (r.nu_raw === "medlem" || r.nu_raw === "utmeld") b.nu = r.nu_raw;
+            if (r.skjul_flag) b.skjul = true;
+            if (r.nedlagt_flag) b.nedlagt = true;
+            var m = sikreTekst(r.merknad_hand).trim();
+            if (m) b.merknad = m;
+            if (Object.keys(b).length) ut[o] = b;
+          });
+          var ordaISett = new Set();
+          heileSett.forEach(function (r) {
+            var o = reintO(r);
+            if (o.length === 9) ordaISett.add(o);
+          });
+          Object.keys(manuellGrunnKart).forEach(function (k) {
+            if (ordaISett.has(k)) return;
+            var g = manuellGrunnKart[k];
+            if (!g || typeof g !== "object") return;
+            var kopi = JSON.parse(JSON.stringify(g));
+            if (kopi.nu === "veg_inn") {
+              delete kopi.nu;
+            }
+            if (Object.keys(kopi).length) ut[k] = kopi;
+          });
+          return ut;
+        }
+
+        function fåApigrunnInline() {
+          var f = document.getElementById("inline_api");
+          if (f && f.value && f.value.trim()) {
+            return f.value.trim().replace(/\/$/, "");
+          }
+          if (window.LAGREG_API_GRUNNURL && String(window.LAGREG_API_GRUNNURL).trim()) {
+            return String(window.LAGREG_API_GRUNNURL)
+              .trim()
+              .replace(/\/$/, "");
+          }
+          try {
+            var x = localStorage.getItem(LAGR_API_LAGRING);
+            if (x && x.trim()) return x.trim().replace(/\/$/, "");
+          } catch (e) {
+            /* gjev opp */
+          }
+          return "";
+        }
+
+        function utgreiKnetthendelse(e) {
+          var m = "";
+          if (e && e.message != null) m = String(e.message);
+          else if (typeof e === "string") m = e;
+          if (!m) m = "Ukjent feil";
+          if (/load failed|failed to fetch|networkerror|aborted|fetch/i.test(m)) {
+            return (
+              m +
+              " — Vanleg: CORS. I Vercel, anten tøm LAGREG_TILLATTE_URSPRUNG, eller sett ho til sida di nøyaktig, t.d. https://dittnavn.github.io,http://127.0.0.1:8765 (koma, utan sti). Sjekk Vercel-URL (https://lagsregisteret.vercel.app, utan / slutt)."
+            );
+          }
+          return m;
+        }
+
+        function køyrLagreTilVercel() {
+          var st = document.getElementById("inline_lagre_status");
+          var gr = fåApigrunnInline();
+          if (!gr) {
+            if (st) st.textContent = "Set Vercel-URL fyrst.";
+            return;
+          }
+          var bu = (document.getElementById("inline_brukar") || {}).value;
+          var pa = (document.getElementById("inline_pass") || {}).value;
+          if (bu == null || pa == null) {
+            if (st) st.textContent = "Fyll brukar og passord.";
+            return;
+          }
+          var u = gr + "/api/lagre-manuell-status";
+          if (st) st.textContent = "Lagrar…";
+          fetch(u, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json; charset=utf-8",
+              Authorization:
+                "Basic " + btoa(unescape(encodeURIComponent(bu + ":" + pa))),
+            },
+            body: JSON.stringify({ manuell_status: byggManuellObjekt() }),
+          })
+            .then(function (r) {
+              return r.text().then(function (t) {
+                return { s: r.status, t: t };
+              });
+            })
+            .then(function (e) {
+              if (e.s === 200) {
+                manuellGrunnKart = byggManuellObjekt();
+                skrivLokalManuell();
+                if (st) {
+                  st.textContent =
+                    "Lagra. Vent eitt augeblikk til GitHub Pages bygg."
+                }
+                return;
+              }
+              var o = {};
+              try {
+                o = JSON.parse(e.t);
+              } catch (x) {
+                o = { feil: e.t };
+              }
+              if (st) st.textContent = o.feil || "HTTP " + e.s;
+            })
+            .catch(function (e) {
+              if (st) st.textContent = utgreiKnetthendelse(e);
+            });
+        }
+
+        function handBrettMerknadInput(e) {
+          var t = e.target;
+          if (!t || !t.classList || !t.classList.contains("merknad-velj")) {
+            return;
+          }
+          var oN = t.getAttribute("data-o");
+          for (var i = 0; i < heileSett.length; i++) {
+            if (reintO(heileSett[i]) === oN) {
+              heileSett[i].merknad_hand = t.value;
+              skrivLokalManuell();
+              return;
+            }
+          }
+        }
+
+        function handBrettKnyting(e) {
+          var t = e.target;
+          if (!t || !t.getAttribute) return;
+          if (t.classList && t.classList.contains("nu-velj")) {
+            var oN = t.getAttribute("data-o");
+            var v = t.value;
+            for (var i = 0; i < heileSett.length; i++) {
+              if (reintO(heileSett[i]) === oN) {
+                if (v === "nedlagt") {
+                  heileSett[i].nedlagt_flag = true;
+                  if (heileSett[i].nu_raw === "utmeld") {
+                    heileSett[i].nu_raw = "";
+                  }
+                } else {
+                  heileSett[i].nedlagt_flag = false;
+                  heileSett[i].nu_raw =
+                    v === "medlem" || v === "utmeld" ? v : "";
+                }
+                fiksNuEtterKjelde(heileSett[i]);
+                break;
+              }
+            }
+            teiknaRegister();
+            skrivLokalManuell();
+            return;
+          }
+          if (t.classList && t.classList.contains("input-i-lista")) {
+            var o2 = t.getAttribute("data-o");
+            var sk = !t.checked;
+            for (var j = 0; j < heileSett.length; j++) {
+              if (reintO(heileSett[j]) === o2) {
+                heileSett[j].skjul_flag = sk;
+                reknRadGron(heileSett[j]);
+                break;
+              }
+            }
+            byggFylkeVal();
+            teiknaRegister();
+            skrivLokalManuell();
+          }
+        }
+
+        function setRedigerSyn(berreSyn) {
+          var a = document.getElementById("rediger_i_lista");
+          var h = !a || !a.checked;
+          var rff = document.getElementById("rediger_felt");
+          var dr = document.getElementById("dempa_rediger");
+          if (rff) rff.hidden = h;
+          if (dr) dr.hidden = h;
+          if (a && a.checked) {
+            skrivLokalManuell();
+          }
+          if (!berreSyn) teiknaRegister();
+        }
+
+        function teiknaRegister() {
+          var rullaVindY =
+            window.scrollY != null
+              ? window.scrollY
+              : document.documentElement.scrollTop || document.body.scrollTop || 0;
+          var brettEl = document.querySelector(".register-brett");
+          var rullaBrettX = brettEl ? brettEl.scrollLeft : 0;
+          var dyr = filtrerRader();
+          document.getElementById("tal_rader").textContent =
+            dyr.length === 0
+              ? "Ingen rader"
+              : dyr.length + (dyr.length === 1 ? " rad" : " rader");
+          if (gridDyr) {
+            try {
+              gridDyr.destroy();
+            } catch (e) {
+              /* */
+            }
+            gridDyr = null;
+          }
+          var container = document.getElementById("register");
+          container.innerHTML = "";
+          var akt = fåAktiveKolonner();
+          var tavleKolonner = akt.map(function (k) {
+            var c = { name: k.titt, sort: true };
+            if (k.nøkk === "adresse") c.width = "200px";
+            if (fårRedigerILista()) {
+              if (k.nøkk === "__status__") c.width = "9.5rem";
+              if (k.nøkk === "i_hovudlista") c.width = "3.2rem";
+              if (k.nøkk === "merknad_hand") c.width = "14rem";
+            }
+            return c;
+          });
+          var krevSiding = dyr.length > gridSynsGrense;
+          var sidLem = Math.max(
+            1,
+            Math.min(gridSynsGrense, dyr.length)
+          );
+          gridDyr = new gridjs.Grid({
+            columns: tavleKolonner,
+            data: raderTilTavleData(dyr),
+            search: { enabled: true, placeholder: "Søk…" },
+            sort: true,
+            pagination: { enabled: krevSiding, limit: sidLem },
+          });
+          gridDyr.render(container);
+          var bFle = document.getElementById("last_inn_fleire_reg");
+          if (bFle) {
+            var reSt = dyr.length - gridSynsGrense;
+            if (reSt > 0) {
+              bFle.textContent =
+                reSt <= GRID_RADER_PÅ_OPPSTART
+                  ? "Vis resten (" + reSt + (reSt === 1 ? " rad)" : " rader)")
+                  : "Last inn " + GRID_RADER_PÅ_OPPSTART + " til";
+              bFle.removeAttribute("hidden");
+            } else {
+              bFle.setAttribute("hidden", "");
+            }
+          }
+          var setteRullingAtt = function () {
+            window.scrollTo(0, rullaVindY);
+            if (brettEl) {
+              brettEl.scrollLeft = rullaBrettX;
+            }
+          };
+          requestAnimationFrame(function () {
+            requestAnimationFrame(setteRullingAtt);
+          });
+          setTimeout(setteRullingAtt, 0);
+          setTimeout(setteRullingAtt, 100);
+        }
+
+        function visFeil(tekst) {
+          var e = document.getElementById("feil");
+          e.textContent = tekst;
+          e.style.display = "block";
+          e.hidden = false;
+        }
+
+        function byrja() {
+          Promise.all([
+            fetch("data/manuell_status.json")
+              .then(function (a) {
+                return a.ok ? a.json() : {};
+              })
+              .catch(function () {
+                return {};
+              }),
+            fetch("data/nu_saman_med_nu_no.json")
+              .then(function (a) {
+                return a.ok ? a.json() : { orgnrar: [] };
+              })
+              .catch(function () {
+                return { orgnrar: [] };
+              }),
+            new Promise(function (løyst, løyver) {
+              Papa.parse("data/lag.csv", {
+                download: true,
+                header: true,
+                skipEmptyLines: "greedy",
+                encoding: "utf-8",
+                complete: løyst,
+                error: løyver,
+              });
+            }),
+            fetch("data/nu_lokallag_manglar_i_register.json")
+              .then(function (a) {
+                return a.ok ? a.json() : { tittlar: [] };
+              })
+              .catch(function () {
+                return { tittlar: [] };
+              }),
+          ])
+            .then(function (par) {
+              var statusKart = flettNettOgLokalManuell(reintStatusKart(par[0]));
+              var nuDok = par[1];
+              var orgnrFraNuliste = reintOrgNrSet(nuDok);
+              var result = par[2];
+              var mJson = par[3] || {};
+              var mListe = mJson.tittlar;
+              var merkEl = document.getElementById("nu_manglar_merk");
+              var omt = document.getElementById("nu_manglar_omtrekk");
+              var uEl = document.getElementById("nu_manglar_liste");
+              if (merkEl) {
+                merkEl.textContent = sikreTekst(mJson.merknad || "").trim();
+                merkEl.style.display = merkEl.textContent ? "block" : "none";
+              }
+              if (
+                omt &&
+                uEl &&
+                mListe &&
+                Object.prototype.toString.call(mListe) === "[object Array]" &&
+                mListe.length
+              ) {
+                uEl.textContent = "";
+                mListe.forEach(function (tit) {
+                  var li = document.createElement("li");
+                  li.textContent = sikreTekst(tit);
+                  uEl.appendChild(li);
+                });
+                omt.removeAttribute("hidden");
+                omt.style.display = "block";
+              } else if (omt) {
+                omt.setAttribute("hidden", "");
+                omt.style.display = "none";
+              }
+              if (result.errors && result.errors.length) {
+                var kritiske = result.errors.filter(function (x) {
+                  return x.fatal;
+                });
+                if (kritiske.length) {
+                  visFeil(
+                    "Kunne ikkje lese data/lag.csv. " + kritiske[0].message
+                  );
+                  return;
+                }
+              }
+              var felta = (result.data || []).filter(function (r) {
+                return sikreTekst(r.lagsnavn).trim() !== "";
+              });
+              if (felta.length === 0) {
+                visFeil(
+                  "Fila data/lag.csv er tom. Køyr innhenting og: python3 skript/publiser_data_til_nettside.py — deretter push til GitHub."
+                );
+                return;
+              }
+              if (!felta[0].hasOwnProperty("lagsnavn")) {
+                visFeil("Uventa CSV: manglar kolonne «lagsnavn».");
+                return;
+              }
+              heileSett = slaaSamanStatus(felta, statusKart, orgnrFraNuliste);
+              manuellGrunnKart = JSON.parse(JSON.stringify(statusKart));
+              try {
+                var apiL = localStorage.getItem(LAGR_API_LAGRING);
+                var iael = document.getElementById("inline_api");
+                if (iael && apiL && !iael.value) iael.value = apiL;
+              } catch (e) {
+                /* gjev opp */
+              }
+              byggKolonnePanel();
+              byggFylkeVal();
+              setRedigerSyn(true);
+              teiknaRegister();
+              document
+                .getElementById("fylke_val")
+                .addEventListener("change", function () {
+                  nulleGridFleirSyn();
+                  teiknaRegister();
+                });
+              document
+                .getElementById("nu_val")
+                .addEventListener("change", function () {
+                  nulleGridFleirSyn();
+                  teiknaRegister();
+                });
+              document
+                .getElementById("vis_skjul")
+                .addEventListener("change", function () {
+                  nulleGridFleirSyn();
+                  byggFylkeVal();
+                  teiknaRegister();
+                });
+              document
+                .getElementById("rediger_i_lista")
+                .addEventListener("change", function () {
+                  byggKolonnePanel();
+                  setRedigerSyn(false);
+                });
+              document
+                .getElementById("inline_lagre")
+                .addEventListener("click", køyrLagreTilVercel);
+              var lnm = document.getElementById("last_ned_manuell");
+              if (lnm) lnm.addEventListener("click", lastNedManuellJson);
+              var bFle = document.getElementById("last_inn_fleire_reg");
+              if (bFle) {
+                bFle.addEventListener("click", function () {
+                  var dList = filtrerRader();
+                  gridSynsGrense = Math.min(
+                    dList.length,
+                    gridSynsGrense + GRID_RADER_PÅ_OPPSTART
+                  );
+                  teiknaRegister();
+                });
+              }
+              document
+                .getElementById("inline_api")
+                .addEventListener("change", function () {
+                  try {
+                    var b = document.getElementById("inline_api");
+                    if (b && b.value.trim()) {
+                      localStorage.setItem(LAGR_API_LAGRING, b.value.trim());
+                    }
+                  } catch (e) {
+                    /* gjev opp */
+                  }
+                });
+              var brettDyr = document.querySelector(".register-brett");
+              if (brettDyr) {
+                brettDyr.addEventListener("change", handBrettKnyting);
+                brettDyr.addEventListener("input", handBrettMerknadInput);
+              }
+            })
+            .catch(function () {
+              visFeil("Kunne ikkje laste data/lag.csv.");
+            });
+        }
+        byrja();
+      })();
+    </script>
+  </body>
+</html>

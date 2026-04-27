@@ -1,0 +1,7 @@
+{
+  "functions": {
+    "api/lagre-manuell-status.js": {
+      "maxDuration": 25
+    }
+  }
+}

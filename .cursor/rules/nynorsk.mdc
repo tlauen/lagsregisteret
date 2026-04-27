@@ -1,0 +1,11 @@
+---
+description: Kode, filnamn og brukarretta tekst på nynorsk i lagsregisteret
+alwaysApply: true
+---
+
+# Nynorsk i lagsregisteret
+
+- **Kode:** funksjonsnamn, variabelnamn, kommentarar og feilmeldingar skal vere på **nynorsk** der det ikkje skader lesbarleik eller samsvar med bibliotek.
+- **Fil- og mappenamn:** nynorsk (`skript/`, `oppsett/`, `utdata/`, skildrande `.py`-namn); unngå engelske namn som `scripts`, `config`, `out` når det finst tydelege nynorske alternativ.
+- **Unntak:** API- og JSON-nykkel frå tredjepart (t.d. Brreg), nøkkelord i programspråk, avkortingar som `csv`, `url`, `orgnr` når dei er etablerte.
+- **Usikkerheit:** spør førehands når du er usikker på kva noko bør heite (t.d. teknisk omgrep med fleire moglege nynorske namneval).

@@ -1,0 +1,18 @@
+# Manuell status (NU og skjuling)
+
+Fila `data/manuell_status.json` (kopiert til `docs/data/` for nett) har **organisasjonsnummer** (orgnr) som nøkkel, som streng.
+
+For kvar orgnr:
+
+- **nu** — medlemsforholdet til **Noregs Ungdomslag (NU)**:
+  - `medlem`  — medlem, eller satt automatisk dersom orgnr ligg i samanlikningsfila (samme som grøn rad) og ikkje `utmeld` / `nedlagt`
+  - `utmeld`  — nyleg (eller elles relevant) utmeldt
+  - utelat felt eller tom `""` — ikkje vurdert / ukjent
+
+- **skjul** — `true` dersom rada ikkje skal visast i hovudlista (f.eks. ikkje ungdomslag, ikkje frilynde, feil i register). Standard er `false` eller at feltet ikkje finst.
+
+- **nedlagt** — `true` dersom laget er oppløyst / ikkje lenger aktivt; får same **raud** rad-merke som `utmeld` (raud går føre grøn).
+
+- **merknad** — fritekst til intern bruk, visast i tabellen dersom den er utfylt.
+
+Oppdater med nettredigering i hovudlista (når Vercel-API er sett opp), `skript/sett_lag_status.py` eller eigne verktøy. **Push** alltid `data/manuell_status.json` og køyr `publiser_data_til_nettside.py` så `docs/data/` er ajour for GitHub Pages (eller bruk **Lagre** i lista som skriv rett via API).

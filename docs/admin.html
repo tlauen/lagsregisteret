@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="nn">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Rediger manuell status — lagsregisteret</title>
+    <style>
+      :root {
+        --bak: #0f1419;
+        --kort: #1a2028;
+        --tekst: #e6edf3;
+        --dempa: #8b9cad;
+        --lenkje: #58a6ff;
+        --ramme: #30363d;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        font-family: system-ui, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+        background: var(--bak);
+        color: var(--tekst);
+        margin: 0;
+        line-height: 1.5;
+        min-height: 100vh;
+      }
+      .hovud {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 1.5rem 1rem 3rem;
+      }
+      h1 {
+        font-size: 1.4rem;
+        font-weight: 600;
+        margin: 0 0 0.4rem 0;
+      }
+      .leiar {
+        color: var(--dempa);
+        font-size: 0.95rem;
+        margin: 0 0 1.25rem 0;
+      }
+      .leiar a {
+        color: var(--lenkje);
+      }
+      .boks {
+        background: var(--kort);
+        border: 1px solid var(--ramme);
+        border-radius: 8px;
+        padding: 1rem 1.1rem;
+        margin: 0 0 1rem 0;
+      }
+      .boks h2 {
+        font-size: 1.05rem;
+        margin: 0 0 0.75rem 0;
+        font-weight: 600;
+        color: var(--dempa);
+      }
+      label {
+        display: block;
+        margin: 0.35rem 0 0.2rem;
+        font-size: 0.88rem;
+        color: var(--dempa);
+      }
+      input[type="text"],
+      input[type="password"],
+      input[type="url"] {
+        width: 100%;
+        max-width: 28rem;
+        background: var(--bak);
+        color: var(--tekst);
+        border: 1px solid var(--ramme);
+        border-radius: 6px;
+        padding: 0.45rem 0.55rem;
+        font: inherit;
+      }
+      .merknad-felt {
+        min-width: 10rem;
+        max-width: 18rem;
+        width: 100%;
+      }
+      select {
+        background: var(--bak);
+        color: var(--tekst);
+        border: 1px solid var(--ramme);
+        border-radius: 6px;
+        padding: 0.4rem 0.5rem;
+        font: inherit;
+        min-width: 11rem;
+      }
+      .knapprekkje {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem 0.75rem;
+        margin-top: 0.5rem;
+        align-items: center;
+      }
+      button {
+        background: #238636;
+        color: #fff;
+        border: 1px solid #2ea043;
+        border-radius: 6px;
+        padding: 0.45rem 0.9rem;
+        font: inherit;
+        cursor: pointer;
+      }
+      button:hover {
+        filter: brightness(1.05);
+      }
+      button.slette {
+        background: #6e1515;
+        border-color: #8b1f1f;
+      }
+      #feil {
+        background: #3d1f1f;
+        border: 1px solid #7a2e2e;
+        border-radius: 8px;
+        padding: 0.9rem 1rem;
+        color: #f0c4c4;
+        margin: 0 0 1rem 0;
+      }
+      .tabell-omtrekk {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        margin: 0.5rem 0 0;
+        border: 1px solid var(--ramme);
+        border-radius: 8px;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.9rem;
+      }
+      th,
+      td {
+        text-align: left;
+        padding: 0.45rem 0.5rem;
+        border-bottom: 1px solid var(--ramme);
+        vertical-align: middle;
+      }
+      th {
+        color: var(--dempa);
+        font-weight: 500;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.02em;
+        background: var(--bak);
+      }
+      tr:last-child td {
+        border-bottom: none;
+      }
+      #rå_json {
+        width: 100%;
+        min-height: 8rem;
+        background: var(--bak);
+        color: #c9d1d9;
+        border: 1px solid var(--ramme);
+        border-radius: 6px;
+        padding: 0.5rem 0.6rem;
+        font-family: ui-monospace, "Cascadia Code", "Source Code Pro", Menlo, monospace;
+        font-size: 0.8rem;
+        line-height: 1.4;
+        resize: vertical;
+      }
+      .demp {
+        color: var(--dempa);
+        font-size: 0.85rem;
+        margin: 0.3rem 0 0.5rem 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="hovud">
+      <h1>Manuell status (NU / luka ut / nedlagt)</h1>
+      <p class="leiar">
+        <a href="index.html">← Tilbake til registeret</a> · Dra inn siste
+        <code>manuell_status.json</code> for nett, redigér, skriv med passord. GitHub
+        sin statiske sida kan <strong>ikkje</strong> sjekkja passord — du må setje opp
+        eit litle API hos
+        <a
+          href="https://vercel.com"
+          rel="noopener noreferrer"
+          >Vercel</a
+        >
+        (sjå <code>README</code> under «Nettredigering med passord»).
+      </p>
+      <div id="feil" class="boks" style="display: none" hidden></div>
+      <div class="boks">
+        <h2>1. Vercel-API (grunn-URL)</h2>
+        <p class="demp">
+          Rot-URL, t.d. <code>https://dittprosjekt.vercel.app</code> (utan avsluttande
+          <code>/</code>).
+        </p>
+        <input
+          type="url"
+          id="api_grunnurl"
+          name="api_grunnurl"
+          placeholder="https://…vercel.app"
+          autocomplete="url"
+        />
+        <p class="demp">Alternativ: endre <code>docs/js/lagreg_nettoppsett.js</code> (LAGREG_API_GRUNNURL) og køyr <code>git push</code>.</p>
+      </div>
+      <div class="boks">
+        <h2>2. Innlogging for lagring</h2>
+        <label for="admin_brukar">Brukar (same som LAGREG_BRUKER hos Vercel)</label>
+        <input type="text" id="admin_brukar" name="brukar" autocomplete="username" />
+        <label for="admin_pass">Passord (LAGREG_PASS)</label>
+        <input type="password" id="admin_pass" name="pass" autocomplete="current-password" />
+        <p class="demp">Passordet vert berre brukt i denne søkja og vert ikkje lagra i localStorage.</p>
+      </div>
+      <div class="boks">
+        <h2>3. Register</h2>
+        <p class="demp" id="hent_status" aria-live="polite"></p>
+        <div class="knapprekkje">
+          <button type="button" id="kn_hent">Hent siste manuell_status.json (nett)</button>
+        </div>
+        <p class="demp" id="lagre_status" aria-live="polite"></p>
+        <div class="tabell-omtrekk">
+          <table>
+            <thead>
+              <tr>
+                <th>Org.nr</th>
+                <th>NU</th>
+                <th>Luk ut</th>
+                <th>Nedlagt</th>
+                <th>Merknad</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="tabell_oppf"></tbody>
+          </table>
+        </div>
+        <p class="demp">Legg til orgnr (9 siffer):</p>
+        <div class="knapprekkje">
+          <input type="text" id="nytt_orgnr" inputmode="numeric" pattern="[0-9 ]*" placeholder="9 siffer" />
+          <button type="button" id="kn_legg_til">Legg til i tabellen</button>
+        </div>
+        <h2 style="font-size: 1.05rem; margin: 1.25rem 0 0.4rem; font-weight: 600; color: var(--dempa)">
+          Rå JSON
+        </h2>
+        <p class="demp">Du kan køyra saman med <code>sett_lag_status.py</code> / den same strukturen som i <code>data/manuell_status.json</code>.</p>
+        <textarea id="rå_json" rows="8" spellcheck="false"></textarea>
+        <div class="knapprekkje">
+          <button type="button" id="kn_oppd_frå_boks">Oppdater tabell frå boksen ovan</button>
+        </div>
+        <p class="demp" style="margin-top: 1rem">
+          Når du er nøgd: <strong>lagre til Git</strong> (to filar: <code>data/…</code> og
+          <code>docs/data/…</code> dersom standard API-oppsett).
+        </p>
+        <div class="knapprekkje">
+          <button type="button" id="kn_lagre">Lagre til Git (via Vercel)</button>
+        </div>
+      </div>
+    </div>
+    <script src="js/lagreg_nettoppsett.js"></script>
+    <script src="js/lagreg_admin.js"></script>
+  </body>
+</html>
