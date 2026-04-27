@@ -1,0 +1,26 @@
+# macOS
+.DS_Store
+**/.DS_Store
+
+# Jekyll build
+_site/
+.jekyll-cache/
+.jekyll-metadata
+.sass-cache/
+
+# Bundler
+.bundle/
+vendor/bundle/
+
+# Ruby
+*.gem
+
+# Node (om du seinare brukar npm)
+node_modules/
+
+# editorar
+.vscode/
+.idea/
+
+# macOS misc
+*.swp
