@@ -1,15 +1,27 @@
 # Eitt søkjeord/fragment per line til Brreg API: GET .../enheter?navn=...
 # Tomme line og line som byrjar med # blir hoppa over.
 # Utvid når de finn gap i treff.
+#
+# Bondeungdom (BUL), UL / U.L. / u.l. m.m. — mange fylgjer ikkje «ungdomslag» i namnet
+# men «bondeungdomslag» eller forkortingar. «bondeungdom» er med nedanfor;
+# «bondeungdomslag» og BUL fangar mange ekstra (køyr innhenting på nytt etter endring).
 
 ungdomslag
 ungdomsforening
-ungdoms- og
-bygde- og ungdoms
+# «ungdoms-» treff t.d. «Folldal ungdoms- og ungdomsforening» (heile «ungdoms- og» feila HTTP 400 hos nokon Brreg-klientar)
+ungdoms-
+bygde- ungdoms
+# «bygde-» + «grende»/andre – «bygde- og» gav 400 hos nokon
+bygde-
+# Forkortingar / alternative skrivemåtar (BUL, UL, u.l. …)
+BUL
+bondeungdomslag
+U/L
+u.l
+u.l.
 U.L
 U.L.
 UL
 bondeungdom
 bygdelag
-bygde- og
 grende

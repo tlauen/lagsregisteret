@@ -1,0 +1,15 @@
+# Forkortingar: viss organisasjonsnamnet inneheld denne delstrengen (i lågare/upper case),
+# må det finnast minst éin førekomst med MELLOMROM føre forkortinga, ELLER mellomrom etter
+# (eller heile namnet er berre denne forkortinga, utan anna støy).
+# Treff gjevne av lange søkjeord (ungdomslag, bondeungdom, …) treng ikkje dette sjekkast.
+# Tom fil = slå av (same som å ikkje ha fila — skriptet bruker same namn, tom er «av» når køyrt utan linjer)
+#
+# List fleire med lengste variant fyrst (U.L. føre U.L) — skript sorterer likevel.
+U.L.
+U.L
+u.l.
+u.l
+# (Ikkje «UL» fritt her: treff inne i ord som Kultur, Festival, m.m. Legg gjerne til «UL» sjølv
+# viss du ynskjer, og aksepter støy – eller søkje utanom nettsida.)
+U/L
+BUL

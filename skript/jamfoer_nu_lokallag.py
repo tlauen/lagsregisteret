@@ -30,10 +30,12 @@ def rot() -> Path:
 def nøkkel(tek: str) -> str:
     t = tek.lower()
     t = t.replace("fril.", "frilynde")
+    t = re.sub(r"\bu\s*/\s*l\b", "ul", t)  # U/L, u/l i lagnamn
     t = re.sub(r"[^a-zæøå0-9]+", " ", t)
     t = re.sub(r"\s+", " ", t).strip()
     t = t.replace(" u l ", " ul ")
     t = t.replace("u.l.", "ul")
+    t = t.replace("u.l", "ul")
     t = t.replace(" fr ", " frilynte ")
     return t
 
@@ -43,7 +45,7 @@ def nøklar_fra_brukeleg(n: str) -> set[str]:
     u: set[str] = {s}
     s2 = s.replace(" ungdomslag", "").replace(" ungdoms og idrettslag", " idrettslag")
     s2 = re.sub(
-        r"\b(bondeungdomslaget|folkedanslaget|folkedans|ungdomslaget)\b",
+        r"\b(bondeungdomslaget|bondeungdomslag|bondeungdom|folkedanslaget|folkedans|ungdomslaget|bul)\b",
         "",
         s2,
     )

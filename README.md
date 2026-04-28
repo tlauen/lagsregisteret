@@ -50,6 +50,27 @@ Innhenting:
 python3 skript/innhent_lag_frå_brreg.py
 ```
 
+Berre organisasjonar som også er **innført i frivillighetsregisteret** (Brreg sitt opne totalbestand):
+
+```bash
+python3 skript/innhent_lag_frå_brreg.py --krev-frivillighetsregister
+```
+
+Vel du elles **berre** dei som etter Brreg-adresse ser ut til å ha **tilhald i norsk kommune** (kommune/kommunenummer) **eller** norsk postnummer som i folkeregisteret (fire siffer), legg til:
+
+```bash
+python3 skript/innhent_lag_frå_brreg.py --krev-norsk-tilhald
+```
+
+(Dette flagget vert ofte brukt saman med `--krev-frivillighetsregister` — begge er valfrie.) **Begge saman** (full ny lagnamn‑liste ut frå Brreg med begge ting):
+
+```bash
+python3 skript/innhent_lag_frå_brreg.py \
+  --krev-frivillighetsregister \
+  --krev-norsk-tilhald
+python3 skript/publiser_data_til_nettside.py
+```
+
 Ferdig fil (ikkje sjekka inn i git med mindre du vel det): `utdata/innhenta_lag_frå_brreg.csv`.
 
 Prøvkjøyring (færre søkje- og API-kall):

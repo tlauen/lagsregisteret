@@ -516,8 +516,10 @@
 
         var heileSett = [];
         var gridDyr = null;
+        var teiknaRegisterGjenId = 0;
         var GRID_RADER_PÅ_OPPSTART = 50;
         var gridSynsGrense = GRID_RADER_PÅ_OPPSTART;
+        var rullingObs = null;
         function nulleGridFleirSyn() {
           gridSynsGrense = GRID_RADER_PÅ_OPPSTART;
         }
@@ -1223,6 +1225,16 @@
         }
 
         function teiknaRegister() {
+          if (rullingObs) {
+            try {
+              rullingObs.disconnect();
+            } catch (e) {
+              /* */
+            }
+            rullingObs = null;
+          }
+          teiknaRegisterGjenId += 1;
+          var gjenKøyrId = teiknaRegisterGjenId;
           var rullaVindY =
             window.scrollY != null
               ? window.scrollY
@@ -1267,7 +1279,7 @@
             sort: true,
             pagination: { enabled: krevSiding, limit: sidLem },
           });
-          gridDyr.render(container);
+          var rRender = gridDyr.render(container);
           var bFle = document.getElementById("last_inn_fleire_reg");
           if (bFle) {
             var reSt = dyr.length - gridSynsGrense;
@@ -1282,16 +1294,61 @@
             }
           }
           var setteRullingAtt = function () {
-            window.scrollTo(0, rullaVindY);
+            if (gjenKøyrId !== teiknaRegisterGjenId) {
+              return;
+            }
+            var y = rullaVindY;
+            var docEl = document.documentElement;
+            var h =
+              (docEl && docEl.scrollHeight) ||
+              document.body.scrollHeight ||
+              0;
+            var maxV = Math.max(0, h - window.innerHeight);
+            if (y > maxV) y = maxV;
+            window.scrollTo(0, y);
             if (brettEl) {
               brettEl.scrollLeft = rullaBrettX;
             }
           };
+          var brfGjen = function () {
+            setteRullingAtt();
+          };
           requestAnimationFrame(function () {
-            requestAnimationFrame(setteRullingAtt);
+            requestAnimationFrame(brfGjen);
           });
-          setTimeout(setteRullingAtt, 0);
-          setTimeout(setteRullingAtt, 100);
+          [0, 16, 50, 100, 200, 400, 700, 1200].forEach(function (ms) {
+            setTimeout(setteRullingAtt, ms);
+          });
+          if (brettEl && typeof ResizeObserver !== "undefined") {
+            rullingObs = new ResizeObserver(function () {
+              if (gjenKøyrId !== teiknaRegisterGjenId) {
+                return;
+              }
+              setteRullingAtt();
+            });
+            rullingObs.observe(brettEl);
+            setTimeout(function () {
+              if (gjenKøyrId !== teiknaRegisterGjenId) {
+                return;
+              }
+              if (rullingObs) {
+                try {
+                  rullingObs.disconnect();
+                } catch (e) {
+                  /* */
+                }
+                rullingObs = null;
+              }
+            }, 3500);
+          }
+          if (rRender && typeof rRender.then === "function") {
+            rRender.then(function () {
+              if (gjenKøyrId === teiknaRegisterGjenId) {
+                setteRullingAtt();
+                setTimeout(setteRullingAtt, 0);
+              }
+            });
+          }
         }
 
         function visFeil(tekst) {

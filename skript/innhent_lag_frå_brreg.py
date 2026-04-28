@@ -1,16 +1,18 @@
 #!/usr/bin/env python3
 """
 Innhent oppføringar frå Brønnøysund sitt enhets-API, filtrer med utelatingsfrasar,
-og skriv éi CSV (kjelde_url = lenkje til oppslag i nettlesar).
+valfritt mellomrom rundt forkortingar, og valfritt mot frivillighetsregister og norsk tilhald i adresse.
+Skriv éi CSV (kjelde_url = lenkje til oppslag i nettlesar).
 """
 from __future__ import annotations
 
 import argparse
 import csv
 import json
+import re
 import sys
 import time
-from datetime import date
+from io import StringIO
 from pathlib import Path
 from typing import Any
 from urllib.error import HTTPError, URLError
@@ -21,6 +23,10 @@ import trygg_nett
 
 BRREG_ENHETAR_URL = "https://data.brreg.no/enhetsregisteret/api/enheter"
 BRREG_OPPSLAG_MAL = "https://data.brreg.no/enhetsregisteret/oppslag/enheter/{orgnr}"
+FRIVILLIG_TOTALBESTAND_CSV = (
+    "https://data.brreg.no/frivillighetsregisteret/api/"
+    "frivillige-organisasjoner/totalbestand/csv"
+)
 
 
 def prosjektrot() -> Path:
@@ -47,6 +53,135 @@ def last_utelatingsfrasar(oppsettmappe: Path) -> list[str]:
 def i_utelatingslista(navn: str, frasar: list[str]) -> bool:
     n = navn.lower()
     return any(f in n for f in frasar)
+
+
+# Treff gjevne uavhengig av korte søkjeord: treng ikkje ordskilje-sjekk for forkortingar
+GODE_TREFF_SLEPP_FORKORTINGKONTROLL: tuple[str, ...] = (
+    "ungdomslag",
+    "ungdomsforening",
+    "ungdoms- og",
+    "ungdoms-",
+    "ungdoms",
+    "bondeungdom",
+    "bondeungdomslag",
+    "bygde- ungdoms",
+    "bygde- og",
+    "bygde-",
+    "bygdelag",
+    "grende",
+    "folkedans",
+    "frikyrk",
+    "friidrett",
+    "idrettsforening",
+    "idretts",
+    "frilynde",
+    "4h-lag",
+    "4h",
+    "4-h",
+    "4 h",
+)
+
+
+def _mellomrom_fr_eller_etter(navn: str, start: int, end: int) -> bool:
+    """Bokstavlege mellomrom rett føre, eller rett etter, forkortinga (start/end = slice i same streng)."""
+    if end <= start or start < 0 or end > len(navn):
+        return False
+    fyre = start > 0 and navn[start - 1].isspace()
+    etter = end < len(navn) and navn[end].isspace()
+    return fyre or etter
+
+
+def last_forkorting_krev_mellomrom(oppsettmappe: Path) -> list[str]:
+    f = oppsettmappe / "forkorting_krev_mellomrom.txt"
+    if not f.is_file():
+        return []
+    rå: list[str] = []
+    for t in les_linjer(f):
+        t2 = normaliser_sokjefragment(t)
+        if t2:
+            rå.append(t2)
+    return sorted(set(rå), key=len, reverse=True)
+
+
+def navn_oppfyller_krev_forkorting_mellomrom(navn: str, forkortar: list[str]) -> bool:
+    """
+    Dersom namnet inneheld forkortingar (t.d. BUL, UL) som delstreng, må førekomsten
+    ha mellomrom føre elles etter, elles ligg inni ein lengre godkjennd forkorting
+    (t.d. UL inni « BUL » når BUL ligg med mellomrom).
+    Gode søkje-ordlengder i GODE_TREFF_SLEPP_FORKORTINGKONTROLL slepp sjekk.
+    """
+    if not forkortar:
+        return True
+    n0 = navn.strip()
+    if not n0:
+        return False
+    nl = n0.lower()
+    if any(s in nl for s in GODE_TREFF_SLEPP_FORKORTINGKONTROLL):
+        return True
+
+    gode_spann: list[tuple[int, int]] = []
+    for f in forkortar:
+        if n0.casefold() == f.casefold():
+            gode_spann.append((0, len(n0)))
+    for f in forkortar:
+        for m in re.finditer(re.escape(f), n0, re.IGNORECASE):
+            s, e = m.start(), m.end()
+            if _mellomrom_fr_eller_etter(n0, s, e):
+                gode_spann.append((s, e))
+
+    def fullt_inn_i_lengre_god(s: int, e: int) -> bool:
+        for gs, ge in gode_spann:
+            if (ge - gs) > (e - s) and gs <= s and e <= ge:
+                return True
+        return False
+
+    for f in forkortar:
+        for m in re.finditer(re.escape(f), n0, re.IGNORECASE):
+            s, e = m.start(), m.end()
+            if n0.casefold() == f.casefold():
+                continue
+            if _mellomrom_fr_eller_etter(n0, s, e):
+                continue
+            if fullt_inn_i_lengre_god(s, e):
+                continue
+            return False
+    return True
+
+
+def brreg_enhet_har_norsk_tilhald(enhet: dict[str, Any]) -> bool:
+    """
+    Oppfyller «tilhøve i norsk kommune» eller «utsendings-/visings postnummer i norsk system»:
+    ser på Brreg sine felt forretningsadresse eller postadresse.
+
+    - Uttrykkelig landkode som ikkje er NO → godtek ikkje som norsk (unntak: tom tolka same som Norge).
+
+    True viss ein av:
+
+    - postnummer er fire tal ( norsk postnr-format, også Svalbard o.l. ),
+
+    - kommunenummer er innsett (tal, som Brreg bruker),
+
+    - kommune (namnet) er innsett.
+    """
+    a = enhet.get("forretningsadresse") or enhet.get("postadresse")
+    if not isinstance(a, dict):
+        return False
+    lk = str(a.get("landkode") or "").strip().upper()
+    if lk and lk != "NO":
+        return False
+
+    pn = str(a.get("postnummer") or "").strip().replace(" ", "").replace("\u00a0", "")
+    if re.fullmatch(r"\d{4}", pn):
+        return True
+
+    kraw = str(a.get("kommunenummer") or "").strip()
+    if kraw.isdigit():
+        return True
+
+    if str(a.get("kommune") or "").strip():
+        return True
+
+    return False
 
 
 def adresselinjer_frå_enhet(enhet: dict[str, Any]) -> dict[str, str]:
@@ -102,7 +237,85 @@ def hent_som(url: str, tidsavbrodt: int = 60) -> dict[str, Any]:
     return json.loads(rå.decode("utf-8"))
 
 
+def hent_tekst_frå_url(url: str, tidsavbrodt: int = 120) -> str:
+    svar = urlopen(
+        url,
+        timeout=tidsavbrodt,
+        context=trygg_nett.ssl_kontekst(),
+    )  # noqa: S310
+    return svar.read().decode("utf-8")
+
+
+def mengd_orgnr_frivillighetsregister(tidsavbrodt: int = 120) -> set[str]:
+    """Les totalbestand CSV frå Brreg sitt open frivillighetsregister-API (éi førespurnad)."""
+    tekst = hent_tekst_frå_url(FRIVILLIG_TOTALBESTAND_CSV, tidsavbrodt=tidsavbrodt)
+    rd = csv.DictReader(StringIO(tekst))
+    kol = "organisasjonsnummer"
+    if not rd.fieldnames or kol not in rd.fieldnames:
+        raise ValueError(f"Ventar kolonne «{kol}», fekk {rd.fieldnames!r}")
+    ut: set[str] = set()
+    for rad in rd:
+        o = str(rad.get(kol, "") or "").strip()
+        if o.isdigit() and len(o) <= 9:
+            ut.add(o.zfill(9))
+    return ut
+
+
+def normaliser_sokjefragment(tek: str) -> str:
+    """Striper, byter ut nbsp og vanlege «lure» bindestrekar slik at URL blir stø."""
+    t = tek.replace("\u00a0", " ").replace("\u2009", " ").replace("\u2007", " ")
+    t = t.replace("–", "-").replace("—", "-")
+    t = t.strip()
+    t = re.sub(r"\s+", " ", t)
+    return t
+
+
+def sokjefragment_kandidatar(tek: str) -> list[str]:
+    """
+    Dersom Brreg svarer 400 på navn= (visse bruk får feil for strengar med «… og»),
+    prøver me alternative utan «og»-ledd, men fortsatt som delstreng i org­namn.
+    """
+    f = normaliser_sokjefragment(tek)
+    if not f:
+        return []
+    ut: list[str] = [f]
+    h = re.sub(r"\s+og\s+", " ", f)
+    h = re.sub(r"\s+", " ", h).strip()
+    if h and h not in ut:
+        ut.append(h)
+    h2 = re.sub(r"\s+og\s*$", "", f).strip()
+    h2 = re.sub(r"\s+", " ", h2)
+    if h2 and h2 not in ut:
+        ut.append(h2)
+    h3 = re.sub(r" og", "", f)
+    h3 = re.sub(r"\s+", " ", h3).strip()
+    if h3 and h3 not in ut:
+        ut.append(h3)
+    return ut
+
+
 def sider_for_sokjefragment(
+    fragment: str,
+    antall_pr_side: int,
+    paus_mellom_sider: float,
+) -> list[dict[str, Any]]:
+    siste: HTTPError | None = None
+    for f in sokjefragment_kandidatar(fragment):
+        try:
+            return _hugsider_for_ett_sokjefragment(
+                f, antall_pr_side, paus_mellom_sider
+            )
+        except HTTPError as e:
+            if e.code == 400:
+                siste = e
+                continue
+            raise
+    if siste is not None:
+        raise siste
+    return []
+
+
+def _hugsider_for_ett_sokjefragment(
     fragment: str,
     antall_pr_side: int,
     paus_mellom_sider: float,
@@ -218,6 +431,30 @@ def tolk_valet() -> argparse.Namespace:
         dest="hald_fram_ved_sokjefeil",
         help="Hopp over søkje-fragment som feilar (loggar åtvaring) i staden for stopp",
     )
+    t.add_argument(
+        "--utan-forkorting-mellomrom",
+        action="store_true",
+        dest="utan_forkorting_mellomrom",
+        help="Ikkje bruk forkorting_krev_mellomrom.txt (i tilfelle samanlikning/eld data)",
+    )
+    t.add_argument(
+        "--krev-frivillighetsregister",
+        action="store_true",
+        dest="krev_frivillighetsregister",
+        help=(
+            "Berre lag (rader) med orgnr registrert i "
+            "Brreg sitt frivillighetsregister (éi nedlasting av totalbestand-CSV)"
+        ),
+    )
+    t.add_argument(
+        "--krev-norsk-tilhald",
+        action="store_true",
+        dest="krev_norsk_tilhald",
+        help=(
+            "Berre når Brreg-vis adresse tyder på norsk tilhald: "
+            "norsk folkeregisterpostnr (fire tal) eller kommunenummer/kommune (sjå dokumentasjon i skriptet)"
+        ),
+    )
     return t.parse_args()
 
 
@@ -234,6 +471,18 @@ def hovud() -> int:
     if val.maks_sokjefragment is not None:
         sokjefragment = sokjefragment[: val.maks_sokjefragment]
     utelatingar = last_utelatingsfrasar(oppsettmappe)
+    forkort_mellom: list[str] = []
+    if not val.utan_forkorting_mellomrom:
+        forkort_mellom = last_forkorting_krev_mellomrom(oppsettmappe)
+    friv_org: set[str] | None = None
+    if val.krev_frivillighetsregister:
+        try:
+            print("Hentar frivillighetsregister totalbestand frå Brreg …", file=sys.stderr)
+            friv_org = mengd_orgnr_frivillighetsregister()
+        except (HTTPError, URLError, OSError, ValueError) as e:
+            print(f"Kunne ikkje lesa frivillighetsregister: {e}", file=sys.stderr)
+            return 1
+        print(f"  → {len(friv_org)} organisasjonar i mengda", file=sys.stderr)
     dagsdato = date.today().isoformat()
     fylkeskart: dict[str, str] | None = None
     if not val.utan_fylke:
@@ -263,10 +512,20 @@ def hovud() -> int:
             navn = (e.get("navn") or "").strip()
             if not navn or i_utelatingslista(navn, utelatingar):
                 continue
-            org = str(e.get("organisasjonsnummer") or "")
-            if not org:
+            if not navn_oppfyller_krev_forkorting_mellomrom(navn, forkort_mellom):
                 continue
-            per_org[org] = registeroppføring_frå_enhet(e, dagsdato, fylkeskart)
+            org = str(e.get("organisasjonsnummer") or "").strip()
+            if not org or not org.isdigit():
+                continue
+            org9 = org.zfill(9)
+            if friv_org is not None and org9 not in friv_org:
+                continue
+            if val.krev_norsk_tilhald and not brreg_enhet_har_norsk_tilhald(e):
+                continue
+            rad = registeroppføring_frå_enhet(e, dagsdato, fylkeskart)
+            rad["orgnr"] = org9
+            rad["kjelde_url"] = BRREG_OPPSLAG_MAL.format(orgnr=org9)
+            per_org[org9] = rad
 
     utdatafilsti.parent.mkdir(parents=True, exist_ok=True)
     kolonnenamn = [
