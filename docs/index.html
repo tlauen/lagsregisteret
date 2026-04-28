@@ -43,14 +43,44 @@
         font-size: 0.95rem;
         margin: 0 0 1.25rem 0;
       }
-      .verkty {
+      .liste-val {
         display: flex;
         flex-wrap: wrap;
-        gap: 0.75rem 1.25rem;
         align-items: center;
-        margin-bottom: 1rem;
+        gap: 0.35rem 0.65rem;
+        margin: 0 0 1rem 0;
+      }
+      .liste-val-etikett {
         color: var(--dempa);
         font-size: 0.9rem;
+        margin-right: 0.15rem;
+      }
+      .liste-val-knappar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.35rem;
+      }
+      .liste-val .liste-knapp {
+        background: var(--kort);
+        color: var(--tekst);
+        border: 1px solid var(--ramme);
+        border-radius: 8px;
+        padding: 0.42rem 0.95rem;
+        font: inherit;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: background 0.15s ease, border-color 0.15s ease,
+          color 0.15s ease;
+      }
+      .liste-val .liste-knapp:hover {
+        background: #252d36;
+        border-color: var(--lenkje);
+      }
+      .liste-val .liste-knapp.liste-knapp-valt,
+      .liste-val .liste-knapp[aria-pressed="true"] {
+        border-color: #388bfd;
+        box-shadow: 0 0 0 1px rgba(88, 166, 255, 0.35);
+        background: #252d36;
       }
       .verkty label {
         display: flex;
@@ -388,6 +418,43 @@
           >Raud tone</strong> for <code>utmeld</code> — eller
         <code>nedlagt</code>. Utmelding gjev føretré over grønt.
       </p>
+      <div
+        id="liste_val_krins"
+        class="liste-val"
+        role="toolbar"
+        aria-label="Registerliste — vis berre lag som høyrer til vald søkjekategori"
+      >
+        <span class="liste-val-etikett" id="liste_val_etikett">Registerliste</span>
+        <div id="liste_val_knappar" class="liste-val-knappar">
+          <button
+            type="button"
+            class="liste-knapp liste-knapp-valt"
+            data-liste="ungdomslag"
+            aria-pressed="true"
+            title="Søkjefilter frå sokjefragment.txt (t.d. ungdomslag, BUL, …)"
+          >
+            Ungdomslag
+          </button>
+          <button
+            type="button"
+            class="liste-knapp"
+            data-liste="grendelag"
+            aria-pressed="false"
+            title="Lag funne med søk frå oppsett/sokjefragment_grende.txt"
+          >
+            Grendelag
+          </button>
+          <button
+            type="button"
+            class="liste-knapp"
+            data-liste="bygdelag"
+            aria-pressed="false"
+            title="Lag funne med søk frå oppsett/sokjefragment_bygd.txt"
+          >
+            Bygdelag
+          </button>
+        </div>
+      </div>
       <div id="feil" class="feil" style="display: none" hidden></div>
       <div class="verkty">
         <label for="fylke_val">
@@ -504,6 +571,7 @@
           { nøkk: "lagsnavn", titt: "Lag" },
           { nøkk: "merknad_hand", titt: "Merknad" },
           { nøkk: "orgnr", titt: "Org.nr" },
+          { nøkk: "liste", titt: "Liste" },
           { nøkk: "kommune", titt: "Kommune" },
           { nøkk: "fylke", titt: "Fylke" },
           { nøkk: "adresse", titt: "Adresse" },
@@ -527,6 +595,68 @@
         var nulOrgnFraListe = null;
         var LAGR_API_LAGRING = "lagreg_api_grunnurl";
         var LAGREG_MANUELL_LOKAL = "lagreg_manuell_status_lokal";
+        var LAGREG_VALGT_LISTE = "lagreg_valgt_liste";
+
+        function fåValgtListe() {
+          var grp = document.getElementById("liste_val_knappar");
+          if (!grp) return "ungdomslag";
+          var valt = grp.querySelector('.liste-knapp[aria-pressed="true"]');
+          var id = valt && valt.getAttribute("data-liste");
+          if (
+            id === "ungdomslag" ||
+            id === "grendelag" ||
+            id === "bygdelag"
+          ) {
+            return id;
+          }
+          return "ungdomslag";
+        }
+
+        function radIHøverRegisterliste(r, listeId) {
+          var raw = sikreTekst(r.liste).trim().toLowerCase();
+          if (!raw) return listeId === "ungdomslag";
+          var taggar = raw.split(",").map(function (x) {
+            return x.trim().toLowerCase();
+          }).filter(Boolean);
+          var lid = listeId.toLowerCase();
+          return taggar.indexOf(lid) !== -1;
+        }
+
+        function settListeKnappSyn(listeId) {
+          var grp = document.getElementById("liste_val_knappar");
+          if (!grp) return;
+          var knappa = grp.querySelectorAll(".liste-knapp");
+          for (var ki = 0; ki < knappa.length; ki++) {
+            var b = knappa[ki];
+            var er =
+              sikreTekst(b.getAttribute("data-liste")).toLowerCase() ===
+              listeId.toLowerCase();
+            b.setAttribute("aria-pressed", er ? "true" : "false");
+            if (er) b.classList.add("liste-knapp-valt");
+            else b.classList.remove("liste-knapp-valt");
+          }
+        }
+
+        function settValgtRegisterliste(listeId, berreSyn) {
+          if (
+            listeId !== "ungdomslag" &&
+            listeId !== "grendelag" &&
+            listeId !== "bygdelag"
+          ) {
+            listeId = "ungdomslag";
+          }
+          settListeKnappSyn(listeId);
+          try {
+            localStorage.setItem(LAGREG_VALGT_LISTE, listeId);
+          } catch (e) {
+            /* gjev opp */
+          }
+          if (!berreSyn) {
+            nulleGridFleirSyn();
+            byggFylkeVal();
+            teiknaRegister();
+          }
+        }
 
         function lesLokalManuellKartRå() {
           try {
@@ -979,6 +1109,10 @@
               if (k.nøkk === "i_hovudlista") return hovudCelle(r);
               if (k.nøkk === "nettstad" || k.nøkk === "kjelde_url")
                 return lenkjeCelle(r[k.nøkk]);
+              if (k.nøkk === "liste") {
+                var lz = sikreTekst(r.liste).trim();
+                return lz ? lz.replace(/,/g, ", ") : "—";
+              }
               return sikreTekst(r[k.nøkk]);
             });
           });
@@ -1035,6 +1169,10 @@
               });
             }
           }
+          var listeVal = fåValgtListe();
+          d = d.filter(function (r) {
+            return radIHøverRegisterliste(r, listeVal);
+          });
           return d;
         }
 
@@ -1450,7 +1588,23 @@
                 return;
               }
               heileSett = slaaSamanStatus(felta, statusKart, orgnrFraNuliste);
+              heileSett.forEach(function (r) {
+                var lz = sikreTekst(r.liste).trim();
+                if (!lz) r.liste = "ungdomslag";
+              });
               manuellGrunnKart = JSON.parse(JSON.stringify(statusKart));
+              try {
+                var salvListe = localStorage.getItem(LAGREG_VALGT_LISTE);
+                if (
+                  salvListe === "ungdomslag" ||
+                  salvListe === "grendelag" ||
+                  salvListe === "bygdelag"
+                ) {
+                  settValgtRegisterliste(salvListe, true);
+                }
+              } catch (e) {
+                /* gjev opp */
+              }
               try {
                 var apiL = localStorage.getItem(LAGR_API_LAGRING);
                 var iael = document.getElementById("inline_api");
@@ -1474,6 +1628,26 @@
                   nulleGridFleirSyn();
                   teiknaRegister();
                 });
+              var lk = document.getElementById("liste_val_knappar");
+              if (lk) {
+                lk.addEventListener("click", function (ev) {
+                  var tg =
+                    ev.target && ev.target.closest
+                      ? ev.target.closest("[data-liste]")
+                      : null;
+                  if (!tg) return;
+                  var nid = tg.getAttribute("data-liste");
+                  if (
+                    nid !== "ungdomslag" &&
+                    nid !== "grendelag" &&
+                    nid !== "bygdelag"
+                  ) {
+                    return;
+                  }
+                  if (nid === fåValgtListe()) return;
+                  settValgtRegisterliste(nid, false);
+                });
+              }
               document
                 .getElementById("vis_skjul")
                 .addEventListener("change", function () {

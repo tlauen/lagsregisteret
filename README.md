@@ -9,6 +9,8 @@ Oversikt over frilynde ungdomslag og liknande lag i Noreg, bygd på opne kjelder
 | Del | Innhald |
 |-----|---------|
 | `oppsett/sokjefragment.txt` | Eitt søkjeord/fragment per line til `.../enheter?navn=` i [enhets-API-et](https://data.brreg.no/enhetsregisteret/api/dokumentasjon) — her kan du skru på breidda. |
+| `oppsett/sokjefragment_bygd.txt` | Bygd-/bygde-fragment (same format); skriptet les dette **etter** `sokjefragment.txt`. Manglar fila → hoppar over. |
+| `oppsett/sokjefragment_grende.txt` | Grende-fragment; lesast **til slutt** (etter bygd-fila). Manglar fila → hoppar over. |
 | `oppsett/utelatingsfrasar_i_navn.txt` | Dersom minst **éin** frase (låge bokstavar) ligg inne i organisasjonsnamnet, blir rada utelaten. |
 | `oppsett/v2_plan.txt` | Utviding i v2 (grende-, hus-typar m.m.) — ikkje kopla til kode enno. |
 | `data/nu_saman_med_nu_no.json` | `orgnr` for **grøn rad** (heuristisk samanlikning med [nu.no/lokallag](https://www.ungdomslag.no/lokallag) + manuell `nu: medlem`) — oppdater med `skript/jamfoer_nu_lokallag.py --skriv` |
@@ -23,9 +25,9 @@ Oversikt over frilynde ungdomslag og liknande lag i Noreg, bygd på opne kjelder
 | `vercel.json` | Tidsgrense for Vercel-funksjon. |
 | `package.json` | Nødvendig for Vercel (privat, ingen ekstra pakkar). |
 | `docs/data/nu_saman_med_nu_no.json` | Kopi av `data/…` for nett (grøn markering) — fylgjer når `publiser_data_til_nettside.py` køyrst. |
-| `docs/data/lag.csv` | Kopi av siste Brreg-register (ferdig innhenta). |
+| `docs/data/lag.csv` | Kopi av siste Brreg-register; **`liste`**-kolonne (`ungdomslag`/`grendelag`/`bygdelag`, kommasepara om fleire treff); nettsida har tre knappar etter vald kategori. |
 | `docs/data/manuell_status.json` | Kopi av manuell status (for nett). |
-| `skript/innhent_lag_frå_brreg.py` | Les treff, slår saman på orgnr, skriv CSV med `kjelde_url` til [oppslag](https://data.brreg.no/enhetsregisteret/oppslag/enheter/) hos Brreg. |
+| `skript/innhent_lag_frå_brreg.py` | Les treff per søkjefilstype, slår saman på orgnr, skriv **`liste`** + `kjelde_url` til Brreg‑oppslag. |
 | `skript/publiser_data_til_nettside.py` | Kopierer `utdata/…csv` → `docs/data/lag.csv`, manuell status og `data/nu_saman_*.json` / `nu_lokallag_manglar_*.json` → `docs/data/` når filene finst. |
 | `skript/sett_lag_status.py` | CLI: oppdater éi orgnr-oppføring i `data/manuell_status.json`. |
 | `skript/bygg_kommune_til_fylke.py` | OPPDATER: last ned siste kommune → fylke frå SSB (bruk sjeldan). |

@@ -9,6 +9,7 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+from collections import defaultdict
 from datetime import date
 import re
 import sys
@@ -44,6 +45,38 @@ def les_linjer(fil: Path) -> list[str]:
     return ut
 
 
+# Kvar søkjefil påverkar kva verdi som vert lagt inn i CSV-kolonnen «liste», saman med komma om fleire treff.
+LISTE_UNGDOMSLAG = "ungdomslag"
+LISTE_GRENDELAG = "grendelag"
+LISTE_BYGDELAG = "bygdelag"
+LISTE_SORTERING: tuple[str, ...] = (LISTE_UNGDOMSLAG, LISTE_GRENDELAG, LISTE_BYGDELAG)
+SOKJE_FIL_MED_LISTE_ID: tuple[tuple[str, str], ...] = (
+    ("sokjefragment.txt", LISTE_UNGDOMSLAG),
+    ("sokjefragment_bygd.txt", LISTE_BYGDELAG),
+    ("sokjefragment_grende.txt", LISTE_GRENDELAG),
+)
+
+
+def sokjefragment_med_liste(oppsettmappe: Path) -> list[tuple[str, str]]:
+    """Fragment frå sokjefragment.txt (+ valfrie bygd/grende-filer) med liste-id for CSV og nett."""
+    ut: list[tuple[str, str]] = []
+    for filnamn, liste_id in SOKJE_FIL_MED_LISTE_ID:
+        sti = oppsettmappe / filnamn
+        if filnamn == "sokjefragment.txt":
+            for frag in les_linjer(sti):
+                ut.append((frag, liste_id))
+        elif sti.is_file():
+            for frag in les_linjer(sti):
+                ut.append((frag, liste_id))
+    return ut
+
+
+def slaa_saman_liste_tags(tag_mengd: set[str]) -> str:
+    """Kommaseparerte taggar i fast rekkje."""
+    prio = {n: i for i, n in enumerate(LISTE_SORTERING)}
+    return ",".join(sorted(tag_mengd, key=lambda x: (prio.get(x, 99), x)))
+
+
 def last_utelatingsfrasar(oppsettmappe: Path) -> list[str]:
     f = oppsettmappe / "utelatingsfrasar_i_navn.txt"
     if not f.exists():
@@ -70,6 +103,7 @@ GODE_TREFF_SLEPP_FORKORTINGKONTROLL: tuple[str, ...] = (
     "bygde-",
     "bygdelag",
     "grende",
+    "grende-",
     "folkedans",
     "frikyrk",
     "friidrett",
@@ -392,7 +426,10 @@ def tolk_valet() -> argparse.Namespace:
         "--oppsettmappe",
         type=Path,
         default=None,
-        help="Mappa med sokjefragment.txt m.m. (normalt <repo>/oppsett)",
+        help=(
+            "Mappa med sokjefragment.txt og valfritt sokjefragment_bygd.txt/"
+            "sokjefragment_grende.txt (normalt <repo>/oppsett)"
+        ),
     )
     t.add_argument(
         "-u",
@@ -468,9 +505,9 @@ def hovud() -> int:
     if not sokjefil.is_file():
         print(f"Finn ikkje {sokjefil}", file=sys.stderr)
         return 1
-    sokjefragment = les_linjer(sokjefil)
+    fragment_med_liste = sokjefragment_med_liste(oppsettmappe)
     if val.maks_sokjefragment is not None:
-        sokjefragment = sokjefragment[: val.maks_sokjefragment]
+        fragment_med_liste = fragment_med_liste[: val.maks_sokjefragment]
     utelatingar = last_utelatingsfrasar(oppsettmappe)
     forkort_mellom: list[str] = []
     if not val.utan_forkorting_mellomrom:
@@ -495,8 +532,9 @@ def hovud() -> int:
                 file=sys.stderr,
             )
     per_org: dict[str, dict[str, str]] = {}
+    lister_per_org: defaultdict[str, set[str]] = defaultdict(set)
 
-    for fragment in sokjefragment:
+    for fragment, liste_id in fragment_med_liste:
         try:
             treff = sider_for_sokjefragment(
                 fragment,
@@ -523,11 +561,16 @@ def hovud() -> int:
                 continue
             if val.krev_norsk_tilhald and not brreg_enhet_har_norsk_tilhald(e):
                 continue
-            rad = registeroppføring_frå_enhet(e, dagsdato, fylkeskart)
-            rad["orgnr"] = org9
-            rad["kjelde_url"] = BRREG_OPPSLAG_MAL.format(orgnr=org9)
-            per_org[org9] = rad
+            if org9 not in per_org:
+                rad = registeroppføring_frå_enhet(e, dagsdato, fylkeskart)
+                rad["orgnr"] = org9
+                rad["kjelde_url"] = BRREG_OPPSLAG_MAL.format(orgnr=org9)
+                per_org[org9] = rad
+            lister_per_org[org9].add(liste_id)
 
+    for org9, rad in per_org.items():
+        taggar = lister_per_org.get(org9)
+        rad["liste"] = slaa_saman_liste_tags(taggar) if taggar else LISTE_UNGDOMSLAG
     utdatafilsti.parent.mkdir(parents=True, exist_ok=True)
     kolonnenamn = [
         "lagsnavn",
@@ -540,6 +583,7 @@ def hovud() -> int:
         "nettstad",
         "kjelde_type",
         "kjelde_url",
+        "liste",
         "henta_dato",
     ]
     sortert = sorted(

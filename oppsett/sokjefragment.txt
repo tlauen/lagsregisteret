@@ -10,9 +10,7 @@ ungdomslag
 ungdomsforening
 # «ungdoms-» treff t.d. «Folldal ungdoms- og ungdomsforening» (heile «ungdoms- og» feila HTTP 400 hos nokon Brreg-klientar)
 ungdoms-
-bygde- ungdoms
-# «bygde-» + «grende»/andre – «bygde- og» gav 400 hos nokon
-bygde-
+# Bygd-/grende-fragment ligg i `sokjefragment_bygd.txt` og `sokjefragment_grende.txt`
 # Forkortingar / alternative skrivemåtar (BUL, UL, u.l. …)
 BUL
 bondeungdomslag
@@ -23,5 +21,3 @@ U.L
 U.L.
 UL
 bondeungdom
-bygdelag
-grende
