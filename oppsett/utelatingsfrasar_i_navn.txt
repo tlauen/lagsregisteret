@@ -4,4 +4,9 @@
 bygdeungdomslag
 bondelag
 bygdekvinnelag
+kor
+korps
+klubb
+4H
+
 
