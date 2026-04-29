@@ -1,0 +1,1354 @@
+{
+  "kjelde_csv": "docs/data/lag.csv",
+  "bekrefta_ul_ungdoms_par_antal": 1,
+  "bekrefta_ul_ungdoms_par_rader": [
+    {
+      "orgsnr_rad_a": "912593231",
+      "orgsnr_rad_b": "946101273",
+      "lagsnavn_a": "DAGALI UNGDOMSLAG",
+      "lagsnavn_b": "Dagali Ul",
+      "kommune": "HOL",
+      "fylke": "Buskerud",
+      "likskap_verdi_namn": 0.6923,
+      "nu_mr_overordna_a": null,
+      "nu_mr_overordna_b": "Direkteinnmeldte lag",
+      "nu_mr_status_syn_a": null,
+      "nu_mr_status_syn_b": "Medlem",
+      "forslag_fyll": "Kopier NU‑felt frå orgsnr_rad_b til a. { frå_orgnr: «946101273», til_orgnr: «912593231» }"
+    }
+  ],
+  "usikre_likande_naman_antal": 133,
+  "usikre_likande_rader": [
+    {
+      "orgsnr_rad_a": "927299887",
+      "orgsnr_rad_b": "917873119",
+      "lagsnavn_a": "BYGLAND GRENDELAG",
+      "lagsnavn_b": "BYGLANDSFJORD GRENDELAG",
+      "kommune": "BYGLAND",
+      "fylke": "Agder",
+      "likskap_verdi_namn": 0.85,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "927561069",
+      "orgsnr_rad_b": "917067783",
+      "lagsnavn_a": "FEDA GRENDEUTVALG",
+      "lagsnavn_b": "ØYE GRENDEUTVALG",
+      "kommune": "KVINESDAL",
+      "fylke": "Agder",
+      "likskap_verdi_namn": 0.8485,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "924755571",
+      "orgsnr_rad_b": "997505654",
+      "lagsnavn_a": "ZCENESTREKK BARNE- OG UNGDOMSTEATER",
+      "lagsnavn_b": "ZEKKEN BARNE- OG UNGDOMSTEATER",
+      "kommune": "ASKER",
+      "fylke": "Akershus",
+      "likskap_verdi_namn": 0.8571,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "987209046",
+      "orgsnr_rad_b": "984024193",
+      "lagsnavn_a": "LIONS CLUB ULLENSAKER",
+      "lagsnavn_b": "LIONS CLUB ULLENSAKER KLØFTA",
+      "kommune": "ULLENSAKER",
+      "fylke": "Akershus",
+      "likskap_verdi_namn": 0.8571,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "992452854",
+      "orgsnr_rad_b": "921411677",
+      "lagsnavn_a": "ORMÅSEN GRENDEUTVALG",
+      "lagsnavn_b": "RØREN GRENDEUTVALG",
+      "kommune": "ØVRE EIKER",
+      "fylke": "Buskerud",
+      "likskap_verdi_namn": 0.8421,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "993753904",
+      "orgsnr_rad_b": "997173694",
+      "lagsnavn_a": "MORK FRILYNDE UNGDOMSLAG",
+      "lagsnavn_b": "VOLDA FRILYNDE UNGDOMSLAG",
+      "kommune": "VOLDA",
+      "fylke": "Møre og Romsdal",
+      "likskap_verdi_namn": 0.8571,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "918101888",
+      "orgsnr_rad_b": "997173694",
+      "lagsnavn_a": "VIKEBYGDA FRILYNDE UNGDOMSLAG",
+      "lagsnavn_b": "VOLDA FRILYNDE UNGDOMSLAG",
+      "kommune": "VOLDA",
+      "fylke": "Møre og Romsdal",
+      "likskap_verdi_namn": 0.8519,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "917860246",
+      "orgsnr_rad_b": "932379031",
+      "lagsnavn_a": "BODØ OG OMEGN FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "lagsnavn_b": "LOFOTEN FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "BODØ",
+      "fylke": "Nordland - Nordlánnda",
+      "likskap_verdi_namn": 0.8537,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "934163451",
+      "orgsnr_rad_b": "994546546",
+      "lagsnavn_a": "ALVENES GRENDELAG",
+      "lagsnavn_b": "VINKENES GRENDELAG",
+      "kommune": "STEIGEN",
+      "fylke": "Nordland - Nordlánnda",
+      "likskap_verdi_namn": 0.8571,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "985541221",
+      "orgsnr_rad_b": "993745936",
+      "lagsnavn_a": "ALSTAD OG OMEGN GRENDELAG",
+      "lagsnavn_b": "VESTRESAND OG OMEGN GRENDELAG",
+      "kommune": "VESTVÅGØY",
+      "fylke": "Nordland - Nordlánnda",
+      "likskap_verdi_namn": 0.8519,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "814262812",
+      "orgsnr_rad_b": "920442765",
+      "lagsnavn_a": "AGDER FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "lagsnavn_b": "ALTA OG OMEGN FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.85,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "814262812",
+      "orgsnr_rad_b": "995499495",
+      "lagsnavn_a": "AGDER FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "lagsnavn_b": "MIDT-TROMS FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8571,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "814262812",
+      "orgsnr_rad_b": "989386999",
+      "lagsnavn_a": "AGDER FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "lagsnavn_b": "OSLO VEST FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8421,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "814262812",
+      "orgsnr_rad_b": "922145431",
+      "lagsnavn_a": "AGDER FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "lagsnavn_b": "SUNNMØRE FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8533,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "814262812",
+      "orgsnr_rad_b": "992317124",
+      "lagsnavn_a": "AGDER FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "lagsnavn_b": "VESTFOLD FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8533,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "932712520",
+      "orgsnr_rad_b": "916379552",
+      "lagsnavn_a": "AKERSHUS FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "lagsnavn_b": "DRAMMEN FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8571,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "932712520",
+      "orgsnr_rad_b": "987780681",
+      "lagsnavn_a": "AKERSHUS FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "lagsnavn_b": "OSLO ØST FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8462,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "932712520",
+      "orgsnr_rad_b": "932814552",
+      "lagsnavn_a": "AKERSHUS FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "lagsnavn_b": "TELEMARK FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8462,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "932712520",
+      "orgsnr_rad_b": "992317124",
+      "lagsnavn_a": "AKERSHUS FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "lagsnavn_b": "VESTFOLD FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8462,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "920442765",
+      "orgsnr_rad_b": "916379552",
+      "lagsnavn_a": "ALTA OG OMEGN FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "lagsnavn_b": "DRAMMEN FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8537,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "920442765",
+      "orgsnr_rad_b": "918372717",
+      "lagsnavn_a": "ALTA OG OMEGN FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "lagsnavn_b": "HAMMERFEST OG OMEGN FREMSKRITTSPARTIETS UNGDOM",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8444,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "920442765",
+      "orgsnr_rad_b": "933276988",
+      "lagsnavn_a": "ALTA OG OMEGN FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "lagsnavn_b": "TROMS FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.85,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "914962145",
+      "orgsnr_rad_b": "932969076",
+      "lagsnavn_a": "ARENDAL OG OMEGN FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "lagsnavn_b": "KONGSBERG, SIGDAL OG OMEGN FREMMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8462,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "994854313",
+      "orgsnr_rad_b": "932794640",
+      "lagsnavn_a": "ASKER FREMSKRITTSPARTIETS UNGDOM",
+      "lagsnavn_b": "BUSKERUD FREMSKRITTSPARTIET UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8571,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "994854313",
+      "orgsnr_rad_b": "934971612",
+      "lagsnavn_a": "ASKER FREMSKRITTSPARTIETS UNGDOM",
+      "lagsnavn_b": "NARVIK FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8406,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "932794640",
+      "orgsnr_rad_b": "974262428",
+      "lagsnavn_a": "BUSKERUD FREMSKRITTSPARTIET UNGDOM (FPU)",
+      "lagsnavn_b": "FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8529,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "932794640",
+      "orgsnr_rad_b": "981527755",
+      "lagsnavn_a": "BUSKERUD FREMSKRITTSPARTIET UNGDOM (FPU)",
+      "lagsnavn_b": "OSLO FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8493,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "932794640",
+      "orgsnr_rad_b": "992625880",
+      "lagsnavn_a": "BUSKERUD FREMSKRITTSPARTIET UNGDOM (FPU)",
+      "lagsnavn_b": "STAVANGER FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8462,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "932794640",
+      "orgsnr_rad_b": "932779250",
+      "lagsnavn_a": "BUSKERUD FREMSKRITTSPARTIET UNGDOM (FPU)",
+      "lagsnavn_b": "ØSTFOLD FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8421,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "893793992",
+      "orgsnr_rad_b": "995499495",
+      "lagsnavn_a": "BÆRUM FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "lagsnavn_b": "MIDT-TROMS FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8571,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "893793992",
+      "orgsnr_rad_b": "994665596",
+      "lagsnavn_a": "BÆRUM FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "lagsnavn_b": "NORDLAND FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8533,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "893793992",
+      "orgsnr_rad_b": "992625880",
+      "lagsnavn_a": "BÆRUM FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "lagsnavn_b": "STAVANGER FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8421,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "893793992",
+      "orgsnr_rad_b": "922145431",
+      "lagsnavn_a": "BÆRUM FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "lagsnavn_b": "SUNNMØRE FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8533,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "893793992",
+      "orgsnr_rad_b": "932814552",
+      "lagsnavn_a": "BÆRUM FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "lagsnavn_b": "TELEMARK FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8533,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "893793992",
+      "orgsnr_rad_b": "920398766",
+      "lagsnavn_a": "BÆRUM FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "lagsnavn_b": "TRØNDELAG FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8421,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "916379552",
+      "orgsnr_rad_b": "925504718",
+      "lagsnavn_a": "DRAMMEN FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "lagsnavn_b": "LISTER FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8533,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "916379552",
+      "orgsnr_rad_b": "995324571",
+      "lagsnavn_a": "DRAMMEN FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "lagsnavn_b": "MOSS OG OMEGN FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8537,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "916379552",
+      "orgsnr_rad_b": "934971612",
+      "lagsnavn_a": "DRAMMEN FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "lagsnavn_b": "NARVIK FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8533,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "916379552",
+      "orgsnr_rad_b": "927790149",
+      "lagsnavn_a": "DRAMMEN FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "lagsnavn_b": "NEDRE ROMERIKE FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8434,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "916379552",
+      "orgsnr_rad_b": "981527755",
+      "lagsnavn_a": "DRAMMEN FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "lagsnavn_b": "OSLO FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8493,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "916379552",
+      "orgsnr_rad_b": "922145431",
+      "lagsnavn_a": "DRAMMEN FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "lagsnavn_b": "SUNNMØRE FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8571,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "916379552",
+      "orgsnr_rad_b": "992604409",
+      "lagsnavn_a": "DRAMMEN FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "lagsnavn_b": "TRONDHEIM FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8462,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "916379552",
+      "orgsnr_rad_b": "920398766",
+      "lagsnavn_a": "DRAMMEN FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "lagsnavn_b": "TRØNDELAG FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8462,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "916379552",
+      "orgsnr_rad_b": "932779250",
+      "lagsnavn_a": "DRAMMEN FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "lagsnavn_b": "ØSTFOLD FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8421,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "974262428",
+      "orgsnr_rad_b": "926707728",
+      "lagsnavn_a": "FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "lagsnavn_b": "HALLINGDAL FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8451,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "974262428",
+      "orgsnr_rad_b": "934979311",
+      "lagsnavn_a": "FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "lagsnavn_b": "HELGELAND FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8571,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "974262428",
+      "orgsnr_rad_b": "993131792",
+      "lagsnavn_a": "FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "lagsnavn_b": "INNLANDET FREMSKRITTSPARTIET UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8406,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "974262428",
+      "orgsnr_rad_b": "995499495",
+      "lagsnavn_a": "FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "lagsnavn_b": "MIDT-TROMS FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8451,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "974262428",
+      "orgsnr_rad_b": "989386999",
+      "lagsnavn_a": "FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "lagsnavn_b": "OSLO VEST FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8571,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "974262428",
+      "orgsnr_rad_b": "992625880",
+      "lagsnavn_a": "FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "lagsnavn_b": "STAVANGER FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8571,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "974262428",
+      "orgsnr_rad_b": "992604409",
+      "lagsnavn_a": "FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "lagsnavn_b": "TRONDHEIM FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8571,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "974262428",
+      "orgsnr_rad_b": "920398766",
+      "lagsnavn_a": "FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "lagsnavn_b": "TRØNDELAG FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8571,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "926707728",
+      "orgsnr_rad_b": "925504718",
+      "lagsnavn_a": "HALLINGDAL FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "lagsnavn_b": "LISTER FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8462,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "926707728",
+      "orgsnr_rad_b": "934971612",
+      "lagsnavn_a": "HALLINGDAL FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "lagsnavn_b": "NARVIK FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8462,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "926707728",
+      "orgsnr_rad_b": "994665596",
+      "lagsnavn_a": "HALLINGDAL FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "lagsnavn_b": "NORDLAND FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.85,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "926707728",
+      "orgsnr_rad_b": "981527755",
+      "lagsnavn_a": "HALLINGDAL FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "lagsnavn_b": "OSLO FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8421,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "926707728",
+      "orgsnr_rad_b": "989977601",
+      "lagsnavn_a": "HALLINGDAL FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "lagsnavn_b": "VESTLAND FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.85,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "918372717",
+      "orgsnr_rad_b": "995324571",
+      "lagsnavn_a": "HAMMERFEST OG OMEGN FREMSKRITTSPARTIETS UNGDOM",
+      "lagsnavn_b": "MOSS OG OMEGN FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8444,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "997476859",
+      "orgsnr_rad_b": "924436492",
+      "lagsnavn_a": "HARSTAD OG OMEGN FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "lagsnavn_b": "TROMSØ OG OMEGN FREMSKRITTSPARTIETS UNGDOM",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8539,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "934979311",
+      "orgsnr_rad_b": "931006606",
+      "lagsnavn_a": "HELGELAND FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "lagsnavn_b": "LIER FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8533,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "934979311",
+      "orgsnr_rad_b": "981527755",
+      "lagsnavn_a": "HELGELAND FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "lagsnavn_b": "OSLO FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8533,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "934979311",
+      "orgsnr_rad_b": "920398766",
+      "lagsnavn_a": "HELGELAND FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "lagsnavn_b": "TRØNDELAG FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.85,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "934979311",
+      "orgsnr_rad_b": "932779250",
+      "lagsnavn_a": "HELGELAND FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "lagsnavn_b": "ØSTFOLD FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8462,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "993131792",
+      "orgsnr_rad_b": "992017104",
+      "lagsnavn_a": "INNLANDET FREMSKRITTSPARTIET UNGDOM (FPU)",
+      "lagsnavn_b": "KRISTIANSAND FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8537,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "993131792",
+      "orgsnr_rad_b": "925504718",
+      "lagsnavn_a": "INNLANDET FREMSKRITTSPARTIET UNGDOM (FPU)",
+      "lagsnavn_b": "LISTER FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8421,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "993131792",
+      "orgsnr_rad_b": "922145431",
+      "lagsnavn_a": "INNLANDET FREMSKRITTSPARTIET UNGDOM (FPU)",
+      "lagsnavn_b": "SUNNMØRE FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8462,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "933903702",
+      "orgsnr_rad_b": "933438317",
+      "lagsnavn_a": "IRN UNGDOM",
+      "lagsnavn_b": "KI UNGDOM",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8421,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "933438317",
+      "orgsnr_rad_b": "987184086",
+      "lagsnavn_a": "KI UNGDOM",
+      "lagsnavn_b": "SKEIV UNGDOM",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8571,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "932969076",
+      "orgsnr_rad_b": "995324571",
+      "lagsnavn_a": "KONGSBERG, SIGDAL OG OMEGN FREMMSKRITTSPARTIETS UNGDOM (FPU)",
+      "lagsnavn_b": "MOSS OG OMEGN FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8515,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "992017104",
+      "orgsnr_rad_b": "925504718",
+      "lagsnavn_a": "KRISTIANSAND FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "lagsnavn_b": "LISTER FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.85,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "992017104",
+      "orgsnr_rad_b": "994665596",
+      "lagsnavn_a": "KRISTIANSAND FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "lagsnavn_b": "NORDLAND FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8537,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "992017104",
+      "orgsnr_rad_b": "992625880",
+      "lagsnavn_a": "KRISTIANSAND FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "lagsnavn_b": "STAVANGER FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8434,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "830975632",
+      "orgsnr_rad_b": "818348622",
+      "lagsnavn_a": "LIBERALISTISK UNGDOM NORDLAND",
+      "lagsnavn_b": "LIBERALISTISK UNGDOM OSLO",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8519,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "931006606",
+      "orgsnr_rad_b": "992604409",
+      "lagsnavn_a": "LIER FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "lagsnavn_b": "TRONDHEIM FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8533,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "931006606",
+      "orgsnr_rad_b": "920398766",
+      "lagsnavn_a": "LIER FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "lagsnavn_b": "TRØNDELAG FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8533,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "925504718",
+      "orgsnr_rad_b": "995499495",
+      "lagsnavn_a": "LISTER FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "lagsnavn_b": "MIDT-TROMS FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8462,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "925504718",
+      "orgsnr_rad_b": "994665596",
+      "lagsnavn_a": "LISTER FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "lagsnavn_b": "NORDLAND FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8421,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "934953797",
+      "orgsnr_rad_b": "992134518",
+      "lagsnavn_a": "MADINA UNGDOM",
+      "lagsnavn_b": "MINHAJ UNGDOM",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8462,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "995499495",
+      "orgsnr_rad_b": "993900052",
+      "lagsnavn_a": "MIDT-TROMS FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "lagsnavn_b": "MØRE OG ROMSDAL FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8506,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "995324571",
+      "orgsnr_rad_b": "993900052",
+      "lagsnavn_a": "MOSS OG OMEGN FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "lagsnavn_b": "MØRE OG ROMSDAL FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8444,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "995324571",
+      "orgsnr_rad_b": "929101952",
+      "lagsnavn_a": "MOSS OG OMEGN FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "lagsnavn_b": "SØR-VARANGER OG OMEGN FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8542,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "993900052",
+      "orgsnr_rad_b": "930994650",
+      "lagsnavn_a": "MØRE OG ROMSDAL FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "lagsnavn_b": "NEDRE GLOMMA FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8539,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "993900052",
+      "orgsnr_rad_b": "933276988",
+      "lagsnavn_a": "MØRE OG ROMSDAL FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "lagsnavn_b": "TROMS FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8537,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "993900052",
+      "orgsnr_rad_b": "912466574",
+      "lagsnavn_a": "MØRE OG ROMSDAL FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "lagsnavn_b": "ØVRE ROMERIKE FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8444,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "934971612",
+      "orgsnr_rad_b": "927790149",
+      "lagsnavn_a": "NARVIK FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "lagsnavn_b": "NEDRE ROMERIKE FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8537,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "934971612",
+      "orgsnr_rad_b": "997559738",
+      "lagsnavn_a": "NARVIK FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "lagsnavn_b": "SANDEFJORD OG LARVIK FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8409,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "934971612",
+      "orgsnr_rad_b": "992625880",
+      "lagsnavn_a": "NARVIK FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "lagsnavn_b": "STAVANGER FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8571,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "934971612",
+      "orgsnr_rad_b": "992604409",
+      "lagsnavn_a": "NARVIK FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "lagsnavn_b": "TRONDHEIM FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8571,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "934971612",
+      "orgsnr_rad_b": "920398766",
+      "lagsnavn_a": "NARVIK FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "lagsnavn_b": "TRØNDELAG FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8571,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "934971612",
+      "orgsnr_rad_b": "992317124",
+      "lagsnavn_a": "NARVIK FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "lagsnavn_b": "VESTFOLD FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8421,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "934971612",
+      "orgsnr_rad_b": "989977601",
+      "lagsnavn_a": "NARVIK FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "lagsnavn_b": "VESTLAND FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8421,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "970261451",
+      "orgsnr_rad_b": "974338424",
+      "lagsnavn_a": "NATUR OG UNGDOM",
+      "lagsnavn_b": "OSLO NATUR OG UNGDOM",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8571,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "930994650",
+      "orgsnr_rad_b": "994665596",
+      "lagsnavn_a": "NEDRE GLOMMA FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "lagsnavn_b": "NORDLAND FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8537,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "930994650",
+      "orgsnr_rad_b": "981527755",
+      "lagsnavn_a": "NEDRE GLOMMA FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "lagsnavn_b": "OSLO FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8462,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "930994650",
+      "orgsnr_rad_b": "932814552",
+      "lagsnavn_a": "NEDRE GLOMMA FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "lagsnavn_b": "TELEMARK FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8537,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "994665596",
+      "orgsnr_rad_b": "987780681",
+      "lagsnavn_a": "NORDLAND FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "lagsnavn_b": "OSLO ØST FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8462,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "994665596",
+      "orgsnr_rad_b": "922145431",
+      "lagsnavn_a": "NORDLAND FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "lagsnavn_b": "SUNNMØRE FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8462,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "994665596",
+      "orgsnr_rad_b": "933276988",
+      "lagsnavn_a": "NORDLAND FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "lagsnavn_b": "TROMS FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8533,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "981527755",
+      "orgsnr_rad_b": "992353457",
+      "lagsnavn_a": "OSLO FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "lagsnavn_b": "ROGALAND FREMSKRITSPRATIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8493,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "981527755",
+      "orgsnr_rad_b": "992625880",
+      "lagsnavn_a": "OSLO FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "lagsnavn_b": "STAVANGER FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8533,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "981527755",
+      "orgsnr_rad_b": "992604409",
+      "lagsnavn_a": "OSLO FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "lagsnavn_b": "TRONDHEIM FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8533,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "981527755",
+      "orgsnr_rad_b": "920398766",
+      "lagsnavn_a": "OSLO FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "lagsnavn_b": "TRØNDELAG FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8533,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "989386999",
+      "orgsnr_rad_b": "932779250",
+      "lagsnavn_a": "OSLO VEST FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "lagsnavn_b": "ØSTFOLD FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8462,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "987780681",
+      "orgsnr_rad_b": "922145431",
+      "lagsnavn_a": "OSLO ØST FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "lagsnavn_b": "SUNNMØRE FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8462,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "987780681",
+      "orgsnr_rad_b": "992317124",
+      "lagsnavn_a": "OSLO ØST FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "lagsnavn_b": "VESTFOLD FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8462,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "987780681",
+      "orgsnr_rad_b": "989977601",
+      "lagsnavn_a": "OSLO ØST FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "lagsnavn_b": "VESTLAND FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8462,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "997522176",
+      "orgsnr_rad_b": "934895932",
+      "lagsnavn_a": "ROGALAND EUROPEISK UNGDOM",
+      "lagsnavn_b": "VESTLAND EUROPEISK UNGDOM",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.84,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "992353457",
+      "orgsnr_rad_b": "992604409",
+      "lagsnavn_a": "ROGALAND FREMSKRITSPRATIETS UNGDOM (FPU)",
+      "lagsnavn_b": "TRONDHEIM FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8462,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "992353457",
+      "orgsnr_rad_b": "989977601",
+      "lagsnavn_a": "ROGALAND FREMSKRITSPRATIETS UNGDOM (FPU)",
+      "lagsnavn_b": "VESTLAND FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8571,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "992353457",
+      "orgsnr_rad_b": "932779250",
+      "lagsnavn_a": "ROGALAND FREMSKRITSPRATIETS UNGDOM (FPU)",
+      "lagsnavn_b": "ØSTFOLD FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8421,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "992625880",
+      "orgsnr_rad_b": "933276988",
+      "lagsnavn_a": "STAVANGER FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "lagsnavn_b": "TROMS FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8421,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "992625880",
+      "orgsnr_rad_b": "992604409",
+      "lagsnavn_a": "STAVANGER FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "lagsnavn_b": "TRONDHEIM FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.85,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "992625880",
+      "orgsnr_rad_b": "920398766",
+      "lagsnavn_a": "STAVANGER FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "lagsnavn_b": "TRØNDELAG FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.85,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "992625880",
+      "orgsnr_rad_b": "932779250",
+      "lagsnavn_a": "STAVANGER FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "lagsnavn_b": "ØSTFOLD FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8462,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "922145431",
+      "orgsnr_rad_b": "932814552",
+      "lagsnavn_a": "SUNNMØRE FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "lagsnavn_b": "TELEMARK FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8462,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "922145431",
+      "orgsnr_rad_b": "933276988",
+      "lagsnavn_a": "SUNNMØRE FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "lagsnavn_b": "TROMS FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8533,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "922145431",
+      "orgsnr_rad_b": "989977601",
+      "lagsnavn_a": "SUNNMØRE FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "lagsnavn_b": "VESTLAND FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8462,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "932814552",
+      "orgsnr_rad_b": "992317124",
+      "lagsnavn_a": "TELEMARK FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "lagsnavn_b": "VESTFOLD FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8462,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "932814552",
+      "orgsnr_rad_b": "932779250",
+      "lagsnavn_a": "TELEMARK FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "lagsnavn_b": "ØSTFOLD FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8571,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "932814552",
+      "orgsnr_rad_b": "912466574",
+      "lagsnavn_a": "TELEMARK FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "lagsnavn_b": "ØVRE ROMERIKE FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8434,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "933276988",
+      "orgsnr_rad_b": "989977601",
+      "lagsnavn_a": "TROMS FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "lagsnavn_b": "VESTLAND FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8533,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "933276988",
+      "orgsnr_rad_b": "912466574",
+      "lagsnavn_a": "TROMS FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "lagsnavn_b": "ØVRE ROMERIKE FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.85,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "921411391",
+      "orgsnr_rad_b": "924552905",
+      "lagsnavn_a": "TRYGGERE UNGDOM",
+      "lagsnavn_b": "TRYGGERE UNGDOM OSLO",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8571,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "920398766",
+      "orgsnr_rad_b": "932779250",
+      "lagsnavn_a": "TRØNDELAG FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "lagsnavn_b": "ØSTFOLD FREMSKRITTSPARTIETS UNGDOM (FPU)",
+      "kommune": "OSLO",
+      "fylke": "Oslo",
+      "likskap_verdi_namn": 0.8462,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "971325852",
+      "orgsnr_rad_b": "994187112",
+      "lagsnavn_a": "BØ FRILYNDE UNGDOMSLAG",
+      "lagsnavn_b": "NES FRILYNTE UNGDOMSLAG",
+      "kommune": "MIDT-TELEMARK",
+      "fylke": "Telemark",
+      "likskap_verdi_namn": 0.8444,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "997476190",
+      "orgsnr_rad_b": "917345031",
+      "lagsnavn_a": "ALDEBARAN BARNE- OG UNGDOMSTEATER",
+      "lagsnavn_b": "TELEMARK BARNE- OG UNGDOMSTEATER",
+      "kommune": "SKIEN",
+      "fylke": "Telemark",
+      "likskap_verdi_namn": 0.8571,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "976302753",
+      "orgsnr_rad_b": "994109960",
+      "lagsnavn_a": "FEVÅG UNGDOMSLAG",
+      "lagsnavn_b": "RÅKVÅG UNGDOMSLAG",
+      "kommune": "INDRE FOSEN",
+      "fylke": "Trøndelag - Trööndelage",
+      "likskap_verdi_namn": 0.8485,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "997060873",
+      "orgsnr_rad_b": "997386116",
+      "lagsnavn_a": "ARNØYA GRENDELAG",
+      "lagsnavn_b": "LAUVØYA GRENDELAG",
+      "kommune": "NÆRØYSUND",
+      "fylke": "Trøndelag - Trööndelage",
+      "likskap_verdi_namn": 0.8485,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "997386116",
+      "orgsnr_rad_b": "985036918",
+      "lagsnavn_a": "LAUVØYA GRENDELAG",
+      "lagsnavn_b": "MARØYA GRENDELAG",
+      "kommune": "NÆRØYSUND",
+      "fylke": "Trøndelag - Trööndelage",
+      "likskap_verdi_namn": 0.8485,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "993620734",
+      "orgsnr_rad_b": "996494918",
+      "lagsnavn_a": "UNGDOMSLAGET VARDEN",
+      "lagsnavn_b": "UNGDOMSLAGET VON",
+      "kommune": "ALVER",
+      "fylke": "Vestland",
+      "likskap_verdi_namn": 0.8571,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "975711412",
+      "orgsnr_rad_b": "911809664",
+      "lagsnavn_a": "MARKANE UNGDOMSLAG",
+      "lagsnavn_b": "RAND UNGDOMSLAG",
+      "kommune": "STRYN",
+      "fylke": "Vestland",
+      "likskap_verdi_namn": 0.8485,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "994615971",
+      "orgsnr_rad_b": "817735142",
+      "lagsnavn_a": "EIKÅS UNGDOMSLAG",
+      "lagsnavn_b": "REKSTA UNGDOMSLAG",
+      "kommune": "SUNNFJORD",
+      "fylke": "Vestland",
+      "likskap_verdi_namn": 0.8485,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    },
+    {
+      "orgsnr_rad_a": "816156262",
+      "orgsnr_rad_b": "931851977",
+      "lagsnavn_a": "MYRKDALEN UNGDOMSLAG",
+      "lagsnavn_b": "RAUNDALEN UNGDOMSLAG",
+      "kommune": "VOSS",
+      "fylke": "Vestland",
+      "likskap_verdi_namn": 0.85,
+      "sjølvvekting": "Sjå visuelt; ved treff bruk data/medlemas_ul_jamfor_valg.json"
+    }
+  ],
+  "merknad": "Sjå også skript/bruk_medlemas_ul_jamfor_valg.py for å kopiere NU‑felt"
+}

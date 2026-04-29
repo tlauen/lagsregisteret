@@ -496,8 +496,8 @@
     <div class="hovud">
       <h1>Lagsregisteret</h1>
       <p class="leiar">
-        <strong>Kjelde:</strong> Alle rader i tabellen kjem frå organisasjonar som er
-        med i
+        <strong>Kjelde:</strong> Alle rader i éi tabell kjem frå organisasjonar som
+        er med i
         <a
           href="https://www.brreg.no/frivillighetsregisteret/"
           rel="noopener noreferrer"
@@ -509,24 +509,39 @@
         >
         (opne data), pluss lokale filtreringar i repositoriet (søkjefragment,
         utelatingsfrasar, ev. «norsk tilhald» ved innhenting). Kolonne
-        <strong>Liste</strong> kan vise korleis laget kom med (<code>Ungdom*</code>,
-        <code>Grend*</code>,
-        <code>Bygd*</code> etter kva søkjefil som gav Brreg‑treff).
+        <strong>Liste</strong> seier kva for søkjefil som gav Brreg‑treff
+        (<code>Ungdom*</code>, <code>Grend*</code>,
+        <code>Bygd*</code>, komma om fleire).
       </p>
       <p class="leiar">
-        Søk i alle felt, snevre etter fylke og kommune, og <strong>skru av statustypar</strong>
-        under — eller bruk
+        <strong>Søk</strong> i søkjefeltet i tabellen gjeld alle
+        <strong>synlege</strong> kolonnar (bruk <strong>Vis / skjul kolonnar</strong> for
+        kva som er med). Vel <strong>fylke</strong>, og etter behov
+        <strong>kommune</strong> — kommune‑nedtrekk vert tilgjengeleg når fylke ikkje er
+        «alle». Liknamn i data for <strong>fylke og kommune</strong> (t.d. ulik
+        skriveform, skjulte mellomrom, kort og langt fylkesnamn, eller same første ledd
+        der namnet har « - ») vert slått saman i lista slik du ikkje får doble val. Under
+        <strong>Vis / skjul statustypar</strong>: når alle typar er avkryssa, vert
+        ikkje status brukt til å avgrensa; ta <strong>frå</strong> kryss hjå dei
+        kategoriar du vil <strong>gjøyma</strong>, slik at berre rader som høyrer til
+        minst éin av dei framleis synlege statusane vert med (eller‑logikk). Bruk
         <strong>Rediger i lista</strong> for å setja NU-status (medlem, potensiell
-        medlem, utmeld, ikkje aktuell, nedlagt) og
-        <strong>luka ut</strong> rett i tabellen —
-        <strong>utan innlogging</strong>: endringar vert lagra lokalt i
-        nettlesaren, og du kan lasta ned <code>manuell_status.json</code> når du vil
-        sjekkja inn i repositoriet. Laga du <strong>lukar ut</strong> (ikkje
-        ungdomslag / ikkje frilynde) er skjulte som standard — bruk avkryssinga for å
-        sjå dei. Du kan også redigere <code>data/manuell_status.json</code> rett i
-        git eller bruk <code>skript/sett_lag_status.py</code>;
+        medlem, utmeld, ikkje aktuell, nedlagt) og <strong>luka ut</strong> rett i
+        tabellen —
+        <strong>utan innlogging</strong>: endringar vert lagra lokalt i nettlesaren, og
+        du kan lasta ned <code>manuell_status.json</code> når du vil sjekkja inn i
+        repositoriet. Laga du <strong>lukar ut</strong> (ikkje ungdomslag / ikkje
+        frilynde) er skjulte som standard — bruk avkryssinga <em>Vis luka ut</em> for å
+        sjå dei. Du kan også redigere <code>data/manuell_status.json</code> rett i git
+        eller bruk <code>skript/sett_lag_status.py</code>;
         <a href="admin.html" style="color: var(--lenkje)">admin-sida</a> er valfri
         (same som Vercel‑push, treng passord).
+      </p>
+      <p class="leiar">
+        Av <strong>omsyn til yting</strong> vert berre eit visst tal rader teikna fyrst; under
+        tabellen finn du <strong>Last inn … til</strong> for å laste inn fleire i
+        omgangar, eller <strong>Vis alle rader</strong> for å utvide til heile det
+        filtrerte utvalet med éin gong.
       </p>
       <p class="leiar-hjelp">
         Brei tabell: dra vassrett under tabellen, eller bruk
@@ -537,15 +552,15 @@
         >
         jamførd med registret (<code>nu: medlem</code>), eller manuelt medlem.
         <strong>Gul tone</strong> = potensiell medlem —
-        <strong>dempa</strong> = ikkje aktuell. <strong class="dome-raud-tekst"
-          >Raud tone</strong> for utmeld eller nedlagt. Utmelding gjev føretré over
-        grønt.
+        <strong>dempa</strong> = ikkje aktuell. <strong>Lyseblå tone</strong> = inaktiv
+        (NU eller manuell). <strong class="dome-raud-tekst">Raud tone</strong> for
+        utmeld eller nedlagt. Utmelding gjev føretré over grønt.
       </p>
       <div id="feil" class="feil" style="display: none" hidden></div>
       <div class="verkty">
         <label for="fylke_val">
           Fylke
-          <select id="fylke_val" title="Vis berre laga i eitt fylke">
+          <select id="fylke_val" title="Avgrens etter fylke (liknamn vert slått saman i lista)">
             <option value="alle">— alle —</option>
           </select>
         </label>
@@ -553,7 +568,7 @@
           Kommune
           <select
             id="kommune_val"
-            title="Når du har val fylke: snevre til éin kommune"
+            title="Når du har vald fylke: vel kommune eller alle i det fylket"
             disabled
           >
             <option value="alle">— vel fylke fyrst —</option>
@@ -574,7 +589,7 @@
         <div
           id="nu_filtr_kryss"
           class="nu_filtr_kryss"
-          aria-label="Kryss av statustypar som skal visast"
+          aria-label="Vel kva for statustypar som skal visast; ta frå kryss for å skjule kategori"
         ></div>
       </details>
       <div class="verkty-rad-2" id="kolonne_verkty_omgrepp">
@@ -910,43 +925,65 @@
           return delar.length ? delar.join(", ") : "—";
         }
 
-        function stadNøkkel(s) {
-          return sikreTekst(s).trim().toLocaleLowerCase("nb-NO");
+        function normaliserStadTekst(s) {
+          return sikreTekst(s)
+            .replace(/\uFEFF/g, "")
+            .replace(/\u00AD/g, "")
+            .replace(/\u00A0/g, " ")
+            .replace(/\s+/g, " ")
+            .trim();
         }
 
         /**
-         * Éin raske til fylkesfilter: «Troms» og «Troms - Romsa - Tromssa» → same nøkkel.
+         * Fylke og kommune: normaliser teikn, første segment før « - » ved avleidd form,
+         * elles heile strengen i små bokstavar — same mønster for begge filtera.
          */
-        function fylkeGruppeNøkkel(s) {
-          var t = sikreTekst(s).trim();
+        function stadGruppeNøkkel(s) {
+          var t = normaliserStadTekst(s);
           if (!t) return "";
           var lav = t.toLocaleLowerCase("nb-NO");
           var parts = lav.split(/\s*-\s*/);
-          return parts.length >= 2 ? parts[0] : lav;
+          return parts.length >= 2 ? parts[0].trim() : lav;
         }
 
-        /** Vel mellom jamførande kommune-variantar — gjev føretrekk til naturleg skriveform. */
+        function fylkeGruppeNøkkel(s) {
+          return stadGruppeNøkkel(s);
+        }
+
+        function kommuneGruppeNøkkel(s) {
+          return stadGruppeNøkkel(s);
+        }
+
+        /** Lengste variant (full namn ved fleirspråklege former) — som ved fylke. */
         function velBestKommuneVisning(variants) {
           if (!variants.length) return "";
-          if (variants.length === 1) return finjusterKommuneEitt(variants[0]);
-          var lauv = [];
-          var i;
-          for (i = 0; i < variants.length; i++) {
-            var vi = variants[i];
-            if (vi !== vi.toLocaleUpperCase("nb-NO")) lauv.push(vi);
+          var longest = variants[0];
+          var mx = longest.length;
+          var hi;
+          for (hi = 1; hi < variants.length; hi++) {
+            var v = variants[hi];
+            var L = v.length;
+            if (L > mx) {
+              mx = L;
+              longest = v;
+            } else if (L === mx) {
+              if (
+                longest === longest.toLocaleUpperCase("nb-NO") &&
+                v !== v.toLocaleUpperCase("nb-NO")
+              ) {
+                longest = v;
+              }
+            }
           }
-          if (lauv.length) {
-            lauv.sort(function (a, b) {
-              return a.localeCompare(b, "no");
-            });
-            return lauv[0];
+          if (longest === longest.toLocaleUpperCase("nb-NO")) {
+            return finjusterKommuneEitt(longest);
           }
-          return finjusterKommuneEitt(variants[0]);
+          return longest;
         }
 
         /** Fyll ut store bokstavar (Brreg‑stil) til vanleg tittelisering. */
         function finjusterKommuneEitt(s) {
-          var t = sikreTekst(s).trim();
+          var t = normaliserStadTekst(s);
           if (!t) return "";
           var up = t.toLocaleUpperCase("nb-NO");
           if (t !== up) return t;
@@ -985,6 +1022,15 @@
         /** NU medlemsregister (Excel), ikkje same som manuell `nu_raw`. */
         function nuMrTekstLav(r) {
           return sikreTekst(r.nu_mr_status || "").trim().toLowerCase();
+        }
+
+        /** Visa «Medlem» for både NU «Aktiv» og «Medlem». */
+        function nuMrStatusVisningsnamn(raw) {
+          var r = sikreTekst(raw).trim();
+          if (!r) return "";
+          var tl = r.toLocaleLowerCase("nb-NO");
+          if (tl === "aktiv" || tl === "medlem") return "Medlem";
+          return r;
         }
 
         function nuMrSomUtmeld(r) {
@@ -1142,10 +1188,14 @@
             var mk = merkeKlassForNuMrRad(r);
             return mk
               ? gridjs.html(
-                  '<span class="' + mk + '">' + vikHtml(nmr) + "</span>"
+                  '<span class="' + mk + '">' +
+                    vikHtml(nuMrStatusVisningsnamn(nmr)) +
+                    "</span>"
                 )
               : gridjs.html(
-                  '<span class="nu-mr-plain">' + vikHtml(nmr) + "</span>"
+                  '<span class="nu-mr-plain">' +
+                    vikHtml(nuMrStatusVisningsnamn(nmr)) +
+                    "</span>"
                 );
           }
           return manuellFallbackStatusVis(r);
@@ -1166,7 +1216,7 @@
               '<div class="nu-mr-forvelj"><span class="' +
               kl +
               '">' +
-              vikHtml(nmr) +
+              vikHtml(nuMrStatusVisningsnamn(nmr)) +
               "</span></div>";
           }
           var s =
@@ -1551,7 +1601,7 @@
             if (fylkeGruppeNøkkel(sikreTekst(r.fylke)) !== fy) return;
             var kk = sikreTekst(r.kommune).trim();
             if (!kk) return;
-            var nk = stadNøkkel(kk);
+            var nk = kommuneGruppeNøkkel(kk);
             if (!kommGrupper[nk]) kommGrupper[nk] = [];
             if (kommGrupper[nk].indexOf(kk) === -1) kommGrupper[nk].push(kk);
           });
@@ -1570,7 +1620,7 @@
           });
           var ønsktKom = gammKom;
           if (ønsktKom !== "alle" && !kommGrupper[ønsktKom]) {
-            ønsktKom = stadNøkkel(ønsktKom);
+            ønsktKom = kommuneGruppeNøkkel(ønsktKom);
           }
           if (ønsktKom !== "alle" && kommGrupper[ønsktKom]) kSel.value = ønsktKom;
           else kSel.value = "alle";
@@ -1636,7 +1686,7 @@
           }
           if (kommune !== "alle") {
             d = d.filter(function (r) {
-              return stadNøkkel(sikreTekst(r.kommune)) === kommune;
+              return kommuneGruppeNøkkel(sikreTekst(r.kommune)) === kommune;
             });
           }
           if (bruksStatusFiltr) {

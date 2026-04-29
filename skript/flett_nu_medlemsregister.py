@@ -140,6 +140,58 @@ def lik_namn(a: str, b: str) -> float:
     return difflib.SequenceMatcher(None, na, nb).ratio()
 
 
+def tern_kjerne_namn(nam: str) -> str:
+    """Fjern ungdomslag / ul / u/l frå slutten — stadnamn før typiske UL-variantar."""
+    n = norm_namn(nam)
+    if not n:
+        return ""
+    n = re.sub(r"\s+u\s*/\s*l\s*$", "", n)
+    n = re.sub(r"\s+ungdomslag\s*$", "", n)
+    n = re.sub(r"\bul\s*$", "", n)
+    return re.sub(r"\s+", " ", n).strip()
+
+
+def har_ungdomslag_ord(s: str) -> bool:
+    return "ungdomslag" in norm_namn(s)
+
+
+def har_ul_frilynde_forkorting(s: str) -> bool:
+    """Berre kort-ul / u‑l; ikkje treff inni «ungdomslag»."""
+    n = norm_namn(s)
+    if "ungdomslag" in n:
+        return False
+    if re.search(r"\bu\s*/\s*l\b", n):
+        return True
+    if n.endswith(" ul"):
+        return True
+    return bool(re.search(r"(^|\s)ul([\s,/]|$)", n))
+
+
+def ul_mot_ungdoms_par_navn(nam_a: str, nam_b: str) -> bool:
+    """Same stadnamn‑kjerne + den eine «… ungdomslag», den andre «… ul» / u‑l."""
+    if norm_namn(nam_a) == norm_namn(nam_b):
+        return False
+    if not tern_kjerne_namn(nam_a) or tern_kjerne_namn(nam_a) != tern_kjerne_namn(
+        nam_b
+    ):
+        return False
+    na, nb = norm_namn(nam_a), norm_namn(nam_b)
+    ua, ub = har_ungdomslag_ord(na), har_ungdomslag_ord(nb)
+    la, lb = har_ul_frilynde_forkorting(na), har_ul_frilynde_forkorting(nb)
+    return (ua and lb) or (ub and la)
+
+
+def canonical_nu_mr_status(raw: str) -> str:
+    """Einheit på nett/internt: Aktiv/medlem → «Medlem»."""
+    t = (raw or "").strip()
+    if not t:
+        return ""
+    tl = t.lower().rstrip(".")
+    if tl in ("aktiv", "medlem"):
+        return "Medlem"
+    return t
+
+
 KJELDE_NU_UTAN_ORGNR = "nu_mr_utan_orgnr"
 KJELDE_NU_ORGNR_IKKJE_BRREG = "nu_mr_orgnr_ikkje_i_brreg"
 
@@ -290,10 +342,11 @@ def hovud() -> int:
     brukt_utan_org: set[int] = set()
     treff_org = 0
     treff_namn = 0
+    treff_ul_par = 0
     ikkje_nu = 0
 
     def fyll_nu_felt(rad: dict[str, str], ex: dict[str, str]) -> None:
-        rad["nu_mr_status"] = (ex.get(k_stat, "") or "").strip()
+        rad["nu_mr_status"] = canonical_nu_mr_status((ex.get(k_stat, "") or "").strip())
         rad["nu_mr_overordna"] = (
             (ex.get(k_over, "") or "").strip() if k_over else ""
         )
@@ -301,6 +354,7 @@ def hovud() -> int:
 
     def prøv_namn_kf(rad: dict[str, str]) -> bool:
         """Treff i ex_utan_org på namn + kommune + fylke. Retnar True ved treff."""
+        nonlocal treff_ul_par
         lnav = rad.get("lagsnavn", "")
         rk = norm_stad(rad.get("kommune", ""))
         rf = norm_stad(rad.get("fylke", ""))
@@ -323,6 +377,21 @@ def hovud() -> int:
             fyll_nu_felt(rad, ex_utan_org[best_i])
             brukt_utan_org.add(best_i)
             return True
+        for ei, ex in enumerate(ex_utan_org):
+            if ei in brukt_utan_org:
+                continue
+            ek = norm_stad(ex.get(k_komm, ""))
+            ef = norm_stad(ex.get(k_fylk, ""))
+            if rk and ek and rk != ek:
+                continue
+            if rf and ef and rf != ef:
+                continue
+            en = (ex.get(k_namn, "") or "").strip()
+            if ul_mot_ungdoms_par_navn(lnav, en):
+                fyll_nu_felt(rad, ex_utan_org[ei])
+                brukt_utan_org.add(ei)
+                treff_ul_par += 1
+                return True
         return False
 
     def excel_til_manuell(sttxt: str) -> dict | None:
@@ -446,6 +515,7 @@ def hovud() -> int:
     print(
         f"Skreiv {csv_sti.relative_to(pro)} — treff orgnr: {treff_org}, "
         f"treff namn+k+f (Excel utan orgnr eller CSV utan orgnr): {treff_namn}, "
+        f"derav UL↔ungdomslag‑par: {treff_ul_par}, "
         f"registerrader utan NU‑treff: {ikkje_nu}",
         file=sys.stderr,
     )

@@ -1,0 +1,10 @@
+{
+  "forklaring": "Kopier til t.d. data/medlemas_ul_jamfor_valg.json og fyll «kopier_nu_felt». Køyr: python3 skript/bruk_medlemas_ul_jamfor_valg.py — dry-run fyrst.",
+  "kopier_nu_felt": [
+    {
+      "frå_orgnr": "",
+      "til_orgnr": "",
+      "notat": "Sjå data/medlemas_ul_kandidatar.json for orgnr-lag"
+    }
+  ]
+}

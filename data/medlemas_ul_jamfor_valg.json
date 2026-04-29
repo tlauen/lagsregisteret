@@ -1,0 +1,4 @@
+{
+  "forklaring": "Kopi av medlemas_ul_jamfor_valg_mal — fyll «kopier_nu_felt» med oppføringar når du vil flytte NU‑felter frå éi Brreg‑rad til ein systerpar (t.d. Dagali ul → Dagali ungdomslag). Køyr: python3 skript/bruk_medlemas_ul_jamfor_valg.py --valg HER",
+  "kopier_nu_felt": []
+}
