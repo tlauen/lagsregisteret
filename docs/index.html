@@ -260,6 +260,26 @@
           ["bygdelag", "Bygd*"],
         ];
 
+        /** CSV-felt som kan lagrast i manuell_status / localStorage (ikkje kjelde/henta). */
+        var MANUELL_CSV_FELT = [
+          "lagsnavn",
+          "orgnr",
+          "liste",
+          "nu_mr_status",
+          "nu_mr_overordna",
+          "nu_mr_orgtype",
+          "kommune",
+          "fylke",
+          "adresse",
+          "postnummer",
+          "poststed",
+          "nettstad",
+        ];
+
+        function kolonneErBerreLes(nøkk) {
+          return nøkk === "kjelde_url" || nøkk === "henta_dato";
+        }
+
         function lesLokalManuellKartRå() {
           try {
             var t = localStorage.getItem(LAGREG_MANUELL_LOKAL);
@@ -1448,6 +1468,10 @@
             }
             r.merknad_hand = sikreTekst(st.merknad);
             r.skjul_flag = st.skjul === true;
+            MANUELL_CSV_FELT.forEach(function (fn) {
+              if (!Object.prototype.hasOwnProperty.call(st, fn)) return;
+              r[fn] = sikreTekst(st[fn]);
+            });
             reknRadGron(r);
             return r;
           });
@@ -1488,41 +1512,111 @@
           return t;
         }
 
+        /** Felles med lagsnavn-celle: farge etter status. */
+        function lagsnavnRadMerkeKlass(r) {
+          var nmrS = sikreTekst(r.nu_mr_status || "").trim();
+          var raud = nmrS
+            ? nuMrSomUtmeld(r) || nuMrSomNedlagt(r)
+            : r.nu_raw === "utmeld" || r.nedlagt_flag;
+          var gron =
+            !raud &&
+            (nmrS ? nuMrSomAktivLik(r) : r.rad_nu_gron);
+          var amber =
+            !nmrS &&
+            r.nu_raw === "potensiell_medlem" &&
+            !r.nedlagt_flag;
+          var cyan = nmrS
+            ? nuMrSomInaktiv(r) && !raud
+            : r.nu_raw === "inaktiv_medlem" && !r.nedlagt_flag;
+          var dempa =
+            !nmrS &&
+            r.nu_raw === "ikkje_aktuell" &&
+            !r.nedlagt_flag;
+          if (raud) return "rad-merke-raud";
+          if (gron) return "rad-merke-gron";
+          if (amber) return "rad-merke-amber";
+          if (cyan) return "rad-merke-inaktivnu";
+          if (dempa) return "rad-merke-dempanu";
+          return "";
+        }
+
+        function lagregTekstfeltCelle(r, feltNøkk, minEm) {
+          var dk = radManuellNykkel(r);
+          if (!dk) {
+            return "—";
+          }
+          var val = sikreTekst(r[feltNøkk]);
+          var wm =
+            typeof minEm === "number" && minEm > 0
+              ? ' style="min-width:' +
+                String(minEm) +
+                'em;max-width:36em;width:99%"'
+              : "";
+          var lab = kolonner.find(function (k) {
+            return k.nøkk === feltNøkk;
+          });
+          var ttl = lab ? lab.titt : feltNøkk;
+          return gridjs.html(
+            '<input type="text" class="lagreg-celle-inp" data-o="' +
+              vikHtml(dk) +
+              '" data-felt="' +
+              vikHtml(feltNøkk) +
+              '" value="' +
+              vikHtml(val) +
+              '" spellcheck="' +
+              (feltNøkk === "lagsnavn" ? "true" : "false") +
+              '" aria-label="' +
+              vikHtml(ttl + " for " + sikreTekst(r.lagsnavn || "lag")) +
+              '"' +
+              wm +
+              " />"
+          );
+        }
+
+        function lagsnavnCelleRedigerbar(r) {
+          var dk = radManuellNykkel(r);
+          if (!dk) {
+            return "—";
+          }
+          var navn = sikreTekst(r.lagsnavn);
+          var kl = lagsnavnRadMerkeKlass(r);
+          var ttl = kolonner.find(function (ko) {
+            return ko.nøkk === "lagsnavn";
+          });
+          var ttlS = ttl ? ttl.titt : "Lag";
+          var inner =
+            '<input type="text" class="lagreg-celle-inp lagreg-inp-lagsnavn"' +
+            (kl ? ' style="font:inherit;font-weight:500;color:inherit;background:transparent"' : '') +
+            ' data-o="' +
+            vikHtml(dk) +
+            '" data-felt="lagsnavn"' +
+            ' spellcheck="true"' +
+            ' aria-label="' +
+            vikHtml(ttlS) +
+            '"' +
+            ' value="' +
+            vikHtml(navn) +
+            '" />';
+          if (!kl) {
+            return gridjs.html(inner);
+          }
+          return gridjs.html('<span class="' + kl + '">' + inner + "</span>");
+        }
+
         function raderTilTavleData(rader) {
           var akt = fåAktiveKolonner();
+          var red = fårRedigerILista();
           return rader.map(function (r) {
             return akt.map(function (k) {
-              if (k.nøkk === "lagsnavn") {
+              var nøkk = k.nøkk;
+              if (kolonneErBerreLes(nøkk)) {
+                if (nøkk === "kjelde_url") return lenkjeCelle(r[nøkk]);
+                return sikreTekst(r[nøkk]);
+              }
+              if (nøkk === "lagsnavn") {
+                if (red) return lagsnavnCelleRedigerbar(r);
                 var navn = sikreTekst(r.lagsnavn);
-                var nmrS = sikreTekst(r.nu_mr_status || "").trim();
-                var raud = nmrS
-                  ? nuMrSomUtmeld(r) || nuMrSomNedlagt(r)
-                  : r.nu_raw === "utmeld" || r.nedlagt_flag;
-                var gron =
-                  !raud &&
-                  (nmrS ? nuMrSomAktivLik(r) : r.rad_nu_gron);
-                var amber =
-                  !nmrS &&
-                  r.nu_raw === "potensiell_medlem" &&
-                  !r.nedlagt_flag;
-                var cyan = nmrS
-                  ? nuMrSomInaktiv(r) && !raud
-                  : r.nu_raw === "inaktiv_medlem" && !r.nedlagt_flag;
-                var dempa =
-                  !nmrS &&
-                  r.nu_raw === "ikkje_aktuell" &&
-                  !r.nedlagt_flag;
-                var kl = raud
-                  ? "rad-merke-raud"
-                  : gron
-                    ? "rad-merke-gron"
-                    : amber
-                      ? "rad-merke-amber"
-                      : cyan
-                        ? "rad-merke-inaktivnu"
-                        : dempa
-                        ? "rad-merke-dempanu"
-                        : "";
+                var kl = lagsnavnRadMerkeKlass(r);
                 if (kl) {
                   return gridjs.html(
                     '<span class="' + kl + '">' + vikHtml(navn) + "</span>"
@@ -1530,15 +1624,43 @@
                 }
                 return navn;
               }
-              if (k.nøkk === "__status__") return nuStatusCelle(r);
-              if (k.nøkk === "merknad_hand") return merknadCelle(r);
-              if (k.nøkk === "i_hovudlista") return hovudCelle(r);
-              if (k.nøkk === "nettstad" || k.nøkk === "kjelde_url")
-                return lenkjeCelle(r[k.nøkk]);
-              if (k.nøkk === "liste") {
-                return listeKolonneVisning(r.liste);
+              if (nøkk === "__status__") return nuStatusCelle(r);
+              if (nøkk === "merknad_hand") return merknadCelle(r);
+              if (nøkk === "i_hovudlista") return hovudCelle(r);
+              if (!red) {
+                if (nøkk === "nettstad") return lenkjeCelle(r[nøkk]);
+                if (nøkk === "liste") {
+                  return listeKolonneVisning(r.liste);
+                }
+                return sikreTekst(r[nøkk]);
               }
-              return sikreTekst(r[k.nøkk]);
+              if (nøkk === "nettstad") {
+                return lagregTekstfeltCelle(r, "nettstad", 12);
+              }
+              if (nøkk === "liste") {
+                return lagregTekstfeltCelle(r, "liste", 8);
+              }
+              if (
+                nøkk === "orgnr" ||
+                nøkk === "nu_mr_overordna" ||
+                nøkk === "nu_mr_orgtype" ||
+                nøkk === "kommune" ||
+                nøkk === "fylke" ||
+                nøkk === "adresse" ||
+                nøkk === "postnummer" ||
+                nøkk === "poststed"
+              ) {
+                var mw =
+                  nøkk === "adresse"
+                    ? 14
+                    : nøkk === "nu_mr_overordna"
+                      ? 14
+                      : nøkk === "orgnr"
+                        ? 9
+                        : undefined;
+                return lagregTekstfeltCelle(r, nøkk, mw);
+              }
+              return sikreTekst(r[nøkk]);
             });
           });
         }
@@ -1960,6 +2082,11 @@
             if (r.nedlagt_flag) b.nedlagt = true;
             var m = sikreTekst(r.merknad_hand).trim();
             if (m) b.merknad = m;
+            if (r._lagreg_radfelt_endra || r._lagreg_manuell_lagt_til) {
+              MANUELL_CSV_FELT.forEach(function (fn) {
+                b[fn] = sikreTekst(r[fn]);
+              });
+            }
             if (Object.keys(b).length) ut[nykk] = b;
           });
           var ordaISett = new Set();
@@ -2097,6 +2224,47 @@
           }
         }
 
+        function handBrettLagregCelle(e) {
+          var t = e.target;
+          if (
+            !t ||
+            !t.classList ||
+            !t.classList.contains("lagreg-celle-inp")
+          ) {
+            return;
+          }
+          var oN = t.getAttribute("data-o");
+          var fel = t.getAttribute("data-felt");
+          if (!fel || !oN) return;
+          var rr = finnRadVedDataO(oN);
+          if (!rr) return;
+          var typ = e.type;
+          if (typ === "input") {
+            rr[fel] = t.value;
+            skrivLokalManuell();
+            return;
+          }
+          if (typ !== "focusout") return;
+          rr[fel] = t.value;
+          if (fel === "orgnr") {
+            var d = sikreTekst(rr.orgnr || "").replace(/\D/g, "");
+            if (d.length >= 9) {
+              rr.orgnr = d.slice(0, 9);
+              t.value = rr.orgnr;
+            } else if (d.length > 0) {
+              rr.orgnr = d;
+              t.value = rr.orgnr;
+            }
+            fiksNuEtterKjelde(rr);
+          }
+          rr._lagreg_radfelt_endra = true;
+          if (fel === "fylke" || fel === "kommune") {
+            byggFylkeVal();
+          }
+          skrivLokalManuell();
+          teiknaRegister();
+        }
+
         function handBrettKnyting(e) {
           var t = e.target;
           if (!t || !t.getAttribute) return;
@@ -2194,6 +2362,14 @@
               if (k.nøkk === "__status__") c.width = "11.5rem";
               if (k.nøkk === "i_hovudlista") c.width = "3.2rem";
               if (k.nøkk === "merknad_hand") c.width = "14rem";
+              if (k.nøkk === "lagsnavn") c.width = "12rem";
+              if (k.nøkk === "orgnr") c.width = "8.75rem";
+              if (k.nøkk === "liste") c.width = "9rem";
+              if (k.nøkk === "nettstad") c.width = "11rem";
+              if (k.nøkk === "nu_mr_overordna") c.width = "11rem";
+              if (k.nøkk === "nu_mr_orgtype") c.width = "8rem";
+              if (k.nøkk === "kommune") c.width = "9rem";
+              if (k.nøkk === "fylke") c.width = "7rem";
             }
             return c;
           });
@@ -2561,6 +2737,15 @@
               if (brettDyr) {
                 brettDyr.addEventListener("change", handBrettKnyting);
                 brettDyr.addEventListener("input", handBrettMerknadInput);
+                brettDyr.addEventListener(
+                  "input",
+                  handBrettLagregCelle,
+                  false
+                );
+                brettDyr.addEventListener(
+                  "focusout",
+                  handBrettLagregCelle
+                );
               }
             })
             .catch(function () {

@@ -540,6 +540,30 @@
         vertical-align: top;
         white-space: pre-wrap;
       }
+      input.lagreg-celle-inp,
+      input.lagreg-inp-lagsnavn,
+      .register-brett input.lagreg-celle-inp {
+        box-sizing: border-box;
+        display: inline-block;
+        vertical-align: middle;
+        width: min(99%, 100%);
+        padding: 0.2rem 0.38rem;
+        font: inherit;
+        font-size: 0.86rem;
+        line-height: 1.35;
+        background: var(--kort) !important;
+        color: var(--tekst) !important;
+        border: 1px solid var(--ramme) !important;
+        border-radius: 6px;
+        margin: 0;
+      }
+      span.rad-merke-raud input.lagreg-inp-lagsnavn,
+      span.rad-merke-gron input.lagreg-inp-lagsnavn,
+      span.rad-merke-amber input.lagreg-inp-lagsnavn,
+      span.rad-merke-inaktivnu input.lagreg-inp-lagsnavn,
+      span.rad-merke-dempanu input.lagreg-inp-lagsnavn {
+        color: inherit;
+      }
       .hjelp-accordion {
         border: 1px solid var(--ramme);
         border-radius: 8px;
