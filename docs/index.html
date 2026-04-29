@@ -626,7 +626,7 @@
         <button
           type="button"
           id="last_ned_filtrerta"
-          title="Alle rader som passar verktyfiltre nedanfor (synlege kolonnar), med «;» mellom kolonnar slik at Excel nordisk deler korrekt. Ikkje det same som søkjefeltet i tabellen."
+          title="Alle rader som passar verktyfiltre nedanfor (synlege kolonnar), UTF-16 for kor teikn i Excel på Windows. Semikolon-kolonnar. Ikkje tabell-søk."
         >
           Last ned filtrerte rader (.csv til Excel)
         </button>
@@ -1956,6 +1956,24 @@
           );
         }
 
+        /**
+         * UTF-16 LE + BOM til Excel på Windows — elles oftast tolka som 1252/ANSI
+         * (‚Äî, √Ö i stad for tankestrek og å/å).
+         */
+        function tekstFilBlobUtf16LeBom(csvStreng) {
+          var tekstmeBom = "\uFEFF" + csvStreng;
+          var n = tekstmeBom.length;
+          var buf = new ArrayBuffer(n * 2);
+          var vis = new DataView(buf);
+          var ii;
+          for (ii = 0; ii < n; ii++) {
+            vis.setUint16(ii * 2, tekstmeBom.charCodeAt(ii), true);
+          }
+          return new Blob([buf], {
+            type: "text/csv;charset=utf-16le",
+          });
+        }
+
         function lastNedFiltrertaTilCsvExcel() {
           var akt = fåAktiveKolonner();
           var rader = filtrerRader();
@@ -1970,7 +1988,7 @@
               })
             );
           });
-          /* Semikolon + fyrst linje sep= for Excel (kolonnar ved dobbeltklikk). */
+          /* Semikolon + fyrst linje sep= for kolonnar; innhald UTF-16 LE (sjå tekstFilBlobUtf16LeBom). */
           var kropp = Papa.unparse(rekker, {
             quotes: true,
             quoteChar: '"',
@@ -1978,10 +1996,7 @@
             newline: "\r\n",
           });
           var csv = "sep=;\r\n" + kropp;
-          var bom = "\uFEFF";
-          var blob = new Blob([bom + csv], {
-            type: "text/csv;charset=utf-8",
-          });
+          var blob = tekstFilBlobUtf16LeBom(csv);
           var a = document.createElement("a");
           a.href = URL.createObjectURL(blob);
           a.download = eksportFilnamnSynlegFiltrerta();
