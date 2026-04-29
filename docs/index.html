@@ -626,9 +626,9 @@
         <button
           type="button"
           id="last_ned_filtrerta"
-          title="Alle rader som passar verktyfiltre nedanfor (synlege kolonnar). Ikkje det same som søkjefeltet i tabellen."
+          title="Alle rader som passar verktyfiltre nedanfor (synlege kolonnar), med «;» mellom kolonnar slik at Excel nordisk deler korrekt. Ikkje det same som søkjefeltet i tabellen."
         >
-          Last ned filtrerte rader (CSV til Excel)
+          Last ned filtrerte rader (.csv til Excel)
         </button>
         <span id="tal_rader" aria-live="polite"></span>
       </div>
@@ -1970,12 +1970,14 @@
               })
             );
           });
-          var csv = Papa.unparse(rekker, {
+          /* Semikolon + fyrst linje sep= for Excel (kolonnar ved dobbeltklikk). */
+          var kropp = Papa.unparse(rekker, {
             quotes: true,
             quoteChar: '"',
-            delimiter: ",",
+            delimiter: ";",
             newline: "\r\n",
           });
+          var csv = "sep=;\r\n" + kropp;
           var bom = "\uFEFF";
           var blob = new Blob([bom + csv], {
             type: "text/csv;charset=utf-8",
