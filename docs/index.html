@@ -144,14 +144,16 @@
         accent-color: var(--lenkje);
         margin: 0;
       }
-      #nu_filtr_omtrekk summary {
+      #nu_filtr_omtrekk summary,
+      #liste_filtr_omtrekk summary {
         cursor: pointer;
         color: var(--lenkje);
         user-select: none;
         font-size: 0.92rem;
         list-style: none;
       }
-      #nu_filtr_omtrekk summary::-webkit-details-marker {
+      #nu_filtr_omtrekk summary::-webkit-details-marker,
+      #liste_filtr_omtrekk summary::-webkit-details-marker {
         display: none;
       }
       .nu_filtr_kryss {
@@ -478,7 +480,8 @@
         cursor: pointer;
         font-size: 0.9rem;
       }
-      .verkty #last_ned_manuell {
+      .verkty #last_ned_manuell,
+      .verkty #last_ned_filtrerta {
         background: #21262d;
         color: var(--tekst);
         border: 1px solid var(--ramme);
@@ -488,7 +491,8 @@
         cursor: pointer;
         font-size: 0.9rem;
       }
-      .verkty #last_ned_manuell:hover {
+      .verkty #last_ned_manuell:hover,
+      .verkty #last_ned_filtrerta:hover {
         filter: brightness(1.08);
       }
       select.nu-velj,
@@ -557,8 +561,12 @@
         <strong>Vis / skjul statustypar</strong>: når alle typar er avkryssa, vert
         ikkje status brukt til å avgrensa; ta <strong>frå</strong> kryss hjå dei
         kategoriar du vil <strong>gjøyma</strong>, slik at berre rader som høyrer til
-        minst éin av dei framleis synlege statusane vert med (eller‑logikk). Bruk
-        <strong>Rediger i lista</strong> for å setja NU-status (medlem, potensiell
+        minst éin av dei framleis synlege statusane vert med (eller‑logikk).
+        Under <strong>Vis / skjul listetypar</strong>: når alle tre (Ungdom*, Grend*,
+        Bygd*) er avkryssa, vert ikkje kolonne <strong>Liste</strong> brukt til å
+        avgrensa; ta frå kryss for å skjule rader som berre høyrer til den typen — rader
+        med fleire listetag (komma) vert vist om minst éin tag framleis er synleg.
+        Bruk <strong>Rediger i lista</strong> for å setja NU-status (medlem, potensiell
         medlem, utmeld, ikkje aktuell, nedlagt) og <strong>luka ut</strong> rett i
         tabellen —
         <strong>utan innlogging</strong>: endringar vert lagra lokalt i nettlesaren, og
@@ -615,6 +623,13 @@
           <input type="checkbox" id="rediger_i_lista" />
           Rediger i lista
         </label>
+        <button
+          type="button"
+          id="last_ned_filtrerta"
+          title="Alle rader som passar verktyfiltre nedanfor (synlege kolonnar). Ikkje det same som søkjefeltet i tabellen."
+        >
+          Last ned filtrerte rader (CSV til Excel)
+        </button>
         <span id="tal_rader" aria-live="polite"></span>
       </div>
       <details class="verkty-rad-2 dempa-ny" id="nu_filtr_omtrekk" style="margin: 0.25rem 0 0">
@@ -623,6 +638,14 @@
           id="nu_filtr_kryss"
           class="nu_filtr_kryss"
           aria-label="Vel kva for statustypar som skal visast; ta frå kryss for å skjule kategori"
+        ></div>
+      </details>
+      <details class="verkty-rad-2 dempa-ny" id="liste_filtr_omtrekk" style="margin: 0.25rem 0 0">
+        <summary>Vis / skjul listetypar (Ungdom* / Grend* / Bygd*)</summary>
+        <div
+          id="liste_filtr_kryss"
+          class="nu_filtr_kryss"
+          aria-label="Vel kva for listetag (ungdomslag, grendelag, bygdelag) som skal visast"
         ></div>
       </details>
       <div class="verkty-rad-2" id="kolonne_verkty_omgrepp">
@@ -783,6 +806,7 @@
         var LAGR_API_LAGRING = "lagreg_api_grunnurl";
         var LAGREG_MANUELL_LOKAL = "lagreg_manuell_status_lokal";
         var LAGREG_FILTR_STATUS = "lagreg_filtr_statustypar";
+        var LAGREG_FILTR_LISTE = "lagreg_filtr_listetypar";
         var LAGREG_NU_KOPIAR = "lagreg_nu_kopiar_lokal";
         var NU_FILTR_TASTAR = [
           ["medlem", "Medlem (aktiv)"],
@@ -792,6 +816,11 @@
           ["ikkje_aktuell", "Ikkje aktuell"],
           ["nedlagt_f", "Nedlagt"],
           ["ukjent", "Ukjent / ikkje klassifisert"],
+        ];
+        var LISTE_FILTR_TASTAR = [
+          ["ungdomslag", "Ungdom*"],
+          ["grendelag", "Grend*"],
+          ["bygdelag", "Bygd*"],
         ];
 
         function lesLokalManuellKartRå() {
@@ -1387,6 +1416,84 @@
           return false;
         }
 
+        function fåAlleListeTyparSanne() {
+          var n = {};
+          for (var i = 0; i < LISTE_FILTR_TASTAR.length; i++) {
+            n[LISTE_FILTR_TASTAR[i][0]] = true;
+          }
+          return n;
+        }
+
+        function lesLagretFiltrListe() {
+          try {
+            var t = localStorage.getItem(LAGREG_FILTR_LISTE);
+            if (!t) return null;
+            var p = JSON.parse(t);
+            if (p == null || typeof p !== "object" || Array.isArray(p)) {
+              return null;
+            }
+            return p;
+          } catch (e) {
+            return null;
+          }
+        }
+
+        function lagreFiltrListe(kart) {
+          try {
+            localStorage.setItem(LAGREG_FILTR_LISTE, JSON.stringify(kart));
+          } catch (e) {
+            /* gjev opp */
+          }
+        }
+
+        function fåFiltrListeKart() {
+          var def = fåAlleListeTyparSanne();
+          var l = lesLagretFiltrListe();
+          if (!l) return def;
+          var ut = {};
+          for (var i = 0; i < LISTE_FILTR_TASTAR.length; i++) {
+            var ke = LISTE_FILTR_TASTAR[i][0];
+            ut[ke] =
+              Object.prototype.hasOwnProperty.call(l, ke) ? !!l[ke] : true;
+          }
+          return ut;
+        }
+
+        function aktiveListeFiltrIkkeAlleSant(fl) {
+          if (!fl) return false;
+          for (var i = 0; i < LISTE_FILTR_TASTAR.length; i++) {
+            if (!fl[LISTE_FILTR_TASTAR[i][0]]) return true;
+          }
+          return false;
+        }
+
+        /** Kjende listetag (`ungdomslag` / `grendelag` / `bygdelag`) for éi rad. */
+        function radParseListeTagar(r) {
+          var lz = sikreTekst(r.liste).trim();
+          if (!lz) lz = "ungdomslag";
+          var ut = [];
+          lz.split(",").forEach(function (bit) {
+            var w = sikreTekst(bit).trim().toLowerCase();
+            if (
+              w === "ungdomslag" ||
+              w === "grendelag" ||
+              w === "bygdelag"
+            ) {
+              if (ut.indexOf(w) < 0) ut.push(w);
+            }
+          });
+          return ut;
+        }
+
+        function radPassarListeFiltr(r, lk) {
+          var tagar = radParseListeTagar(r);
+          if (tagar.length === 0) return true;
+          for (var j = 0; j < tagar.length; j++) {
+            if (lk[tagar[j]] === true) return true;
+          }
+          return false;
+        }
+
         /**
          * Éin kubekategori per rad til fleirval‑filter — same prioritering som
          * filtrering før (nedlagt, utmelding, NU‑felt førande …).
@@ -1794,6 +1901,98 @@
           });
         }
 
+        /** Same innhald som i tabellen ved passiv visning — berre tekst til CSV/Excel. */
+        function nuStatusSomTekstEksporter(r) {
+          var nmr = sikreTekst(r.nu_mr_status || "").trim();
+          if (nmr) return nuMrStatusVisningsnamn(nmr);
+          if (r.nedlagt_flag) return "Nedlagt";
+          var raw = r.nu_raw;
+          if (!raw) return "—";
+          return sikreTekst(r.nu_vis_tekst) || "—";
+        }
+
+        function radVerdiSynlegTekstEksporter(r, k) {
+          if (k.nøkk === "lagsnavn") return sikreTekst(r.lagsnavn);
+          if (k.nøkk === "__status__") return nuStatusSomTekstEksporter(r);
+          if (k.nøkk === "merknad_hand") {
+            var m = sikreTekst(r.merknad_hand);
+            return m.trim() ? m : "—";
+          }
+          if (k.nøkk === "i_hovudlista") {
+            return r.skjul_flag ? "Nei (luka ut)" : "Ja";
+          }
+          if (k.nøkk === "liste") return listeKolonneVisning(r.liste);
+          if (k.nøkk === "nettstad" || k.nøkk === "kjelde_url") {
+            return sikreTekst(r[k.nøkk]);
+          }
+          return sikreTekst(r[k.nøkk]);
+        }
+
+        function eksportFilnamnSynlegFiltrerta() {
+          var bit = [];
+          var fSel = document.getElementById("fylke_val");
+          var kSel = document.getElementById("kommune_val");
+          if (fSel && fSel.value !== "alle") {
+            var ofy = fSel.options[fSel.selectedIndex];
+            if (ofy && ofy.textContent) {
+              bit.push(
+                ofy.textContent.replace(/[\s\\/:*?"<>|]+/g, "_").slice(0, 48).trim()
+              );
+            }
+          }
+          if (kSel && !kSel.disabled && kSel.value !== "alle") {
+            var okm = kSel.options[kSel.selectedIndex];
+            if (okm && okm.textContent) {
+              bit.push(
+                okm.textContent.replace(/[\s\\/:*?"<>|]+/g, "_").slice(0, 48).trim()
+              );
+            }
+          }
+          var mid = bit.filter(Boolean).join("_");
+          return (
+            "lagsregister_filtrerta_" +
+            (mid || "liste") +
+            ".csv"
+          );
+        }
+
+        function lastNedFiltrertaTilCsvExcel() {
+          var akt = fåAktiveKolonner();
+          var rader = filtrerRader();
+          var rekker = [];
+          rekker.push(akt.map(function (k) {
+            return k.titt;
+          }));
+          rader.forEach(function (r) {
+            rekker.push(
+              akt.map(function (k) {
+                return radVerdiSynlegTekstEksporter(r, k);
+              })
+            );
+          });
+          var csv = Papa.unparse(rekker, {
+            quotes: true,
+            quoteChar: '"',
+            delimiter: ",",
+            newline: "\r\n",
+          });
+          var bom = "\uFEFF";
+          var blob = new Blob([bom + csv], {
+            type: "text/csv;charset=utf-8",
+          });
+          var a = document.createElement("a");
+          a.href = URL.createObjectURL(blob);
+          a.download = eksportFilnamnSynlegFiltrerta();
+          a.click();
+          setTimeout(function () {
+            try {
+              URL.revokeObjectURL(a.href);
+            } catch (e) {
+              /* */
+            }
+          }, 2e3);
+        }
+
         function byggFylkeVal() {
           var grupper = {};
           kandidatFylkeRader().forEach(function (r) {
@@ -1942,6 +2141,46 @@
           });
         }
 
+        function byggListeFiltrPanel() {
+          var boks = document.getElementById("liste_filtr_kryss");
+          if (!boks) return;
+          boks.textContent = "";
+          var kart = fåFiltrListeKart();
+          LISTE_FILTR_TASTAR.forEach(function (pair) {
+            var kk = pair[0];
+            var txt = pair[1];
+            var keId = kk.replace(/[^\w\-]/g, "_");
+            var inp = document.createElement("input");
+            inp.type = "checkbox";
+            inp.id = "liste_filtr_ke_" + keId;
+            inp.setAttribute("data-ke", kk);
+            inp.checked = kart[kk] !== false;
+            inp.addEventListener("change", function () {
+              var inpList = boks.querySelectorAll('input[type="checkbox"]');
+              var n = {};
+              var på = 0;
+              for (var ii = 0; ii < inpList.length; ii++) {
+                var q = inpList[ii];
+                var ke = q.getAttribute("data-ke");
+                if (!ke) continue;
+                n[ke] = !!q.checked;
+                if (n[ke]) på++;
+              }
+              if (på === 0) {
+                inp.checked = true;
+                return;
+              }
+              lagreFiltrListe(n);
+              nulleGridFleirSyn();
+              teiknaRegister();
+            });
+            var lab = document.createElement("label");
+            lab.appendChild(inp);
+            lab.appendChild(document.createTextNode(txt));
+            boks.appendChild(lab);
+          });
+        }
+
         function filtrerRader() {
           var fylkeEl = document.getElementById("fylke_val");
           var kommuneEl = document.getElementById("kommune_val");
@@ -1950,6 +2189,8 @@
             kommuneEl && !kommuneEl.disabled ? kommuneEl.value : "alle";
           var fs = fåFiltrStatusKart();
           var bruksStatusFiltr = aktiveFiltrIkkeAlleSant(fs);
+          var fl = fåFiltrListeKart();
+          var bruksListeFiltr = aktiveListeFiltrIkkeAlleSant(fl);
           var v = document.getElementById("vis_skjul");
           var visSkjul = v && v.checked;
           var d = heileSett.filter(function (r) {
@@ -1968,6 +2209,11 @@
           if (bruksStatusFiltr) {
             d = d.filter(function (r) {
               return fs[radSinStatusKube(r)] === true;
+            });
+          }
+          if (bruksListeFiltr) {
+            d = d.filter(function (r) {
+              return radPassarListeFiltr(r, fl);
             });
           }
           return d;
@@ -2418,6 +2664,7 @@
               }
               byggKolonnePanel();
               byggNuStatusFiltrPanel();
+              byggListeFiltrPanel();
               byggFylkeVal();
               byggNuDupOrgVeljar();
               oppfriskNuDupListeUI();
@@ -2455,6 +2702,8 @@
                 .addEventListener("click", køyrLagreTilVercel);
               var lnm = document.getElementById("last_ned_manuell");
               if (lnm) lnm.addEventListener("click", lastNedManuellJson);
+              var lnf = document.getElementById("last_ned_filtrerta");
+              if (lnf) lnf.addEventListener("click", lastNedFiltrertaTilCsvExcel);
               var ndK = document.getElementById("nu_dup_kjor");
               if (ndK) ndK.addEventListener("click", utførNuDupkopieringsknapp);
               var ndL = document.getElementById("last_ned_nu_dup");
