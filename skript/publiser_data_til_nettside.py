@@ -2,7 +2,8 @@
 """
 Kopierer utdata-CSV (etter innhenting) til docs/data/lag.csv slik at GitHub Pages
 kan vise siste register, pluss kopi av manuell status og (om filene finst) nu-JSON
-for grøn rad og liste over NU-lokallag som manglar i registeret.
+for grøn rad og liste over NU-lokallag som manglar i registeret. Kopierer òg
+oppsett-filene til docs/data/oppsett/ for gjennomsikt på nettsida.
 """
 from __future__ import annotations
 
@@ -61,6 +62,22 @@ def hovud() -> int:
             f"Kopierte {mag_kjelde.name} → {mag_mål.relative_to(rot)}",
             file=sys.stderr,
         )
+    opi = rot / "docs" / "data" / "oppsett"
+    opi.mkdir(parents=True, exist_ok=True)
+    for nm in (
+        "sokjefragment.txt",
+        "sokjefragment_bygd.txt",
+        "sokjefragment_grende.txt",
+        "utelatingsfrasar_i_navn.txt",
+    ):
+        kjelde_txt = rot / "oppsett" / nm
+        if kjelde_txt.is_file():
+            mål_txt = opi / nm
+            mål_txt.write_bytes(kjelde_txt.read_bytes())
+            print(
+                f"Kopierte {kjelde_txt.relative_to(rot)} → {mål_txt.relative_to(rot)}",
+                file=sys.stderr,
+            )
     return 0
 
 

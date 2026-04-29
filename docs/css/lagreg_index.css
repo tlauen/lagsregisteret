@@ -1,0 +1,616 @@
+      :root {
+        --bak: #0f1419;
+        --kort: #1a2028;
+        --tekst: #e6edf3;
+        --dempa: #8b9cad;
+        --lenkje: #58a6ff;
+        --ramme: #30363d;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        font-family: system-ui, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+        background: var(--bak);
+        color: var(--tekst);
+        margin: 0;
+        line-height: 1.5;
+        min-height: 100vh;
+      }
+      .hovud {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 1.5rem 1rem 3rem;
+      }
+      h1 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin: 0 0 0.5rem 0;
+      }
+      .leiar {
+        color: var(--dempa);
+        font-size: 0.95rem;
+        margin: 0 0 1.25rem 0;
+      }
+      .liste-val {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.35rem 0.65rem;
+        margin: 0 0 1rem 0;
+      }
+      .liste-val-etikett {
+        color: var(--dempa);
+        font-size: 0.9rem;
+        margin-right: 0.15rem;
+      }
+      .liste-val-knappar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.35rem;
+      }
+      .liste-val .liste-knapp {
+        background: var(--kort);
+        color: var(--tekst);
+        border: 1px solid var(--ramme);
+        border-radius: 8px;
+        padding: 0.42rem 0.95rem;
+        font: inherit;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: background 0.15s ease, border-color 0.15s ease,
+          color 0.15s ease;
+      }
+      .liste-val .liste-knapp:hover {
+        background: #252d36;
+        border-color: var(--lenkje);
+      }
+      .liste-val .liste-knapp.liste-knapp-valt,
+      .liste-val .liste-knapp[aria-pressed="true"] {
+        border-color: #388bfd;
+        box-shadow: 0 0 0 1px rgba(88, 166, 255, 0.35);
+        background: #252d36;
+      }
+      .verkty label {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+      }
+      .verkty select {
+        background: var(--kort);
+        color: var(--tekst);
+        border: 1px solid var(--ramme);
+        border-radius: 6px;
+        padding: 0.35rem 0.5rem;
+        min-width: 10rem;
+      }
+      .verkty-rad-2 {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        gap: 0.35rem 0.75rem;
+        width: 100%;
+        margin-top: 0.35rem;
+        color: var(--dempa);
+        font-size: 0.88rem;
+      }
+      .verkty-rad-2[hidden] {
+        display: none !important;
+      }
+      .verkty-rad-2 > details {
+        flex: 1 1 100%;
+        max-width: 100%;
+      }
+      .verkty-rad-2 summary {
+        cursor: pointer;
+        color: var(--lenkje);
+        user-select: none;
+        list-style: none;
+      }
+      .verkty-rad-2 summary::-webkit-details-marker {
+        display: none;
+      }
+      .verkty-rad-2 details[open] summary {
+        margin-bottom: 0.4rem;
+      }
+      .kolonne_kryss {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.3rem 1rem;
+        padding: 0.35rem 0 0;
+        max-width: 55rem;
+      }
+      .kolonne_kryss label {
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+        cursor: pointer;
+        white-space: nowrap;
+      }
+      .kolonne_kryss input {
+        width: 0.9rem;
+        height: 0.9rem;
+        accent-color: var(--lenkje);
+        margin: 0;
+      }
+      #nu_filtr_omtrekk summary,
+      #liste_filtr_omtrekk summary {
+        cursor: pointer;
+        color: var(--lenkje);
+        user-select: none;
+        font-size: 0.92rem;
+        list-style: none;
+      }
+      #nu_filtr_omtrekk summary::-webkit-details-marker,
+      #liste_filtr_omtrekk summary::-webkit-details-marker {
+        display: none;
+      }
+      .nu_filtr_kryss {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.35rem 1rem;
+        padding: 0.45rem 0 0;
+        max-width: 58rem;
+      }
+      .nu_filtr_kryss label {
+        display: flex;
+        align-items: center;
+        gap: 0.35rem;
+        cursor: pointer;
+        font-size: 0.89rem;
+        white-space: nowrap;
+      }
+      .nu_filtr_kryss input {
+        width: 0.9rem;
+        height: 0.9rem;
+        accent-color: var(--lenkje);
+        margin: 0;
+      }
+      #kommune_val[disabled] {
+        opacity: 0.55;
+      }
+      .feil {
+        background: #3d1f1f;
+        border: 1px solid #7a2e2e;
+        border-radius: 8px;
+        padding: 1rem;
+        color: #f0c4c4;
+        margin: 0 0 1rem 0;
+      }
+      .register-brett {
+        overflow-x: auto;
+        overflow-y: visible;
+        max-width: 100%;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-gutter: stable;
+        margin: 0 0 0.5rem 0;
+        padding: 0.15rem 0.15rem 0.35rem;
+        outline: none;
+        border-radius: 8px;
+      }
+      .register-brett:focus-visible {
+        box-shadow: 0 0 0 2px var(--lenkje);
+      }
+      .dempa-ny {
+        color: var(--dempa);
+        font-size: 0.85rem;
+        margin: 0 0 0.75rem 0;
+      }
+      .dempa_status {
+        color: var(--dempa);
+        font-size: 0.86rem;
+      }
+      .leiar-hjelp {
+        color: var(--dempa);
+        font-size: 0.85rem;
+        margin: -0.5rem 0 1rem 0;
+      }
+      .leiar-hjelp kbd,
+      .hjelp-acc-innhald kbd {
+        background: var(--kort);
+        border: 1px solid var(--ramme);
+        border-radius: 4px;
+        padding: 0.1em 0.4em;
+        font-size: 0.88em;
+      }
+      .gridjs-wrapper {
+        border-radius: 8px;
+        overflow: visible;
+        border: 1px solid var(--ramme);
+      }
+      #register {
+        min-height: 8rem;
+      }
+      .register-brett .gridjs-container {
+        width: max-content !important;
+        min-width: 100% !important;
+        max-width: none !important;
+      }
+      .register-brett table.gridjs-table {
+        width: max-content !important;
+        min-width: 100%;
+        table-layout: auto !important;
+      }
+      .register-brett th.gridjs-th,
+      .register-brett td.gridjs-td {
+        max-width: none !important;
+        white-space: nowrap;
+      }
+      a {
+        color: var(--lenkje);
+      }
+      a:hover {
+        text-decoration: underline;
+      }
+      .gridjs-container {
+        color: var(--tekst) !important;
+      }
+      .gridjs-tbody,
+      .gridjs-thead,
+      .gridjs-head,
+      .gridjs-footer,
+      table.gridjs-table,
+      th.gridjs-th,
+      .gridjs-table td {
+        background: var(--kort) !important;
+        color: var(--tekst) !important;
+        border-color: var(--ramme) !important;
+      }
+      .gridjs-tbody tr:hover {
+        background: #252b33 !important;
+      }
+      .register-brett .gridjs-tbody tr:has(.rad-merke-gron) > td,
+      tr:has(.rad-merke-gron) > td {
+        background: rgba(35, 134, 54, 0.22) !important;
+        color: var(--tekst) !important;
+        border-color: var(--ramme) !important;
+      }
+      .register-brett .gridjs-tbody tr:has(.rad-merke-gron):hover > td,
+      tr:has(.rad-merke-gron):hover > td {
+        background: rgba(35, 134, 54, 0.34) !important;
+      }
+      .register-brett .gridjs-tbody tr:has(.rad-merke-raud) > td,
+      tr:has(.rad-merke-raud) > td {
+        background: rgba(220, 80, 80, 0.22) !important;
+        color: var(--tekst) !important;
+        border-color: var(--ramme) !important;
+      }
+      .register-brett .gridjs-tbody tr:has(.rad-merke-raud):hover > td,
+      tr:has(.rad-merke-raud):hover > td {
+        background: rgba(220, 80, 80, 0.32) !important;
+      }
+      .register-brett .gridjs-tbody tr:has(.rad-merke-amber) > td,
+      tr:has(.rad-merke-amber) > td {
+        background: rgba(227, 179, 65, 0.16) !important;
+        color: var(--tekst) !important;
+        border-color: var(--ramme) !important;
+      }
+      .register-brett .gridjs-tbody tr:has(.rad-merke-amber):hover > td,
+      tr:has(.rad-merke-amber):hover > td {
+        background: rgba(227, 179, 65, 0.26) !important;
+      }
+      .register-brett .gridjs-tbody tr:has(.rad-merke-dempanu) > td,
+      tr:has(.rad-merke-dempanu) > td {
+        background: rgba(139, 156, 173, 0.12) !important;
+        color: var(--tekst) !important;
+        border-color: var(--ramme) !important;
+      }
+      .register-brett .gridjs-tbody tr:has(.rad-merke-dempanu):hover > td,
+      tr:has(.rad-merke-dempanu):hover > td {
+        background: rgba(139, 156, 173, 0.2) !important;
+      }
+      .register-brett .gridjs-tbody tr:has(.rad-merke-inaktivnu) > td,
+      tr:has(.rad-merke-inaktivnu) > td {
+        background: rgba(88, 166, 200, 0.14) !important;
+        color: var(--tekst) !important;
+        border-color: var(--ramme) !important;
+      }
+      .register-brett .gridjs-tbody tr:has(.rad-merke-inaktivnu):hover > td,
+      tr:has(.rad-merke-inaktivnu):hover > td {
+        background: rgba(88, 166, 200, 0.24) !important;
+      }
+      .rad-merke-gron {
+        color: #b4f0c0;
+        font-weight: 500;
+      }
+      .rad-merke-raud {
+        color: #f0b4b4;
+        font-weight: 500;
+      }
+      .rad-merke-amber {
+        color: #f5e6b8;
+        font-weight: 500;
+      }
+      .rad-merke-dempanu {
+        color: #b5c3d4;
+        font-weight: 500;
+      }
+      .rad-merke-inaktivnu {
+        color: #9cd8f0;
+        font-weight: 500;
+      }
+      .dome-gron-tekst {
+        color: #3fb950;
+      }
+      .dome-raud-tekst {
+        color: #f85149;
+      }
+      .gridjs-search-input,
+      input.gridjs-input,
+      .gridjs-search-input input {
+        background: var(--bak) !important;
+        color: var(--tekst) !important;
+        border: 1px solid var(--ramme) !important;
+        border-radius: 6px;
+        padding: 0.4rem 0.6rem;
+      }
+      .gridjs-pages button {
+        color: var(--tekst) !important;
+      }
+      .register-fleire {
+        margin: 0.5rem 0 0.25rem;
+        padding: 0 0.1rem;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.45rem 0.6rem;
+        align-items: center;
+      }
+      .register-fleire button {
+        background: var(--kort);
+        color: var(--lenkje);
+        border: 1px solid var(--ramme);
+        border-radius: 8px;
+        padding: 0.4rem 0.8rem;
+        font-size: 0.9rem;
+        cursor: pointer;
+      }
+      .register-fleire button:hover {
+        background: #2d333b;
+        color: #79c0ff;
+      }
+      .nu_dup_verkty {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.55rem 1rem;
+        align-items: flex-end;
+        margin: 0.4rem 0 0;
+        max-width: 58rem;
+      }
+      .nu_dup_verkty label.nu_dup_lab {
+        display: flex;
+        flex-direction: column;
+        gap: 0.2rem;
+        font-size: 0.92rem;
+      }
+      .nu_dup_verkty select {
+        background: var(--kort);
+        color: var(--tekst);
+        border: 1px solid var(--ramme);
+        border-radius: 6px;
+        padding: 0.3rem 0.35rem;
+        max-width: 24rem;
+        font-size: 0.86rem;
+      }
+      .nu_dup_knappar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.4rem;
+        align-items: center;
+      }
+      #nu_dup_liste_act {
+        margin: 0.45rem 0 0.15rem;
+        padding-left: 1.1rem;
+      }
+      .merke-nu {
+        color: #3fb950;
+        font-weight: 500;
+      }
+      .merke-ut {
+        color: #f85149;
+        font-weight: 500;
+      }
+      .merke-nedlagt {
+        color: #f85149;
+        font-weight: 500;
+      }
+      .merke-potensiell {
+        color: #e3b341;
+        font-weight: 500;
+      }
+      .merke-ikkjeaktuell {
+        color: #8b9cad;
+        font-weight: 500;
+      }
+      .merke-inaktivnu {
+        color: #79c0ff;
+        font-weight: 500;
+      }
+      .nu-mr-plain {
+        color: var(--tekst);
+        font-weight: 500;
+      }
+      .nu-mr-forvelj {
+        margin-bottom: 0.35rem;
+        line-height: 1.35;
+      }
+      .verkty input[type="checkbox"] {
+        width: 1rem;
+        height: 1rem;
+        accent-color: var(--lenkje);
+      }
+      .verkty-rediger {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.5rem 0.75rem;
+        width: 100%;
+        margin-top: 0.15rem;
+      }
+      .verkty-rediger[hidden] {
+        display: none !important;
+      }
+      .verkty-inp {
+        background: var(--kort);
+        color: var(--tekst);
+        border: 1px solid var(--ramme);
+        border-radius: 6px;
+        padding: 0.35rem 0.5rem;
+        min-width: 6rem;
+        max-width: 18rem;
+        font: inherit;
+        font-size: 0.88rem;
+      }
+      .verkty #inline_lagre {
+        background: #238636;
+        color: #fff;
+        border: 1px solid #2ea043;
+        border-radius: 6px;
+        padding: 0.4rem 0.8rem;
+        font: inherit;
+        cursor: pointer;
+        font-size: 0.9rem;
+      }
+      .verkty #last_ned_manuell,
+      .verkty #last_ned_filtrerta {
+        background: #21262d;
+        color: var(--tekst);
+        border: 1px solid var(--ramme);
+        border-radius: 6px;
+        padding: 0.4rem 0.75rem;
+        font: inherit;
+        cursor: pointer;
+        font-size: 0.9rem;
+      }
+      .verkty #last_ned_manuell:hover,
+      .verkty #last_ned_filtrerta:hover {
+        filter: brightness(1.08);
+      }
+      select.nu-velj,
+      .register-brett select.nu-velj {
+        background: var(--kort) !important;
+        color: var(--tekst) !important;
+        border: 1px solid var(--ramme) !important;
+        border-radius: 6px;
+        padding: 0.2rem 0.35rem;
+        font: inherit;
+        font-size: 0.86rem;
+        min-width: 12rem;
+        max-width: 15rem;
+      }
+      .register-brett textarea.merknad-velj {
+        display: block;
+        box-sizing: border-box;
+        min-width: 10rem;
+        max-width: 22rem;
+        width: 100%;
+        min-height: 2.4rem;
+        max-height: 6rem;
+        background: var(--kort) !important;
+        color: var(--tekst) !important;
+        border: 1px solid var(--ramme) !important;
+        border-radius: 6px;
+        padding: 0.25rem 0.4rem;
+        font: inherit;
+        font-size: 0.86rem;
+        line-height: 1.35;
+        resize: vertical;
+        vertical-align: top;
+        white-space: pre-wrap;
+      }
+      .hjelp-accordion {
+        border: 1px solid var(--ramme);
+        border-radius: 8px;
+        background: var(--kort);
+        margin: 0 0 1.1rem 0;
+        padding: 0.55rem 1rem 0.85rem;
+      }
+      .hjelp-acc-sum {
+        cursor: pointer;
+        color: var(--lenkje);
+        font-size: 1rem;
+        font-weight: 600;
+        list-style: none;
+        user-select: none;
+        line-height: 1.45;
+      }
+      .hjelp-accordion .hjelp-acc-sum::-webkit-details-marker {
+        display: none;
+      }
+      .hjelp-acc-innhald {
+        color: var(--dempa);
+        font-size: 0.9rem;
+        line-height: 1.55;
+        padding-top: 0.65rem;
+      }
+      .hjelp-acc-innhald a {
+        color: var(--lenkje);
+      }
+      .hjelp-mini-hoppliste {
+        margin: 0 0 1rem 0;
+        font-size: 0.86rem;
+        line-height: 1.65;
+      }
+      .hjelp-mini-hoppliste span {
+        color: var(--dempa);
+        margin: 0 0.2rem;
+      }
+      .hjelp-acc-h {
+        color: var(--tekst);
+        font-size: 0.97rem;
+        font-weight: 600;
+        margin: 1rem 0 0.4rem;
+      }
+      .hjelp-acc-h-framst {
+        margin-top: 0 !important;
+      }
+      .hjelp-acc-h-alt {
+        color: var(--tekst);
+        font-size: 0.93rem;
+        font-weight: 600;
+        margin: 1rem 0 0.35rem;
+      }
+      .hjelp-acc-innhald p {
+        margin: 0 0 0.65rem;
+      }
+      .hjelp-steppliste {
+        margin: 0 0 0.55rem;
+        padding-left: 1.15rem;
+      }
+      .hjelp-steppliste li {
+        margin-bottom: 0.3rem;
+      }
+      .hjelp-acc-innhald code {
+        font-size: 0.88em;
+        background: rgba(88, 166, 255, 0.08);
+        border: 1px solid var(--ramme);
+        border-radius: 4px;
+        padding: 0.05rem 0.25rem;
+      }
+      .hjelp-skilje {
+        border: none;
+        border-top: 1px solid var(--ramme);
+        margin: 1.35rem 0 1rem;
+      }
+      .hjelp-oppsliste {
+        list-style: none;
+        margin: 0.3rem 0 0;
+        padding: 0;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.35rem 0.65rem;
+        font-size: 0.87rem;
+      }
+      .hjelp-oppsliste li code {
+        display: inline-block;
+      }
+      .hjelp-oppsliste .hjelp-opps-tom {
+        font-style: italic;
+      }
+      /* lister frå Markdown (ikkje .hjelp-oppsliste) */
+      .hjelp-acc-innhald ul:not(.hjelp-oppsliste) {
+        margin: 0 0 0.55rem;
+        padding-left: 1.15rem;
+      }
+      .hjelp-acc-innhald ul:not(.hjelp-oppsliste) li {
+        margin-bottom: 0.3rem;
+      }

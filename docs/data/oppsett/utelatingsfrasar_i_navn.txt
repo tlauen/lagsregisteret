@@ -1,0 +1,12 @@
+# Delstrengar i LÅGE namn = treffet blir utelaten (etter normalisering).
+# Tomme line og # blir hoppa over.
+
+bygdeungdomslag
+bondelag
+bygdekvinnelag
+kor
+korps
+klubb
+4H
+
+

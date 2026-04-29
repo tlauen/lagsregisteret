@@ -8,595 +8,20 @@
       rel="stylesheet"
       href="https://unpkg.com/gridjs/dist/theme/mermaid.min.css"
     />
-    <style>
-      :root {
-        --bak: #0f1419;
-        --kort: #1a2028;
-        --tekst: #e6edf3;
-        --dempa: #8b9cad;
-        --lenkje: #58a6ff;
-        --ramme: #30363d;
-      }
-      * {
-        box-sizing: border-box;
-      }
-      body {
-        font-family: system-ui, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
-        background: var(--bak);
-        color: var(--tekst);
-        margin: 0;
-        line-height: 1.5;
-        min-height: 100vh;
-      }
-      .hovud {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 1.5rem 1rem 3rem;
-      }
-      h1 {
-        font-size: 1.5rem;
-        font-weight: 600;
-        margin: 0 0 0.5rem 0;
-      }
-      .leiar {
-        color: var(--dempa);
-        font-size: 0.95rem;
-        margin: 0 0 1.25rem 0;
-      }
-      .liste-val {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        gap: 0.35rem 0.65rem;
-        margin: 0 0 1rem 0;
-      }
-      .liste-val-etikett {
-        color: var(--dempa);
-        font-size: 0.9rem;
-        margin-right: 0.15rem;
-      }
-      .liste-val-knappar {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.35rem;
-      }
-      .liste-val .liste-knapp {
-        background: var(--kort);
-        color: var(--tekst);
-        border: 1px solid var(--ramme);
-        border-radius: 8px;
-        padding: 0.42rem 0.95rem;
-        font: inherit;
-        font-size: 0.9rem;
-        cursor: pointer;
-        transition: background 0.15s ease, border-color 0.15s ease,
-          color 0.15s ease;
-      }
-      .liste-val .liste-knapp:hover {
-        background: #252d36;
-        border-color: var(--lenkje);
-      }
-      .liste-val .liste-knapp.liste-knapp-valt,
-      .liste-val .liste-knapp[aria-pressed="true"] {
-        border-color: #388bfd;
-        box-shadow: 0 0 0 1px rgba(88, 166, 255, 0.35);
-        background: #252d36;
-      }
-      .verkty label {
-        display: flex;
-        align-items: center;
-        gap: 0.4rem;
-      }
-      .verkty select {
-        background: var(--kort);
-        color: var(--tekst);
-        border: 1px solid var(--ramme);
-        border-radius: 6px;
-        padding: 0.35rem 0.5rem;
-        min-width: 10rem;
-      }
-      .verkty-rad-2 {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: flex-start;
-        gap: 0.35rem 0.75rem;
-        width: 100%;
-        margin-top: 0.35rem;
-        color: var(--dempa);
-        font-size: 0.88rem;
-      }
-      .verkty-rad-2[hidden] {
-        display: none !important;
-      }
-      .verkty-rad-2 > details {
-        flex: 1 1 100%;
-        max-width: 100%;
-      }
-      .verkty-rad-2 summary {
-        cursor: pointer;
-        color: var(--lenkje);
-        user-select: none;
-        list-style: none;
-      }
-      .verkty-rad-2 summary::-webkit-details-marker {
-        display: none;
-      }
-      .verkty-rad-2 details[open] summary {
-        margin-bottom: 0.4rem;
-      }
-      .kolonne_kryss {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.3rem 1rem;
-        padding: 0.35rem 0 0;
-        max-width: 55rem;
-      }
-      .kolonne_kryss label {
-        display: flex;
-        align-items: center;
-        gap: 0.3rem;
-        cursor: pointer;
-        white-space: nowrap;
-      }
-      .kolonne_kryss input {
-        width: 0.9rem;
-        height: 0.9rem;
-        accent-color: var(--lenkje);
-        margin: 0;
-      }
-      #nu_filtr_omtrekk summary,
-      #liste_filtr_omtrekk summary {
-        cursor: pointer;
-        color: var(--lenkje);
-        user-select: none;
-        font-size: 0.92rem;
-        list-style: none;
-      }
-      #nu_filtr_omtrekk summary::-webkit-details-marker,
-      #liste_filtr_omtrekk summary::-webkit-details-marker {
-        display: none;
-      }
-      .nu_filtr_kryss {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.35rem 1rem;
-        padding: 0.45rem 0 0;
-        max-width: 58rem;
-      }
-      .nu_filtr_kryss label {
-        display: flex;
-        align-items: center;
-        gap: 0.35rem;
-        cursor: pointer;
-        font-size: 0.89rem;
-        white-space: nowrap;
-      }
-      .nu_filtr_kryss input {
-        width: 0.9rem;
-        height: 0.9rem;
-        accent-color: var(--lenkje);
-        margin: 0;
-      }
-      #kommune_val[disabled] {
-        opacity: 0.55;
-      }
-      .feil {
-        background: #3d1f1f;
-        border: 1px solid #7a2e2e;
-        border-radius: 8px;
-        padding: 1rem;
-        color: #f0c4c4;
-        margin: 0 0 1rem 0;
-      }
-      .register-brett {
-        overflow-x: auto;
-        overflow-y: visible;
-        max-width: 100%;
-        -webkit-overflow-scrolling: touch;
-        scrollbar-gutter: stable;
-        margin: 0 0 0.5rem 0;
-        padding: 0.15rem 0.15rem 0.35rem;
-        outline: none;
-        border-radius: 8px;
-      }
-      .register-brett:focus-visible {
-        box-shadow: 0 0 0 2px var(--lenkje);
-      }
-      .dempa-ny {
-        color: var(--dempa);
-        font-size: 0.85rem;
-        margin: 0 0 0.75rem 0;
-      }
-      .dempa_status {
-        color: var(--dempa);
-        font-size: 0.86rem;
-      }
-      .leiar-hjelp {
-        color: var(--dempa);
-        font-size: 0.85rem;
-        margin: -0.5rem 0 1rem 0;
-      }
-      .leiar-hjelp kbd {
-        background: var(--kort);
-        border: 1px solid var(--ramme);
-        border-radius: 4px;
-        padding: 0.1em 0.4em;
-        font-size: 0.88em;
-      }
-      .gridjs-wrapper {
-        border-radius: 8px;
-        overflow: visible;
-        border: 1px solid var(--ramme);
-      }
-      #register {
-        min-height: 8rem;
-      }
-      .register-brett .gridjs-container {
-        width: max-content !important;
-        min-width: 100% !important;
-        max-width: none !important;
-      }
-      .register-brett table.gridjs-table {
-        width: max-content !important;
-        min-width: 100%;
-        table-layout: auto !important;
-      }
-      .register-brett th.gridjs-th,
-      .register-brett td.gridjs-td {
-        max-width: none !important;
-        white-space: nowrap;
-      }
-      a {
-        color: var(--lenkje);
-      }
-      a:hover {
-        text-decoration: underline;
-      }
-      .gridjs-container {
-        color: var(--tekst) !important;
-      }
-      .gridjs-tbody,
-      .gridjs-thead,
-      .gridjs-head,
-      .gridjs-footer,
-      table.gridjs-table,
-      th.gridjs-th,
-      .gridjs-table td {
-        background: var(--kort) !important;
-        color: var(--tekst) !important;
-        border-color: var(--ramme) !important;
-      }
-      .gridjs-tbody tr:hover {
-        background: #252b33 !important;
-      }
-      .register-brett .gridjs-tbody tr:has(.rad-merke-gron) > td,
-      tr:has(.rad-merke-gron) > td {
-        background: rgba(35, 134, 54, 0.22) !important;
-        color: var(--tekst) !important;
-        border-color: var(--ramme) !important;
-      }
-      .register-brett .gridjs-tbody tr:has(.rad-merke-gron):hover > td,
-      tr:has(.rad-merke-gron):hover > td {
-        background: rgba(35, 134, 54, 0.34) !important;
-      }
-      .register-brett .gridjs-tbody tr:has(.rad-merke-raud) > td,
-      tr:has(.rad-merke-raud) > td {
-        background: rgba(220, 80, 80, 0.22) !important;
-        color: var(--tekst) !important;
-        border-color: var(--ramme) !important;
-      }
-      .register-brett .gridjs-tbody tr:has(.rad-merke-raud):hover > td,
-      tr:has(.rad-merke-raud):hover > td {
-        background: rgba(220, 80, 80, 0.32) !important;
-      }
-      .register-brett .gridjs-tbody tr:has(.rad-merke-amber) > td,
-      tr:has(.rad-merke-amber) > td {
-        background: rgba(227, 179, 65, 0.16) !important;
-        color: var(--tekst) !important;
-        border-color: var(--ramme) !important;
-      }
-      .register-brett .gridjs-tbody tr:has(.rad-merke-amber):hover > td,
-      tr:has(.rad-merke-amber):hover > td {
-        background: rgba(227, 179, 65, 0.26) !important;
-      }
-      .register-brett .gridjs-tbody tr:has(.rad-merke-dempanu) > td,
-      tr:has(.rad-merke-dempanu) > td {
-        background: rgba(139, 156, 173, 0.12) !important;
-        color: var(--tekst) !important;
-        border-color: var(--ramme) !important;
-      }
-      .register-brett .gridjs-tbody tr:has(.rad-merke-dempanu):hover > td,
-      tr:has(.rad-merke-dempanu):hover > td {
-        background: rgba(139, 156, 173, 0.2) !important;
-      }
-      .register-brett .gridjs-tbody tr:has(.rad-merke-inaktivnu) > td,
-      tr:has(.rad-merke-inaktivnu) > td {
-        background: rgba(88, 166, 200, 0.14) !important;
-        color: var(--tekst) !important;
-        border-color: var(--ramme) !important;
-      }
-      .register-brett .gridjs-tbody tr:has(.rad-merke-inaktivnu):hover > td,
-      tr:has(.rad-merke-inaktivnu):hover > td {
-        background: rgba(88, 166, 200, 0.24) !important;
-      }
-      .rad-merke-gron {
-        color: #b4f0c0;
-        font-weight: 500;
-      }
-      .rad-merke-raud {
-        color: #f0b4b4;
-        font-weight: 500;
-      }
-      .rad-merke-amber {
-        color: #f5e6b8;
-        font-weight: 500;
-      }
-      .rad-merke-dempanu {
-        color: #b5c3d4;
-        font-weight: 500;
-      }
-      .rad-merke-inaktivnu {
-        color: #9cd8f0;
-        font-weight: 500;
-      }
-      .dome-gron-tekst {
-        color: #3fb950;
-      }
-      .dome-raud-tekst {
-        color: #f85149;
-      }
-      .gridjs-search-input,
-      input.gridjs-input,
-      .gridjs-search-input input {
-        background: var(--bak) !important;
-        color: var(--tekst) !important;
-        border: 1px solid var(--ramme) !important;
-        border-radius: 6px;
-        padding: 0.4rem 0.6rem;
-      }
-      .gridjs-pages button {
-        color: var(--tekst) !important;
-      }
-      .register-fleire {
-        margin: 0.5rem 0 0.25rem;
-        padding: 0 0.1rem;
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.45rem 0.6rem;
-        align-items: center;
-      }
-      .register-fleire button {
-        background: var(--kort);
-        color: var(--lenkje);
-        border: 1px solid var(--ramme);
-        border-radius: 8px;
-        padding: 0.4rem 0.8rem;
-        font-size: 0.9rem;
-        cursor: pointer;
-      }
-      .register-fleire button:hover {
-        background: #2d333b;
-        color: #79c0ff;
-      }
-      .nu_dup_verkty {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.55rem 1rem;
-        align-items: flex-end;
-        margin: 0.4rem 0 0;
-        max-width: 58rem;
-      }
-      .nu_dup_verkty label.nu_dup_lab {
-        display: flex;
-        flex-direction: column;
-        gap: 0.2rem;
-        font-size: 0.92rem;
-      }
-      .nu_dup_verkty select {
-        background: var(--kort);
-        color: var(--tekst);
-        border: 1px solid var(--ramme);
-        border-radius: 6px;
-        padding: 0.3rem 0.35rem;
-        max-width: 24rem;
-        font-size: 0.86rem;
-      }
-      .nu_dup_knappar {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.4rem;
-        align-items: center;
-      }
-      #nu_dup_liste_act {
-        margin: 0.45rem 0 0.15rem;
-        padding-left: 1.1rem;
-      }
-      .merke-nu {
-        color: #3fb950;
-        font-weight: 500;
-      }
-      .merke-ut {
-        color: #f85149;
-        font-weight: 500;
-      }
-      .merke-nedlagt {
-        color: #f85149;
-        font-weight: 500;
-      }
-      .merke-potensiell {
-        color: #e3b341;
-        font-weight: 500;
-      }
-      .merke-ikkjeaktuell {
-        color: #8b9cad;
-        font-weight: 500;
-      }
-      .merke-inaktivnu {
-        color: #79c0ff;
-        font-weight: 500;
-      }
-      .nu-mr-plain {
-        color: var(--tekst);
-        font-weight: 500;
-      }
-      .nu-mr-forvelj {
-        margin-bottom: 0.35rem;
-        line-height: 1.35;
-      }
-      .verkty input[type="checkbox"] {
-        width: 1rem;
-        height: 1rem;
-        accent-color: var(--lenkje);
-      }
-      .verkty-rediger {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        gap: 0.5rem 0.75rem;
-        width: 100%;
-        margin-top: 0.15rem;
-      }
-      .verkty-rediger[hidden] {
-        display: none !important;
-      }
-      .verkty-inp {
-        background: var(--kort);
-        color: var(--tekst);
-        border: 1px solid var(--ramme);
-        border-radius: 6px;
-        padding: 0.35rem 0.5rem;
-        min-width: 6rem;
-        max-width: 18rem;
-        font: inherit;
-        font-size: 0.88rem;
-      }
-      .verkty #inline_lagre {
-        background: #238636;
-        color: #fff;
-        border: 1px solid #2ea043;
-        border-radius: 6px;
-        padding: 0.4rem 0.8rem;
-        font: inherit;
-        cursor: pointer;
-        font-size: 0.9rem;
-      }
-      .verkty #last_ned_manuell,
-      .verkty #last_ned_filtrerta {
-        background: #21262d;
-        color: var(--tekst);
-        border: 1px solid var(--ramme);
-        border-radius: 6px;
-        padding: 0.4rem 0.75rem;
-        font: inherit;
-        cursor: pointer;
-        font-size: 0.9rem;
-      }
-      .verkty #last_ned_manuell:hover,
-      .verkty #last_ned_filtrerta:hover {
-        filter: brightness(1.08);
-      }
-      select.nu-velj,
-      .register-brett select.nu-velj {
-        background: var(--kort) !important;
-        color: var(--tekst) !important;
-        border: 1px solid var(--ramme) !important;
-        border-radius: 6px;
-        padding: 0.2rem 0.35rem;
-        font: inherit;
-        font-size: 0.86rem;
-        min-width: 12rem;
-        max-width: 15rem;
-      }
-      .register-brett textarea.merknad-velj {
-        display: block;
-        box-sizing: border-box;
-        min-width: 10rem;
-        max-width: 22rem;
-        width: 100%;
-        min-height: 2.4rem;
-        max-height: 6rem;
-        background: var(--kort) !important;
-        color: var(--tekst) !important;
-        border: 1px solid var(--ramme) !important;
-        border-radius: 6px;
-        padding: 0.25rem 0.4rem;
-        font: inherit;
-        font-size: 0.86rem;
-        line-height: 1.35;
-        resize: vertical;
-        vertical-align: top;
-        white-space: pre-wrap;
-      }
-    </style>
+    <link rel="stylesheet" href="css/lagreg_index.css" />
   </head>
   <body>
     <div class="hovud">
       <h1>Lagsregisteret</h1>
-      <p class="leiar">
-        <strong>Kjelde:</strong> Alle rader i éi tabell kjem frå organisasjonar som
-        er med i
-        <a
-          href="https://www.brreg.no/frivillighetsregisteret/"
-          rel="noopener noreferrer"
-          >frivillighetsregisteret</a
-        >
-        hjå
-        <a href="https://www.brreg.no/" rel="noopener noreferrer"
-          >Brønnøysundregistera</a
-        >
-        (opne data), pluss lokale filtreringar i repositoriet (søkjefragment,
-        utelatingsfrasar, ev. «norsk tilhald» ved innhenting). Kolonne
-        <strong>Liste</strong> seier kva for søkjefil som gav Brreg‑treff
-        (<code>Ungdom*</code>, <code>Grend*</code>,
-        <code>Bygd*</code>, komma om fleire).
-      </p>
-      <p class="leiar">
-        <strong>Søk</strong> i søkjefeltet i tabellen gjeld alle
-        <strong>synlege</strong> kolonnar (bruk <strong>Vis / skjul kolonnar</strong> for
-        kva som er med). Vel <strong>fylke</strong>, og etter behov
-        <strong>kommune</strong> — kommune‑nedtrekk vert tilgjengeleg når fylke ikkje er
-        «alle». Liknamn i data for <strong>fylke og kommune</strong> (t.d. ulik
-        skriveform, skjulte mellomrom, kort og langt fylkesnamn, eller same første ledd
-        der namnet har « - ») vert slått saman i lista slik du ikkje får doble val. Under
-        <strong>Vis / skjul statustypar</strong>: når alle typar er avkryssa, vert
-        ikkje status brukt til å avgrensa; ta <strong>frå</strong> kryss hjå dei
-        kategoriar du vil <strong>gjøyma</strong>, slik at berre rader som høyrer til
-        minst éin av dei framleis synlege statusane vert med (eller‑logikk).
-        Under <strong>Vis / skjul listetypar</strong>: når alle tre (Ungdom*, Grend*,
-        Bygd*) er avkryssa, vert ikkje kolonne <strong>Liste</strong> brukt til å
-        avgrensa; ta frå kryss for å skjule rader som berre høyrer til den typen — rader
-        med fleire listetag (komma) vert vist om minst éin tag framleis er synleg.
-        Bruk <strong>Rediger i lista</strong> for å setja NU-status (medlem, potensiell
-        medlem, utmeld, ikkje aktuell, nedlagt) og <strong>luka ut</strong> rett i
-        tabellen —
-        <strong>utan innlogging</strong>: endringar vert lagra lokalt i nettlesaren, og
-        du kan lasta ned <code>manuell_status.json</code> når du vil sjekkja inn i
-        repositoriet. Laga du <strong>lukar ut</strong> (ikkje ungdomslag / ikkje
-        frilynde) er skjulte som standard — bruk avkryssinga <em>Vis luka ut</em> for å
-        sjå dei. Du kan også redigere <code>data/manuell_status.json</code> rett i git
-        eller bruk <code>skript/sett_lag_status.py</code>;
-        <a href="admin.html" style="color: var(--lenkje)">admin-sida</a> er valfri
-        (same som Vercel‑push, treng passord).
-      </p>
-      <p class="leiar">
-        Av <strong>omsyn til yting</strong> vert berre eit visst tal rader teikna fyrst; under
-        tabellen finn du <strong>Last inn … til</strong> for å laste inn fleire i
-        omgangar, eller <strong>Vis alle rader</strong> for å utvide til heile det
-        filtrerte utvalet med éin gong.
-      </p>
-      <p class="leiar-hjelp">
-        Brei tabell: dra vassrett under tabellen, eller bruk
-        <kbd>Tab</kbd> + piltast / mus med skroll. Rader heilt i
-        <strong class="dome-gron-tekst">grøn tone</strong> = treff i
-        <a href="https://www.ungdomslag.no/lokallag" rel="noopener noreferrer"
-          >lokallaglista (NU)</a
-        >
-        jamførd med registret (<code>nu: medlem</code>), eller manuelt medlem.
-        <strong>Gul tone</strong> = potensiell medlem —
-        <strong>dempa</strong> = ikkje aktuell. <strong>Lyseblå tone</strong> = inaktiv
-        (NU eller manuell). <strong class="dome-raud-tekst">Raud tone</strong> for
-        utmeld eller nedlagt. Utmelding gjev føretré over grønt.
-      </p>
+      <details class="hjelp-accordion">
+        <summary class="hjelp-acc-sum">
+          Forklaring for nybegynnarar · filter · søkjefragment og utelatingsfrasar (trykk
+          eller Enter for å opne)
+        </summary>
+        <div id="hjelp_acc_innhald" class="hjelp-acc-innhald">
+          <p class="dempa-ny hjelp-acc-lastande">Lastar forklaring …</p>
+        </div>
+      </details>
       <div id="feil" class="feil" style="display: none" hidden></div>
       <div class="verkty">
         <label for="fylke_val">
@@ -762,7 +187,7 @@
     <script src="js/lagreg_nettoppsett.js"></script>
     <script src="https://unpkg.com/papaparse@5.4.1/papaparse.min.js"></script>
     <script src="https://unpkg.com/gridjs@6.2.0/dist/gridjs.umd.js"></script>
-    <script>
+    <script src="https://cdn.jsdelivr.net/npm/markdown-it@13.0.2/dist/markdown-it.min.js"></script>    <script>
       (function () {
         "use strict";
 
@@ -2010,6 +1435,67 @@
           }, 2e3);
         }
 
+        /** Tomme liner og liner med # som fyrste teikn hoppast over — som i innhentingskripta. */
+        function parseOppsettTekstTillLinjeliste(tekst) {
+          if (!tekst || typeof tekst !== "string") return [];
+          return tekst
+            .split(/\r?\n/)
+            .map(function (lin) {
+              return lin.trim();
+            })
+            .filter(function (lin) {
+              return lin.length > 0 && lin.charAt(0) !== "#";
+            });
+        }
+
+        function fyllOppsListeFråLinjene(ulId, linjeliste) {
+          var ul = document.getElementById(ulId);
+          if (!ul) return;
+          ul.textContent = "";
+          var i;
+          if (!linjeliste.length) {
+            var li0 = document.createElement("li");
+            li0.className = "hjelp-opps-tom";
+            li0.textContent =
+              "(lista er tom eller fil er ikkje henta — oppdater sida; sjekk nett‑kopi av oppsett/)";
+            ul.appendChild(li0);
+            return;
+          }
+          for (i = 0; i < linjeliste.length; i++) {
+            var li = document.createElement("li");
+            var kod = document.createElement("code");
+            kod.textContent = linjeliste[i];
+            li.appendChild(kod);
+            ul.appendChild(li);
+          }
+        }
+
+        function lastingOppsettListeForGjennomsikt() {
+          var ko = [
+            ["data/oppsett/sokjefragment.txt", "oppsliste_ungdom"],
+            ["data/oppsett/sokjefragment_bygd.txt", "oppsliste_bygd"],
+            ["data/oppsett/sokjefragment_grende.txt", "oppsliste_grende"],
+            ["data/oppsett/utelatingsfrasar_i_navn.txt", "oppsliste_utelating"],
+          ];
+          ko.forEach(function (par) {
+            var sti = par[0];
+            var ulId = par[1];
+            fetch(sti)
+              .then(function (rInn) {
+                return rInn.ok ? rInn.text() : "";
+              })
+              .catch(function () {
+                return "";
+              })
+              .then(function (tekst) {
+                fyllOppsListeFråLinjene(
+                  ulId,
+                  parseOppsettTekstTillLinjeliste(tekst)
+                );
+              });
+          });
+        }
+
         function byggFylkeVal() {
           var grupper = {};
           kandidatFylkeRader().forEach(function (r) {
@@ -2567,6 +2053,36 @@
           }
         }
 
+        function fjernYmseMdKommenterbunn(md) {
+          return String(md || "").replace(/^\ufeff\s*/, "").replace(/^\s*<!--[\s\S]*?-->\s*\n?/, "");
+        }
+
+        /** Fylljer #hjelp_acc_innhald frå Markdown (handsaming i `docs/md/hjelp_innhald.md`). */
+        function lastingHjelpInnhaldMarkdown(tekstrå) {
+          var el = document.getElementById("hjelp_acc_innhald");
+          if (!el) return;
+          var Md = typeof window.markdownit === "function" ? window.markdownit : null;
+          var råtekst = fjernYmseMdKommenterbunn(tekstrå);
+          try {
+            if (Md && råtekst.trim()) {
+              el.innerHTML = Md({
+                html: true,
+                linkify: true,
+                breaks: false,
+              }).render(råtekst);
+              return;
+            }
+          } catch (eFj) {
+            /* */
+          }
+          el.innerHTML =
+            '<p class="dempa-ny">' +
+            (råtekst.trim()
+              ? "Kunne ikkje gjengje hjelp‑Markdown (sjå nettlesarkonsollen)."
+              : 'Fann ikkje <code>md/hjelp_innhald.md</code> — åpna du sida som <code>file://</code>? Nytt ei lokal eller nettjener.') +
+            "</p>";
+        }
+
         function visFeil(tekst) {
           var e = document.getElementById("feil");
           e.textContent = tekst;
@@ -2607,8 +2123,16 @@
               .catch(function () {
                 return { tittlar: [] };
               }),
+            fetch("md/hjelp_innhald.md")
+              .then(function (a) {
+                return a.ok ? a.text() : "";
+              })
+              .catch(function () {
+                return "";
+              }),
           ])
             .then(function (par) {
+              lastingHjelpInnhaldMarkdown(par[4]);
               var statusKart = flettNettOgLokalManuell(reintStatusKart(par[0]));
               var nuDok = par[1];
               var orgnrFraNuliste = reintOrgNrSet(nuDok);
@@ -2687,6 +2211,7 @@
               oppfriskNuDupListeUI();
               setRedigerSyn(true);
               teiknaRegister();
+              lastingOppsettListeForGjennomsikt();
               document
                 .getElementById("fylke_val")
                 .addEventListener("change", function () {

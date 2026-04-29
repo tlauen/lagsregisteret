@@ -1,0 +1,4 @@
+# Grende-relaterte fragment (eigne søkjer — ikkje i sokjefragment.txt).
+
+grende
+grende-

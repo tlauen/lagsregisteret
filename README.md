@@ -18,7 +18,9 @@ Oversikt over frilynde ungdomslag og liknande lag i Noreg, bygd på opne kjelder
 | `data/kommune_til_fylke.json` | Tabell frå SSB: kommunenummer → fylkesnamn (fyller `fylke` i CSV). |
 | `data/manuell_status.json` | Manuell **NU-status** (`medlem`, `potensiell_medlem`, `inaktiv_medlem`, `utmeld`, `ikkje_aktuell`), **skjul**, **nedlagt** — sjå `oppsett/nu_status_forklaring.txt`. |
 | `oppsett/nu_status_forklaring.txt` | Forklaring av felt i `manuell_status.json`. |
-| `docs/index.html` | Søkbar / filtrerbar tabell for **GitHub Pages**; **Rediger i lista** lagrar i nettlesaren (utvid med nedlasting; valfri Vercel‑push for git). |
+| `docs/md/hjelp_innhald.md` | Hjelpetekst for **index** — rediger som Markdown (med valfritt innblanda HTML for id/ar og tomme `<ul>` for fragmentliste); sist last på sida og gjengjev med markdown-it som i nettlesaren. |
+| `docs/css/lagreg_index.css` | Eiga stille for `docs/index.html` (utanom temaet frå Grid.js-unpkg). |
+| `docs/index.html` | Hovudside (PapaParse + Grid.js); forklaring i Markdown under. |
 | `docs/admin.html` | Redigering av manuell status via nett (krev Vercel-API under). |
 | `docs/js/lagreg_nettoppsett.js` | Grunn-URL for Vercel-API (`LAGREG_API_GRUNNURL`), oftast føreutfylt med produksjonsdomen. |
 | `api/lagre-manuell-status.js` | Vercel serverless: Basic-auth, skriv `manuell_status` i repo. |
@@ -28,7 +30,7 @@ Oversikt over frilynde ungdomslag og liknande lag i Noreg, bygd på opne kjelder
 | `docs/data/lag.csv` | Kopi av siste Brreg-register; **`liste`** (`ungdomslag`/`grendelag`/`bygdelag`, kommasepara om fleire treff); valfritt **`nu_mr_*`** (NU medlemsregister frå Excel-fletting). Nettsida har tre knappar etter vald kategori. |
 | `docs/data/manuell_status.json` | Kopi av manuell status (for nett). |
 | `skript/innhent_lag_frå_brreg.py` | Les treff per søkjefilstype, slår saman på orgnr, skriv **`liste`** + `kjelde_url` til Brreg‑oppslag. |
-| `skript/publiser_data_til_nettside.py` | Kopierer `utdata/…csv` → `docs/data/lag.csv`, manuell status og `data/nu_saman_*.json` / `nu_lokallag_manglar_*.json` → `docs/data/` når filene finst. |
+| `skript/publiser_data_til_nettside.py` | Kopierer `utdata/…csv` → `docs/data/lag.csv`, manuell status, `data/nu_saman_*.json` / `nu_lokallag_manglar_*.json` → `docs/data/` + `oppsett/sokjefragment*.txt` og `utelatingsfrasar_i_navn.txt` → `docs/data/oppsett/` for vev. |
 | `skript/sett_lag_status.py` | CLI: oppdater éi orgnr-oppføring i `data/manuell_status.json`. |
 | `skript/bygg_kommune_til_fylke.py` | OPPDATER: last ned siste kommune → fylke frå SSB (bruk sjeldan). |
 | `skript/jamfoer_nu_lokallag.py` | Jamfører [nu.no/lokallag](https://www.ungdomslag.no/lokallag) (markdown med `##` per lag) med `docs/data/lag.csv` — sjekk samsvar manuelt, ikkje blind stol på likskapsdøme. |
@@ -131,12 +133,12 @@ python3 skript/bygg_kommune_til_fylke.py
    ```bash
    python3 skript/innhent_lag_frå_brreg.py
    python3 skript/publiser_data_til_nettside.py
-   git add docs/data/lag.csv docs/data/manuell_status.json docs/data/nu_saman_med_nu_no.json docs/data/nu_lokallag_manglar_i_register.json data/manuell_status.json data/nu_saman_med_nu_no.json data/nu_lokallag_manglar_i_register.json
+   git add docs/css/lagreg_index.css docs/md/hjelp_innhald.md docs/data/lag.csv docs/data/manuell_status.json docs/data/nu_saman_med_nu_no.json docs/data/nu_lokallag_manglar_i_register.json docs/data/oppsett data/manuell_status.json data/nu_saman_med_nu_no.json data/nu_lokallag_manglar_i_register.json
    git commit -m "Oppdatert register og manuell status for nettvising"
    git push
    ```
 
-3. Sida har **fylke**, **status**, **søkjelistar** (tre knappar etter kva søkjefil som gav treff), søkjefelt, avkryssing for luka-ut, **vel synlege kolonnar** (førespurt lagring i nettlesaren) og i redigeringsmodus: **Status** og **hovudlista** fyrst, deretter **Lag** med **Merknad** rett attmed (fritekst med textarea). Registerrader byggjer på **frivilligheitsregister** + oppsett ved innhent — sjå ingress på sida. **Redigering** treng ikkje innlogging: endringar vert lagra lokalt, og `manuell_status.json` kan lastast ned; valfri **Vercel** med brukar/passord (sjå seksjon under) pushar rett inn i git. Brukar PapaParse + Grid.js.
+3. **Ingress** ligg i utbreibar blokk (accordion) med hoppliste og forklaring for nybegynnarar; **søkjefragment og utelatingsfrasar** vert lista dynamisk frå `docs/data/oppsett/` (kopiert ved `publiser_data_til_nettside.py`). Sjå elles: **fylke**, **status**, **søkjelistar** (tre knappar etter kva søkjefil som gav treff), søkjefelt, avkryssing for luka-ut, **vel synlege kolonnar** (førespurt lagring i nettlesaren) og i redigeringsmodus: **Status** og **hovudlista** fyrst, deretter **Lag** med **Merknad** rett attmed (fritekst med textarea). Registerrader byggjer på **frivilligheitsregister** + oppsett ved innhent — **Redigering** treng ikkje innlogging: endringar vert lagra lokalt, og `manuell_status.json` kan lastast ned; valfri **Vercel** med brukar/passord (sjå seksjon under) pushar rett inn i git. Brukar PapaParse + Grid.js.
 
 4. Lokal førehandsvising: stå i mappa `docs/` og køyr `python3 -m http.server 8765`, opne `http://127.0.0.1:8765/`.
 
