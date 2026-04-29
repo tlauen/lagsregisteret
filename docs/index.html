@@ -310,6 +310,37 @@
           return null;
         }
 
+        /**
+         * Manuell kart / data-o: 9 siffer org.nr, elles __ix_<rad> i lag.csv-rekkefølgje.
+         * (Uten dette får rader utan org.nr ikkje nedtrekk/kryss/merknad.)
+         */
+        function radManuellNykkel(r) {
+          var o = reintO(r);
+          if (o.length === 9) {
+            return o;
+          }
+          if (r._lagreg_ix != null && r._lagreg_ix >= 0) {
+            return "__ix_" + r._lagreg_ix;
+          }
+          return "";
+        }
+
+        function finnRadVedDataO(oRå) {
+          var s = sikreTekst(oRå || "").trim();
+          if (/^__ix_\d+$/.test(s)) {
+            var ix = parseInt(s.slice(5), 10);
+            if (
+              ix >= 0 &&
+              ix < heileSett.length &&
+              heileSett[ix]._lagreg_ix === ix
+            ) {
+              return heileSett[ix];
+            }
+            return null;
+          }
+          return finnRadVedOrgnr(s);
+        }
+
         function lesNuKopiarListe() {
           try {
             var t = localStorage.getItem(LAGREG_NU_KOPIAR);
@@ -760,6 +791,8 @@
           if (!r) return "";
           var tl = r.toLocaleLowerCase("nb-NO");
           if (tl === "aktiv" || tl === "medlem") return "Medlem";
+          /* Same etikett som manuelt «Inaktiv medlem» ved enkeltord frå NU-Excel */
+          if (tl === "inaktiv") return "Inaktiv medlem";
           return r;
         }
 
@@ -1010,8 +1043,8 @@
         }
 
         function nuStatusCelleInteraktiv(r) {
-          var o = reintO(r);
-          if (o.length !== 9) {
+          var dk = radManuellNykkel(r);
+          if (!dk) {
             return "—";
           }
           var v = statusVerdiFøreVelj(r);
@@ -1029,7 +1062,7 @@
           }
           var s =
             '<select class="nu-velj" data-o="' +
-            vikHtml(o) +
+            vikHtml(dk) +
             '" aria-label="Manuell påverknad (under NU-register) for ' +
             vikHtml(sikreTekst(r.lagsnavn)) +
             '">' +
@@ -1066,14 +1099,14 @@
         }
 
         function hovudCelleInteraktiv(r) {
-          var o = reintO(r);
-          if (o.length !== 9) {
+          var dk = radManuellNykkel(r);
+          if (!dk) {
             return "—";
           }
           var iLista = !r.skjul_flag;
           return gridjs.html(
             '<input type="checkbox" class="input-i-lista" data-o="' +
-              vikHtml(o) +
+              vikHtml(dk) +
               '" title="Vis i hovudlista"' +
               (iLista ? " checked" : "") +
               " />"
@@ -1092,14 +1125,14 @@
         }
 
         function merknadCelleInteraktiv(r) {
-          var o = reintO(r);
-          if (o.length !== 9) {
+          var dk = radManuellNykkel(r);
+          if (!dk) {
             return "—";
           }
           var m = sikreTekst(r.merknad_hand);
           return gridjs.html(
             '<textarea class="merknad-velj" data-o="' +
-              vikHtml(o) +
+              vikHtml(dk) +
               '" rows="2" spellcheck="true" aria-label="Merknad for ' +
               vikHtml(sikreTekst(r.lagsnavn)) +
               '">' +
@@ -1131,14 +1164,19 @@
           var reint = {};
           if (!ruv || typeof ruv !== "object") return reint;
           Object.keys(ruv).forEach(function (k) {
-            if (/^\d{9}$/.test(k)) reint[k] = ruv[k];
+            if (/^\d{9}$/.test(k) || /^__ix_\d+$/.test(k)) {
+              reint[k] = ruv[k];
+            }
           });
           return reint;
         }
 
         function fiksNuEtterKjelde(r) {
           var o = reintO(r);
-          if (o.length !== 9) {
+          if (
+            o.length !== 9 &&
+            (r._lagreg_ix == null || r._lagreg_ix < 0)
+          ) {
             r.nu_vis_tekst = "";
             reknRadGron(r);
             return;
@@ -1160,19 +1198,10 @@
             reknRadGron(r);
             return;
           }
-          var iNu = nulOrgnFraListe && nulOrgnFraListe.has(o);
-          if (iNu) {
-            r.nu_raw = "medlem";
-            r.nu_vis_tekst = "Medlem";
-            reknRadGron(r);
-            return;
-          }
           if (r.nu_raw === "medlem") {
             r.nu_vis_tekst = "Medlem";
           } else if (r.nu_raw === "potensiell_medlem") {
             r.nu_vis_tekst = "Potensiell medlem";
-          } else if (r.nu_raw === "inaktiv_medlem") {
-            r.nu_vis_tekst = "Inaktiv medlem";
           } else if (r.nu_raw === "ikkje_aktuell") {
             r.nu_vis_tekst = "Ikkje aktuell";
           } else {
@@ -1184,10 +1213,13 @@
 
         function slaaSamanStatus(felt, kart, orgnrFraNuliste) {
           nulOrgnFraListe = orgnrFraNuliste;
-          return felt.map(function (r) {
+          return felt.map(function (r, idx) {
             var t = sikreTekst(r.orgnr).replace(/\D/g, "");
             var o = t.length >= 9 ? t.slice(0, 9) : t;
-            var st = o.length === 9 ? kart[o] || {} : {};
+            r._lagreg_ix = idx;
+            var kartNøkk =
+              o.length === 9 ? o : "__ix_" + idx;
+            var st = kart[kartNøkk] || {};
             if (typeof st !== "object" || st === null) st = {};
             r.nedlagt_flag = st.nedlagt === true;
             var nmu = sikreTekst(st.nu).trim().toLowerCase();
@@ -1202,14 +1234,32 @@
                 o.length === 9 && orgnrFraNuliste && orgnrFraNuliste.has(o);
               if (nmu === "inaktiv_medlem" && !r.nedlagt_flag) {
                 r.nu_raw = "inaktiv_medlem";
-              } else if (iNu && !r.nedlagt_flag) {
-                r.nu_raw = "medlem";
               } else if (nmu === "medlem") {
                 r.nu_raw = "medlem";
               } else if (nmu === "potensiell_medlem") {
                 r.nu_raw = "potensiell_medlem";
               } else if (nmu === "ikkje_aktuell") {
                 r.nu_raw = "ikkje_aktuell";
+              } else if (r.nedlagt_flag) {
+                r.nu_raw = "";
+              } else if (iNu) {
+                if (nuMrSomUtmeld(r)) {
+                  r.nu_raw = "utmeld";
+                } else if (nuMrSomNedlagt(r)) {
+                  r.nedlagt_flag = true;
+                  r.nu_raw = "";
+                } else if (nuMrSomInaktiv(r)) {
+                  r.nu_raw = "inaktiv_medlem";
+                } else {
+                  r.nu_raw = "medlem";
+                }
+              } else if (nuMrSomUtmeld(r)) {
+                r.nu_raw = "utmeld";
+              } else if (nuMrSomNedlagt(r)) {
+                r.nedlagt_flag = true;
+                r.nu_raw = "";
+              } else if (nuMrSomInaktiv(r)) {
+                r.nu_raw = "inaktiv_medlem";
               } else {
                 r.nu_raw = "";
               }
@@ -1725,8 +1775,10 @@
         function byggManuellObjekt() {
           var ut = {};
           heileSett.forEach(function (r) {
-            var o = reintO(r);
-            if (o.length !== 9) return;
+            var nykk = radManuellNykkel(r);
+            if (!nykk) {
+              return;
+            }
             var b = {};
             if (
               r.nu_raw === "medlem" ||
@@ -1741,12 +1793,12 @@
             if (r.nedlagt_flag) b.nedlagt = true;
             var m = sikreTekst(r.merknad_hand).trim();
             if (m) b.merknad = m;
-            if (Object.keys(b).length) ut[o] = b;
+            if (Object.keys(b).length) ut[nykk] = b;
           });
           var ordaISett = new Set();
           heileSett.forEach(function (r) {
-            var o = reintO(r);
-            if (o.length === 9) ordaISett.add(o);
+            var k = radManuellNykkel(r);
+            if (k) ordaISett.add(k);
           });
           Object.keys(manuellGrunnKart).forEach(function (k) {
             if (ordaISett.has(k)) return;
@@ -1780,6 +1832,17 @@
           return "";
         }
 
+        /** API tillèt berre nine siffer orgnr — ikkje __ix_-nøkkelar. */
+        function manuellObjektBerreGyldOrg(obj) {
+          var ut = {};
+          Object.keys(obj || {}).forEach(function (k) {
+            if (/^\d{9}$/.test(k)) {
+              ut[k] = obj[k];
+            }
+          });
+          return ut;
+        }
+
         function utgreiKnetthendelse(e) {
           var m = "";
           if (e && e.message != null) m = String(e.message);
@@ -1809,6 +1872,11 @@
           }
           var u = gr + "/api/lagre-manuell-status";
           if (st) st.textContent = "Lagrar…";
+          var fullMann = byggManuellObjekt();
+          var tilApi = manuellObjektBerreGyldOrg(fullMann);
+          var harRadUtanOrg = Object.keys(fullMann).some(function (k2) {
+            return /^__ix_/.test(k2);
+          });
           fetch(u, {
             method: "POST",
             headers: {
@@ -1816,7 +1884,7 @@
               Authorization:
                 "Basic " + btoa(unescape(encodeURIComponent(bu + ":" + pa))),
             },
-            body: JSON.stringify({ manuell_status: byggManuellObjekt() }),
+            body: JSON.stringify({ manuell_status: tilApi }),
           })
             .then(function (r) {
               return r.text().then(function (t) {
@@ -1829,7 +1897,10 @@
                 skrivLokalManuell();
                 if (st) {
                   st.textContent =
-                    "Lagra. Vent eitt augeblikk til GitHub Pages bygg."
+                    "Lagra. Vent eitt augeblikk til GitHub Pages bygg." +
+                    (harRadUtanOrg
+                      ? " Merknad: rader utan org.nr kan ikkje serialiserast til Git via API-et; dei held seg i lokallagring og «Last ned manuell_status.json»."
+                      : "");
                 }
                 return;
               }
@@ -1852,12 +1923,10 @@
             return;
           }
           var oN = t.getAttribute("data-o");
-          for (var i = 0; i < heileSett.length; i++) {
-            if (reintO(heileSett[i]) === oN) {
-              heileSett[i].merknad_hand = t.value;
-              skrivLokalManuell();
-              return;
-            }
+          var rad = finnRadVedDataO(oN);
+          if (rad) {
+            rad.merknad_hand = t.value;
+            skrivLokalManuell();
           }
         }
 
@@ -1867,26 +1936,24 @@
           if (t.classList && t.classList.contains("nu-velj")) {
             var oN = t.getAttribute("data-o");
             var v = t.value;
-            for (var i = 0; i < heileSett.length; i++) {
-              if (reintO(heileSett[i]) === oN) {
-                if (v === "nedlagt") {
-                  heileSett[i].nedlagt_flag = true;
-                  if (heileSett[i].nu_raw === "utmeld") {
-                    heileSett[i].nu_raw = "";
-                  }
-                } else {
-                  heileSett[i].nedlagt_flag = false;
-                  var gyldNu =
-                    v === "medlem" ||
-                    v === "utmeld" ||
-                    v === "potensiell_medlem" ||
-                    v === "inaktiv_medlem" ||
-                    v === "ikkje_aktuell";
-                  heileSett[i].nu_raw = gyldNu ? v : "";
+            var rr = finnRadVedDataO(oN);
+            if (rr) {
+              if (v === "nedlagt") {
+                rr.nedlagt_flag = true;
+                if (rr.nu_raw === "utmeld") {
+                  rr.nu_raw = "";
                 }
-                fiksNuEtterKjelde(heileSett[i]);
-                break;
+              } else {
+                rr.nedlagt_flag = false;
+                var gyldNu =
+                  v === "medlem" ||
+                  v === "utmeld" ||
+                  v === "potensiell_medlem" ||
+                  v === "inaktiv_medlem" ||
+                  v === "ikkje_aktuell";
+                rr.nu_raw = gyldNu ? v : "";
               }
+              fiksNuEtterKjelde(rr);
             }
             teiknaRegister();
             skrivLokalManuell();
@@ -1895,12 +1962,10 @@
           if (t.classList && t.classList.contains("input-i-lista")) {
             var o2 = t.getAttribute("data-o");
             var sk = !t.checked;
-            for (var j = 0; j < heileSett.length; j++) {
-              if (reintO(heileSett[j]) === o2) {
-                heileSett[j].skjul_flag = sk;
-                reknRadGron(heileSett[j]);
-                break;
-              }
+            var r2 = finnRadVedDataO(o2);
+            if (r2) {
+              r2.skjul_flag = sk;
+              reknRadGron(r2);
             }
             byggFylkeVal();
             teiknaRegister();
