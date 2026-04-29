@@ -44,10 +44,17 @@
           <input type="checkbox" id="vis_skjul" />
           Vis luka ut (ikkje i hovudlista)
         </label>
-        <label class="verkty-skjul" for="rediger_i_lista">
-          <input type="checkbox" id="rediger_i_lista" />
+        <button
+          type="button"
+          class="verkty-knapp-rediger"
+          id="rediger_i_lista_knapp"
+          aria-pressed="false"
+          aria-controls="rediger_felt"
+          title="Vis eller skjul felles for å redigere status, merknad og lokalliste direkte i tabellen"
+        >
           Rediger i lista
-        </label>
+        </button>
+        <input type="checkbox" id="rediger_i_lista" hidden tabindex="-1" />
         <button
           type="button"
           id="last_ned_filtrerta"
@@ -114,6 +121,9 @@
         <ul id="nu_dup_liste_act" class="dempa-ny"></ul>
       </details>
       <div id="rediger_felt" class="verkty-rediger" hidden>
+        <button type="button" id="legg_til_org_knapp" class="knapp-legg-til-org">
+          Legg til organisasjon
+        </button>
         <span class="dempa_status" style="flex: 1 1 12rem"
           >Endringar vert lagra i denne nettlesaren (ikkje på GitHub automatisk).</span
         >
@@ -233,6 +243,8 @@
         var LAGREG_FILTR_STATUS = "lagreg_filtr_statustypar";
         var LAGREG_FILTR_LISTE = "lagreg_filtr_listetypar";
         var LAGREG_NU_KOPIAR = "lagreg_nu_kopiar_lokal";
+        /** Serialiserte CSV-felt + ident for rader lagde med «Legg til organisasjon» */
+        var LAGREG_TILLAGTE_RADER = "lagreg_manuelt_tillegg_rader";
         var NU_FILTR_TASTAR = [
           ["medlem", "Medlem (aktiv)"],
           ["potensiell_medlem", "Potensiell medlem"],
@@ -273,7 +285,42 @@
           return ut;
         }
 
+        function skrivTillagteRaderLokal() {
+          try {
+            var ut = heileSett
+              .filter(function (r0) {
+                return r0._lagreg_manuell_lagt_til === true;
+              })
+              .map(function (r0) {
+                return {
+                  lagsnavn: r0.lagsnavn,
+                  orgnr: r0.orgnr,
+                  liste: r0.liste,
+                  kommune: r0.kommune,
+                  fylke: r0.fylke,
+                  adresse: r0.adresse,
+                  postnummer: r0.postnummer,
+                  poststed: r0.poststed,
+                  nettstad: r0.nettstad,
+                  kjelde_url: r0.kjelde_url,
+                  henta_dato: r0.henta_dato,
+                  nu_mr_status: r0.nu_mr_status,
+                  nu_mr_overordna: r0.nu_mr_overordna,
+                  nu_mr_orgtype: r0.nu_mr_orgtype,
+                };
+              });
+            localStorage.setItem(LAGREG_TILLAGTE_RADER, JSON.stringify(ut));
+          } catch (e) {
+            /* */
+          }
+        }
+
         function skrivLokalManuell() {
+          try {
+            skrivTillagteRaderLokal();
+          } catch (eU) {
+            /* */
+          }
           if (!fårRedigerILista()) return;
           try {
             localStorage.setItem(
@@ -339,6 +386,126 @@
             return null;
           }
           return finnRadVedOrgnr(s);
+        }
+
+        /** Aktuellt manuellt kart (grunnfil + lokallagring — same som ved utrekning av __ix_-rader). */
+        function aktuelltFlettaManuellKartUtanforSlaa() {
+          try {
+            return flettNettOgLokalManuell(reintStatusKart(manuellGrunnKart));
+          } catch (e) {
+            return {};
+          }
+        }
+
+        /** Berre ét __ix_-oppslag til slaaSamanStatus for ny rad ved indeks gx. */
+        function miniKartKun_ix(gx, fullFlettaKart) {
+          var kk = "__ix_" + gx;
+          var ut = {};
+          ut[kk] =
+            fullFlettaKart && typeof fullFlettaKart[kk] === "object" && fullFlettaKart[kk] !== null
+              ? fullFlettaKart[kk]
+              : {};
+          return ut;
+        }
+
+        function normaliserTillagslagsnamn(navnFråStub) {
+          var t = sikreTekst(navnFråStub).trim();
+          return t;
+        }
+
+        function tomTillagstub(stub) {
+          var s = stub || {};
+          return {
+            lagsnavn:
+              normaliserTillagslagsnamn(s.lagsnavn) || "Ny organisasjon",
+            orgnr: sikreTekst(s.orgnr),
+            liste: sikreTekst(s.liste).trim() || "ungdomslag",
+            kommune: sikreTekst(s.kommune),
+            fylke: sikreTekst(s.fylke),
+            adresse: sikreTekst(s.adresse),
+            postnummer: sikreTekst(s.postnummer),
+            poststed: sikreTekst(s.poststed),
+            nettstad: sikreTekst(s.nettstad),
+            kjelde_url: sikreTekst(s.kjelde_url),
+            henta_dato: sikreTekst(s.henta_dato),
+            nu_mr_status: sikreTekst(s.nu_mr_status),
+            nu_mr_overordna: sikreTekst(s.nu_mr_overordna),
+            nu_mr_orgtype: sikreTekst(s.nu_mr_orgtype),
+          };
+        }
+
+        function gjennvinTillagteRaderEtterCsv(statusAllereieFletta, nuOrgsett) {
+          var stubbar;
+          try {
+            var tr = localStorage.getItem(LAGREG_TILLAGTE_RADER);
+            stubbar = tr ? JSON.parse(tr) : [];
+          } catch (eL) {
+            stubbar = [];
+          }
+          if (!Array.isArray(stubbar) || stubbar.length === 0) {
+            return;
+          }
+          stubbar.forEach(function (stub) {
+            var gx = heileSett.length;
+            var rq = slaaSamanStatus(
+              [tomTillagstub(stub)],
+              miniKartKun_ix(gx, statusAllereieFletta),
+              nuOrgsett
+            )[0];
+            rq._lagreg_ix = gx;
+            rq._lagreg_manuell_lagt_til = true;
+            heileSett.push(rq);
+          });
+        }
+
+        function leggTillManuellOrganisasjon() {
+          if (!fårRedigerILista()) {
+            return;
+          }
+          var navnprm = window.prompt(
+            "Namn på ny organisasjon:",
+            "Ny organisasjon"
+          );
+          if (navnprm === null) {
+            return;
+          }
+          var nm =
+            normaliserTillagslagsnamn(navnprm) || "Ny organisasjon";
+          var gx = heileSett.length;
+          var fk = aktuelltFlettaManuellKartUtanforSlaa();
+          var rq = slaaSamanStatus(
+            [tomTillagstub({ lagsnavn: nm })],
+            miniKartKun_ix(gx, fk),
+            nulOrgnFraListe
+          )[0];
+          rq._lagreg_ix = gx;
+          rq._lagreg_manuell_lagt_til = true;
+          heileSett.push(rq);
+          heileSett.forEach(function (rr) {
+            var lz = sikreTekst(rr.liste).trim();
+            if (!lz) rr.liste = "ungdomslag";
+          });
+          skrivTillagteRaderLokal();
+          skrivLokalManuell();
+          byggFylkeVal();
+          byggKommuneVal();
+          byggNuDupOrgVeljar();
+          nulleGridFleirSyn();
+          var dyr = filtrerRader();
+          gridSynsGrense = Math.max(gridSynsGrense, dyr.length);
+          teiknaRegister();
+        }
+
+        function oppfriskRedigerKnappSyn() {
+          var cb = document.getElementById("rediger_i_lista");
+          var bn = document.getElementById("rediger_i_lista_knapp");
+          if (!cb || !bn) {
+            return;
+          }
+          var på = !!cb.checked;
+          bn.textContent = på ? "Stog å redigere" : "Rediger i lista";
+          bn.setAttribute("aria-pressed", på ? "true" : "false");
+          bn.classList.toggle("lagreg-rediger-på", på);
         }
 
         function lesNuKopiarListe() {
@@ -1984,6 +2151,7 @@
             skrivLokalManuell();
           }
           if (!berreSyn) teiknaRegister();
+          oppfriskRedigerKnappSyn();
         }
 
         function teiknaRegister() {
@@ -2255,6 +2423,7 @@
                 return;
               }
               heileSett = slaaSamanStatus(felta, statusKart, orgnrFraNuliste);
+              gjennvinTillagteRaderEtterCsv(statusKart, orgnrFraNuliste);
               brukAlleNuKopiarFråListe();
               heileSett.forEach(function (r) {
                 var lz = sikreTekst(r.liste).trim();
@@ -2298,12 +2467,36 @@
                   byggFylkeVal();
                   teiknaRegister();
                 });
-              document
-                .getElementById("rediger_i_lista")
-                .addEventListener("change", function () {
+              var riKn = document.getElementById("rediger_i_lista_knapp");
+              var riCb = document.getElementById("rediger_i_lista");
+              if (riKn && riCb) {
+                riKn.addEventListener("click", function () {
+                  riCb.checked = !riCb.checked;
+                  if (typeof Event === "function") {
+                    try {
+                      riCb.dispatchEvent(new Event("change"));
+                    } catch (eCk) {
+                      byggKolonnePanel();
+                      setRedigerSyn(false);
+                    }
+                  } else {
+                    byggKolonnePanel();
+                    setRedigerSyn(false);
+                  }
+                });
+                riCb.addEventListener("change", function () {
                   byggKolonnePanel();
                   setRedigerSyn(false);
                 });
+              }
+              oppfriskRedigerKnappSyn();
+              var leggTilOg = document.getElementById("legg_til_org_knapp");
+              if (leggTilOg) {
+                leggTilOg.addEventListener(
+                  "click",
+                  leggTillManuellOrganisasjon
+                );
+              }
               document
                 .getElementById("inline_lagre")
                 .addEventListener("click", køyrLagreTilVercel);

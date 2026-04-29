@@ -485,6 +485,29 @@
       .verkty #last_ned_filtrerta:hover {
         filter: brightness(1.08);
       }
+      .verkty .verkty-knapp-rediger,
+      .verkty-rediger .knapp-legg-til-org {
+        background: #21262d;
+        color: var(--tekst);
+        border: 1px solid var(--ramme);
+        border-radius: 6px;
+        padding: 0.4rem 0.85rem;
+        font: inherit;
+        cursor: pointer;
+        font-size: 0.9rem;
+      }
+      .verkty .verkty-knapp-rediger:hover,
+      .verkty-rediger .knapp-legg-til-org:hover {
+        filter: brightness(1.08);
+      }
+      .verkty .verkty-knapp-rediger:hover {
+        border-color: var(--lenkje);
+      }
+      .verkty .verkty-knapp-rediger.lagreg-rediger-på {
+        background: #1f3d2e;
+        border-color: #2ea043;
+        color: #b4f0c0;
+      }
       select.nu-velj,
       .register-brett select.nu-velj {
         background: var(--kort) !important;
