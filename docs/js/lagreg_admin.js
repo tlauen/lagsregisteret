@@ -69,7 +69,9 @@
     [
       ["", "— (ikkje sett) —"],
       ["medlem", "medlem i NU"],
+      ["potensiell_medlem", "potensiell medlem"],
       ["utmeld", "utmeld"],
+      ["ikkje_aktuell", "ikkje aktuell"],
     ].forEach(
       function (par) {
         var o = document.createElement("option");

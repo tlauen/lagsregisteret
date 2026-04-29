@@ -253,12 +253,40 @@
       tr:has(.rad-merke-raud):hover > td {
         background: rgba(220, 80, 80, 0.32) !important;
       }
+      .register-brett .gridjs-tbody tr:has(.rad-merke-amber) > td,
+      tr:has(.rad-merke-amber) > td {
+        background: rgba(227, 179, 65, 0.16) !important;
+        color: var(--tekst) !important;
+        border-color: var(--ramme) !important;
+      }
+      .register-brett .gridjs-tbody tr:has(.rad-merke-amber):hover > td,
+      tr:has(.rad-merke-amber):hover > td {
+        background: rgba(227, 179, 65, 0.26) !important;
+      }
+      .register-brett .gridjs-tbody tr:has(.rad-merke-dempanu) > td,
+      tr:has(.rad-merke-dempanu) > td {
+        background: rgba(139, 156, 173, 0.12) !important;
+        color: var(--tekst) !important;
+        border-color: var(--ramme) !important;
+      }
+      .register-brett .gridjs-tbody tr:has(.rad-merke-dempanu):hover > td,
+      tr:has(.rad-merke-dempanu):hover > td {
+        background: rgba(139, 156, 173, 0.2) !important;
+      }
       .rad-merke-gron {
         color: #b4f0c0;
         font-weight: 500;
       }
       .rad-merke-raud {
         color: #f0b4b4;
+        font-weight: 500;
+      }
+      .rad-merke-amber {
+        color: #f5e6b8;
+        font-weight: 500;
+      }
+      .rad-merke-dempanu {
+        color: #b5c3d4;
         font-weight: 500;
       }
       .dome-gron-tekst {
@@ -300,9 +328,20 @@
         color: #3fb950;
         font-weight: 500;
       }
-      .merke-ut,
+      .merke-ut {
+        color: #f85149;
+        font-weight: 500;
+      }
       .merke-nedlagt {
         color: #f85149;
+        font-weight: 500;
+      }
+      .merke-potensiell {
+        color: #e3b341;
+        font-weight: 500;
+      }
+      .merke-ikkjeaktuell {
+        color: #8b9cad;
         font-weight: 500;
       }
       .verkty input[type="checkbox"] {
@@ -364,8 +403,8 @@
         padding: 0.2rem 0.35rem;
         font: inherit;
         font-size: 0.86rem;
-        min-width: 8.5rem;
-        max-width: 12rem;
+        min-width: 12rem;
+        max-width: 15rem;
       }
       .register-brett textarea.merknad-velj {
         display: block;
@@ -393,65 +432,86 @@
     <div class="hovud">
       <h1>Lagsregisteret</h1>
       <p class="leiar">
-        Søk i alle felt, snevre etter fylke og <strong>status</strong> (medlem
-        / utmeld / nedlagt), eller bruk
-        <strong>Rediger i lista</strong> for å setja medlemsstatus, utmelding
-        og luka ut rett i tabellen — <strong>utan innlogging</strong>: endringar
-        vert lagra lokalt i nettlesaren, og du kan lasta ned
-        <code>manuell_status.json</code> når du vil sjekkja inn i repositoriet.
-        Laga du <strong>lukar ut</strong> (ikkje ungdomslag / ikkje frilynde) er
-        skjulte som standard — bruk avkryssinga for å sjå dei. Du kan også
-        redigere <code>data/manuell_status.json</code> rett i git eller bruk
-        <code>skript/sett_lag_status.py</code>;
-        <a href="admin.html" style="color: var(--lenkje)">admin-sida</a> er
-        valfri (same som Vercel‑push, treng passord).
+        <strong>Kjelde:</strong> Alle rader i tabellen kjem frå organisasjonar som er
+        med i
+        <a
+          href="https://www.brreg.no/frivillighetsregisteret/"
+          rel="noopener noreferrer"
+          >frivillighetsregisteret</a
+        >
+        hjå
+        <a href="https://www.brreg.no/" rel="noopener noreferrer"
+          >Brønnøysundregistera</a
+        >
+        (opne data), pluss lokale filtreringar i repositoriet (søkjefragment,
+        utelatingsfrasar, ev. «norsk tilhald» ved innhenting). Dei tre
+        <strong>Ungdom* / Grend* / Bygd*</strong>-knappane viser berre treff som
+        vart funne med søkje­fragment frå høvesvis
+        <code>sokjefragment.txt</code>,
+        <code>sokjefragment_grende.txt</code> og
+        <code>sokjefragment_bygd.txt</code> — ikkje «reine» typar i Brreg.
+      </p>
+      <p class="leiar">
+        Søk i alle felt, snevre etter fylke og <strong>status</strong>, eller bruk
+        <strong>Rediger i lista</strong> for å setja NU-status (medlem, potensiell
+        medlem, utmeld, ikkje aktuell, nedlagt) og
+        <strong>luka ut</strong> rett i tabellen —
+        <strong>utan innlogging</strong>: endringar vert lagra lokalt i
+        nettlesaren, og du kan lasta ned <code>manuell_status.json</code> når du vil
+        sjekkja inn i repositoriet. Laga du <strong>lukar ut</strong> (ikkje
+        ungdomslag / ikkje frilynde) er skjulte som standard — bruk avkryssinga for å
+        sjå dei. Du kan også redigere <code>data/manuell_status.json</code> rett i
+        git eller bruk <code>skript/sett_lag_status.py</code>;
+        <a href="admin.html" style="color: var(--lenkje)">admin-sida</a> er valfri
+        (same som Vercel‑push, treng passord).
       </p>
       <p class="leiar-hjelp">
         Brei tabell: dra vassrett under tabellen, eller bruk
         <kbd>Tab</kbd> + piltast / mus med skroll. Rader heilt i
         <strong class="dome-gron-tekst">grøn tone</strong> = treff i
         <a href="https://www.ungdomslag.no/lokallag" rel="noopener noreferrer"
-          >lokallaglista (NU) vs. dette registeret</a
+          >lokallaglista (NU)</a
         >
-        (automatisk <code>nu: medlem</code> i manuell data), eller
-        <code>nu: medlem</code> i fila. <strong class="dome-raud-tekst"
-          >Raud tone</strong> for <code>utmeld</code> — eller
-        <code>nedlagt</code>. Utmelding gjev føretré over grønt.
+        jamførd med registret (<code>nu: medlem</code>), eller manuelt medlem.
+        <strong>Gul tone</strong> = potensiell medlem —
+        <strong>dempa</strong> = ikkje aktuell. <strong class="dome-raud-tekst"
+          >Raud tone</strong> for utmeld eller nedlagt. Utmelding gjev føretré over
+        grønt.
       </p>
       <div
         id="liste_val_krins"
         class="liste-val"
         role="toolbar"
-        aria-label="Registerliste — vis berre lag som høyrer til vald søkjekategori"
+        aria-label="Vis berre lag treft med søkjefiler (Ungdom* / Grend* / Bygd*)"
       >
-        <span class="liste-val-etikett" id="liste_val_etikett">Registerliste</span>
+        <span class="liste-val-etikett" id="liste_val_etikett">Frå søkjefiler</span>
         <div id="liste_val_knappar" class="liste-val-knappar">
           <button
             type="button"
             class="liste-knapp liste-knapp-valt"
             data-liste="ungdomslag"
             aria-pressed="true"
-            title="Søkjefilter frå sokjefragment.txt (t.d. ungdomslag, BUL, …)"
+            title="Treff der Brreg-match kjem frå sokjefragment.txt"
           >
-            Ungdomslag
+            Ungdom*
           </button>
           <button
             type="button"
             class="liste-knapp"
             data-liste="grendelag"
             aria-pressed="false"
-            title="Lag funne med søk frå oppsett/sokjefragment_grende.txt"
+            title="Treff der Brreg-match kjem frå sokjefragment_grende.txt"
           >
-            Grendelag
+            Grend*
           </button>
           <button
             type="button"
             class="liste-knapp"
             data-liste="bygdelag"
             aria-pressed="false"
-            title="Lag funne med søk frå oppsett/sokjefragment_bygd.txt"
+            title="Treff der Brreg-match kjem frå sokjefragment_bygd.txt"
           >
-            Bygdelag
+            Bygd*
           </button>
         </div>
       </div>
@@ -465,11 +525,16 @@
         </label>
         <label for="nu_val">
           Status
-          <select id="nu_val" title="Medlem, utmeld eller nedlagt (NU)">
+          <select
+            id="nu_val"
+            title="Filtrer etter NU-status eller nedlagt"
+          >
             <option value="alle">— alle —</option>
             <option value="ukjent">Ukjent / ikkje sett</option>
             <option value="medlem">Medlem</option>
+            <option value="potensiell_medlem">Potensiell medlem</option>
             <option value="utmeld">Utmeld</option>
+            <option value="ikkje_aktuell">Ikkje aktuell</option>
             <option value="nedlagt_f">Nedlagt</option>
           </select>
         </label>
@@ -840,6 +905,8 @@
           if (r.nedlagt_flag) return "nedlagt";
           if (r.nu_raw === "utmeld") return "utmeld";
           if (r.nu_raw === "medlem") return "medlem";
+          if (r.nu_raw === "potensiell_medlem") return "potensiell_medlem";
+          if (r.nu_raw === "ikkje_aktuell") return "ikkje_aktuell";
           return "";
         }
 
@@ -862,7 +929,11 @@
               ? "merke-nu"
               : raw === "utmeld"
                 ? "merke-ut"
-                : "";
+                : raw === "potensiell_medlem"
+                  ? "merke-potensiell"
+                  : raw === "ikkje_aktuell"
+                    ? "merke-ikkjeaktuell"
+                    : "";
           return merke
             ? gridjs.html(
                 '<span class="' + merke + '">' + vikHtml(t) + "</span>"
@@ -889,8 +960,14 @@
             (v === "medlem" ? " selected" : "") +
             ' value="medlem">Medlem</option>' +
             "<option" +
+            (v === "potensiell_medlem" ? " selected" : "") +
+            ' value="potensiell_medlem">Potensiell medlem</option>' +
+            "<option" +
             (v === "utmeld" ? " selected" : "") +
             ' value="utmeld">Utmeld</option>' +
+            "<option" +
+            (v === "ikkje_aktuell" ? " selected" : "") +
+            ' value="ikkje_aktuell">Ikkje aktuell</option>' +
             "<option" +
             (v === "nedlagt" ? " selected" : "") +
             ' value="nedlagt">Nedlagt</option>' +
@@ -998,12 +1075,20 @@
           var iNu = nulOrgnFraListe && nulOrgnFraListe.has(o);
           if (iNu) {
             r.nu_raw = "medlem";
-          } else if (r.nu_raw === "medlem") {
-            r.nu_raw = "medlem";
+            r.nu_vis_tekst = "Medlem";
+            reknRadGron(r);
+            return;
+          }
+          if (r.nu_raw === "medlem") {
+            r.nu_vis_tekst = "Medlem";
+          } else if (r.nu_raw === "potensiell_medlem") {
+            r.nu_vis_tekst = "Potensiell medlem";
+          } else if (r.nu_raw === "ikkje_aktuell") {
+            r.nu_vis_tekst = "Ikkje aktuell";
           } else {
             r.nu_raw = "";
+            r.nu_vis_tekst = "";
           }
-          r.nu_vis_tekst = r.nu_raw === "medlem" ? "Medlem" : "";
           reknRadGron(r);
         }
 
@@ -1029,6 +1114,10 @@
                 r.nu_raw = "medlem";
               } else if (nmu === "medlem") {
                 r.nu_raw = "medlem";
+              } else if (nmu === "potensiell_medlem") {
+                r.nu_raw = "potensiell_medlem";
+              } else if (nmu === "ikkje_aktuell") {
+                r.nu_raw = "ikkje_aktuell";
               } else {
                 r.nu_raw = "";
               }
@@ -1039,6 +1128,10 @@
               r.nu_vis_tekst = "Medlem";
             } else if (r.nu_raw === "utmeld") {
               r.nu_vis_tekst = "Utmeld";
+            } else if (r.nu_raw === "potensiell_medlem") {
+              r.nu_vis_tekst = "Potensiell medlem";
+            } else if (r.nu_raw === "ikkje_aktuell") {
+              r.nu_vis_tekst = "Ikkje aktuell";
             } else {
               r.nu_vis_tekst = "";
             }
@@ -1092,11 +1185,18 @@
                 var navn = sikreTekst(r.lagsnavn);
                 var raud = r.nu_raw === "utmeld" || r.nedlagt_flag;
                 var gron = r.rad_nu_gron;
+                var amber =
+                  r.nu_raw === "potensiell_medlem" && !r.nedlagt_flag;
+                var dempa = r.nu_raw === "ikkje_aktuell" && !r.nedlagt_flag;
                 var kl = raud
                   ? "rad-merke-raud"
                   : gron
                     ? "rad-merke-gron"
-                    : "";
+                    : amber
+                      ? "rad-merke-amber"
+                      : dempa
+                        ? "rad-merke-dempanu"
+                        : "";
                 if (kl) {
                   return gridjs.html(
                     '<span class="' + kl + '">' + vikHtml(navn) + "</span>"
@@ -1159,13 +1259,21 @@
               d = d.filter(function (r) {
                 return r.nu_raw === "medlem" && !r.nedlagt_flag;
               });
+            } else if (nuF === "potensiell_medlem") {
+              d = d.filter(function (r) {
+                return r.nu_raw === "potensiell_medlem" && !r.nedlagt_flag;
+              });
+            } else if (nuF === "utmeld") {
+              d = d.filter(function (r) {
+                return r.nu_raw === "utmeld" && !r.nedlagt_flag;
+              });
+            } else if (nuF === "ikkje_aktuell") {
+              d = d.filter(function (r) {
+                return r.nu_raw === "ikkje_aktuell" && !r.nedlagt_flag;
+              });
             } else if (nuF === "nedlagt_f") {
               d = d.filter(function (r) {
                 return r.nedlagt_flag;
-              });
-            } else {
-              d = d.filter(function (r) {
-                return r.nu_raw === nuF;
               });
             }
           }
@@ -1182,7 +1290,14 @@
             var o = reintO(r);
             if (o.length !== 9) return;
             var b = {};
-            if (r.nu_raw === "medlem" || r.nu_raw === "utmeld") b.nu = r.nu_raw;
+            if (
+              r.nu_raw === "medlem" ||
+              r.nu_raw === "utmeld" ||
+              r.nu_raw === "potensiell_medlem" ||
+              r.nu_raw === "ikkje_aktuell"
+            ) {
+              b.nu = r.nu_raw;
+            }
             if (r.skjul_flag) b.skjul = true;
             if (r.nedlagt_flag) b.nedlagt = true;
             var m = sikreTekst(r.merknad_hand).trim();
@@ -1322,8 +1437,12 @@
                   }
                 } else {
                   heileSett[i].nedlagt_flag = false;
-                  heileSett[i].nu_raw =
-                    v === "medlem" || v === "utmeld" ? v : "";
+                  var gyldNu =
+                    v === "medlem" ||
+                    v === "utmeld" ||
+                    v === "potensiell_medlem" ||
+                    v === "ikkje_aktuell";
+                  heileSett[i].nu_raw = gyldNu ? v : "";
                 }
                 fiksNuEtterKjelde(heileSett[i]);
                 break;

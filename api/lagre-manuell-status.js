@@ -53,8 +53,12 @@ function validerInnhald(inn) {
       return `Ugyldig blokk for ${k}`;
     }
     if (Object.prototype.hasOwnProperty.call(v, "nu") && v.nu != null) {
-      if (!["medlem", "utmeld"].includes(v.nu)) {
-        return `Ugyldig nu for ${k} (berre medlem / utmeld)`;
+      if (
+        !["medlem", "utmeld", "potensiell_medlem", "ikkje_aktuell"].includes(
+          v.nu
+        )
+      ) {
+        return `Ugyldig nu for ${k} (medlem, utmeld, potensiell_medlem, ikkje_aktuell)`;
       }
     }
     if (Object.prototype.hasOwnProperty.call(v, "skjul") && v.skjul != null) {

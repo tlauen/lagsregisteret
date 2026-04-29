@@ -4,9 +4,11 @@ Fila `data/manuell_status.json` (kopiert til `docs/data/` for nett) har **organi
 
 For kvar orgnr:
 
-- **nu** — medlemsforholdet til **Noregs Ungdomslag (NU)**:
-  - `medlem`  — medlem, eller satt automatisk dersom orgnr ligg i samanlikningsfila (samme som grøn rad) og ikkje `utmeld` / `nedlagt`
-  - `utmeld`  — nyleg (eller elles relevant) utmeldt
+- **nu** — medlemsforhold til **NU** / klassifikasjon til intern oppfolging:
+  - `medlem`  — medlem, eller sett automatisk dersom orgnr ligg i samanlikningsfila og ikkje `utmeld` / `nedlagt`
+  - `utmeld`  — utmeldt (raud merke)
+  - `potensiell_medlem` — potensiell medlem (mellomting)
+  - `ikkje_aktuell` — ikkje aktuell for registeret / NU likevel
   - utelat felt eller tom `""` — ikkje vurdert / ukjent
 
 - **skjul** — `true` dersom rada ikkje skal visast i hovudlista (f.eks. ikkje ungdomslag, ikkje frilynde, feil i register). Standard er `false` eller at feltet ikkje finst.

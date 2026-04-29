@@ -16,7 +16,7 @@ Oversikt over frilynde ungdomslag og liknande lag i Noreg, bygd på opne kjelder
 | `data/nu_saman_med_nu_no.json` | `orgnr` for **grøn rad** (heuristisk samanlikning med [nu.no/lokallag](https://www.ungdomslag.no/lokallag) + manuell `nu: medlem`) — oppdater med `skript/jamfoer_nu_lokallag.py --skriv` |
 | `data/nu_lokallag_manglar_i_register.json` | **NU-tittlar utan Brreg-treff** (liste under tabellen) — `jamfoer_nu_lokallag.py --skriv` |
 | `data/kommune_til_fylke.json` | Tabell frå SSB: kommunenummer → fylkesnamn (fyller `fylke` i CSV). |
-| `data/manuell_status.json` | Manuell **NU-status** (medlem / utmeld), **skjul** (luka ut) og valfritt **nedlagt** per orgnr — sjå `oppsett/nu_status_forklaring.txt`. |
+| `data/manuell_status.json` | Manuell **NU-status** (`medlem`, `potensiell_medlem`, `utmeld`, `ikkje_aktuell`), **skjul**, **nedlagt** — sjå `oppsett/nu_status_forklaring.txt`. |
 | `oppsett/nu_status_forklaring.txt` | Forklaring av felt i `manuell_status.json`. |
 | `docs/index.html` | Søkbar / filtrerbar tabell for **GitHub Pages**; **Rediger i lista** lagrar i nettlesaren (utvid med nedlasting; valfri Vercel‑push for git). |
 | `docs/admin.html` | Redigering av manuell status via nett (krev Vercel-API under). |
@@ -106,19 +106,20 @@ python3 skript/bygg_kommune_til_fylke.py
 ## Noregs Ungdomslag (NU) og «luk ut»
 
 - Rediger `data/manuell_status.json`: nøkkel = **9 siffer orgnr** (streng), verdiar:
-  - `nu`: `medlem` | `utmeld` (eller utelat for ukjent). **Grøn rad** i tabellen = `nu: medlem` eller orgnr i `nu_saman_med_nu_no.json` (ungdomslag.no mot Brreg), med mindre rada er `utmeld` eller `nedlagt`.
+  - `nu`: `medlem` | `potensiell_medlem` | `utmeld` | `ikkje_aktuell` (eller utelat for ukjent). **Grøn rad** = `nu: medlem` eller orgnr i `nu_saman_med_nu_no.json`, med mindre utmeld eller nedlagt. **Gul** = potensiell medlem, **dempa** = ikkje aktuell.
   - `skjul`: `true` for laga som ikkje skal visast i hovudlista (ikkje rett låg, ikkje frilynde, osb.)
   - `nedlagt`: `true` for oppløyste/ikkje lenger aktive — **raud** rad, same som `utmeld`
   - `merknad`: valfri fritekst
 - Eller bruk CLI, døme:
   ```bash
   python3 skript/sett_lag_status.py --orgnr 971320842 --nu medlem
+  python3 skript/sett_lag_status.py --orgnr 123456789 --nu potensiell_medlem
   python3 skript/sett_lag_status.py --orgnr 123456789 --nu utmeld
   python3 skript/sett_lag_status.py --orgnr 123456789 --nedlagt
   python3 skript/sett_lag_status.py --orgnr 123456789 --luk-ut --merknad "Bondelag, ikkje ungdomslag"
   python3 skript/sett_lag_status.py --orgnr 123456789 --i-lista
   ```
-- Nettsida: filter **Status** (medlem / utmeld / nedlagt), og avkryssing **Vis luka ut** for `skjul: true`. Sjå elles `oppsett/nu_status_forklaring.txt`.
+- Nettsida: filter **Status** (medlem, potensiell, utmeld, ikkje aktuell, nedlagt, ukjent), **Frå søkjefiler** (Ungdom* / Grend* / Bygd*), og **Vis luka ut** for `skjul: true`. Sjå `oppsett/nu_status_forklaring.txt`.
 
 ## Nettvising (GitHub Pages)
 
@@ -133,7 +134,7 @@ python3 skript/bygg_kommune_til_fylke.py
    git push
    ```
 
-3. Sida har **fylke**, **status** (eitt spørsmål: medlem / utmeld / nedlagt), søkjefelt, avkryssing for luka-ut, **vel synlege kolonnar** (førespurt lagring i nettlesaren) og i redigeringsmodus: **Status** og **hovudlista** fyrst, deretter **Lag** med **Merknad** rett attmed (fritekst med textarea). **Redigering** treng ikkje innlogging: endringar vert lagra lokalt, og `manuell_status.json` kan lastast ned; valfri **Vercel** med brukar/passord (sjå seksjon under) pushar rett inn i git. Brukar PapaParse + Grid.js.
+3. Sida har **fylke**, **status**, **søkjelistar** (tre knappar etter kva søkjefil som gav treff), søkjefelt, avkryssing for luka-ut, **vel synlege kolonnar** (førespurt lagring i nettlesaren) og i redigeringsmodus: **Status** og **hovudlista** fyrst, deretter **Lag** med **Merknad** rett attmed (fritekst med textarea). Registerrader byggjer på **frivilligheitsregister** + oppsett ved innhent — sjå ingress på sida. **Redigering** treng ikkje innlogging: endringar vert lagra lokalt, og `manuell_status.json` kan lastast ned; valfri **Vercel** med brukar/passord (sjå seksjon under) pushar rett inn i git. Brukar PapaParse + Grid.js.
 
 4. Lokal førehandsvising: stå i mappa `docs/` og køyr `python3 -m http.server 8765`, opne `http://127.0.0.1:8765/`.
 
