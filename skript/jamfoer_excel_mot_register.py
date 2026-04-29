@@ -120,6 +120,8 @@ def frå_excel_til_status(tek: str) -> str:
         return "nedlagt"
     if "utmeld" in s or "utm." in s:
         return "utmeld"
+    if "inaktiv" in s:
+        return "inaktiv_medlem"
     if any(
         x in s
         for x in (
@@ -141,6 +143,8 @@ def manuell_til_kategori(st: dict) -> str:
     nu = (st.get("nu") or "").strip().lower()
     if nu == "utmeld":
         return "utmeld"
+    if nu == "inaktiv_medlem":
+        return "inaktiv_medlem"
     if nu in ("medlem", "potensiell_medlem"):
         return "medlem"
     if nu == "ikkje_aktuell":

@@ -16,7 +16,7 @@ Oversikt over frilynde ungdomslag og liknande lag i Noreg, bygd på opne kjelder
 | `data/nu_saman_med_nu_no.json` | `orgnr` for **grøn rad** (heuristisk samanlikning med [nu.no/lokallag](https://www.ungdomslag.no/lokallag) + manuell `nu: medlem`) — oppdater med `skript/jamfoer_nu_lokallag.py --skriv` |
 | `data/nu_lokallag_manglar_i_register.json` | **NU-tittlar utan Brreg-treff** (liste under tabellen) — `jamfoer_nu_lokallag.py --skriv` |
 | `data/kommune_til_fylke.json` | Tabell frå SSB: kommunenummer → fylkesnamn (fyller `fylke` i CSV). |
-| `data/manuell_status.json` | Manuell **NU-status** (`medlem`, `potensiell_medlem`, `utmeld`, `ikkje_aktuell`), **skjul**, **nedlagt** — sjå `oppsett/nu_status_forklaring.txt`. |
+| `data/manuell_status.json` | Manuell **NU-status** (`medlem`, `potensiell_medlem`, `inaktiv_medlem`, `utmeld`, `ikkje_aktuell`), **skjul**, **nedlagt** — sjå `oppsett/nu_status_forklaring.txt`. |
 | `oppsett/nu_status_forklaring.txt` | Forklaring av felt i `manuell_status.json`. |
 | `docs/index.html` | Søkbar / filtrerbar tabell for **GitHub Pages**; **Rediger i lista** lagrar i nettlesaren (utvid med nedlasting; valfri Vercel‑push for git). |
 | `docs/admin.html` | Redigering av manuell status via nett (krev Vercel-API under). |
@@ -25,7 +25,7 @@ Oversikt over frilynde ungdomslag og liknande lag i Noreg, bygd på opne kjelder
 | `vercel.json` | Tidsgrense for Vercel-funksjon. |
 | `package.json` | Nødvendig for Vercel (privat, ingen ekstra pakkar). |
 | `docs/data/nu_saman_med_nu_no.json` | Kopi av `data/…` for nett (grøn markering) — fylgjer når `publiser_data_til_nettside.py` køyrst. |
-| `docs/data/lag.csv` | Kopi av siste Brreg-register; **`liste`**-kolonne (`ungdomslag`/`grendelag`/`bygdelag`, kommasepara om fleire treff); nettsida har tre knappar etter vald kategori. |
+| `docs/data/lag.csv` | Kopi av siste Brreg-register; **`liste`** (`ungdomslag`/`grendelag`/`bygdelag`, kommasepara om fleire treff); valfritt **`nu_mr_*`** (NU medlemsregister frå Excel-fletting). Nettsida har tre knappar etter vald kategori. |
 | `docs/data/manuell_status.json` | Kopi av manuell status (for nett). |
 | `skript/innhent_lag_frå_brreg.py` | Les treff per søkjefilstype, slår saman på orgnr, skriv **`liste`** + `kjelde_url` til Brreg‑oppslag. |
 | `skript/publiser_data_til_nettside.py` | Kopierer `utdata/…csv` → `docs/data/lag.csv`, manuell status og `data/nu_saman_*.json` / `nu_lokallag_manglar_*.json` → `docs/data/` når filene finst. |
@@ -33,6 +33,7 @@ Oversikt over frilynde ungdomslag og liknande lag i Noreg, bygd på opne kjelder
 | `skript/bygg_kommune_til_fylke.py` | OPPDATER: last ned siste kommune → fylke frå SSB (bruk sjeldan). |
 | `skript/jamfoer_nu_lokallag.py` | Jamfører [nu.no/lokallag](https://www.ungdomslag.no/lokallag) (markdown med `##` per lag) med `docs/data/lag.csv` — sjekk samsvar manuelt, ikkje blind stol på likskapsdøme. |
 | `skript/jamfoer_excel_mot_register.py` | Jamfør **Excel eller CSV** (NU‑liste med orgnr og ev. status) mot `lag.csv` og `manuell_status.json` — berre rapport; til dømes `pip install openpyxl` før `.xlsx`. |
+| `skript/flett_nu_medlemsregister.py` | Flett NU‑medlemsregister (`.xlsx`) inn i `lag.csv`: `nu_mr_status`, `nu_mr_overordna`, `nu_mr_orgtype`; val `--synk-manuell` oppdaterer `nu`/`nedlagt` i `manuell_status.json` frå NU‑kolonnene. Krever `openpyxl`. |
 | `skript/trygg_nett.py` | Hjelpemodul for SSL (bruk saman med `certifi`, sjå under). |
 | `requirements.txt` | Anbefalt: `certifi` (+ `openpyxl` om du brukar jamfør‑skript mot `.xlsx`). |
 
@@ -107,7 +108,7 @@ python3 skript/bygg_kommune_til_fylke.py
 ## Noregs Ungdomslag (NU) og «luk ut»
 
 - Rediger `data/manuell_status.json`: nøkkel = **9 siffer orgnr** (streng), verdiar:
-  - `nu`: `medlem` | `potensiell_medlem` | `utmeld` | `ikkje_aktuell` (eller utelat for ukjent). **Grøn rad** = `nu: medlem` eller orgnr i `nu_saman_med_nu_no.json`, med mindre utmeld eller nedlagt. **Gul** = potensiell medlem, **dempa** = ikkje aktuell.
+  - `nu`: `medlem` | `potensiell_medlem` | `inaktiv_medlem` | `utmeld` | `ikkje_aktuell` (eller utelat for ukjent). **Grøn rad** = `nu: medlem` eller orgnr i `nu_saman_med_nu_no.json` (med mindre `inaktiv_medlem` i manuell status), med mindre utmeld eller nedlagt. **Gul** = potensiell medlem, **blå toning** = inaktiv medlem (NU), **dempa** = ikkje aktuell.
   - `skjul`: `true` for laga som ikkje skal visast i hovudlista (ikkje rett låg, ikkje frilynde, osb.)
   - `nedlagt`: `true` for oppløyste/ikkje lenger aktive — **raud** rad, same som `utmeld`
   - `merknad`: valfri fritekst
@@ -120,7 +121,7 @@ python3 skript/bygg_kommune_til_fylke.py
   python3 skript/sett_lag_status.py --orgnr 123456789 --luk-ut --merknad "Bondelag, ikkje ungdomslag"
   python3 skript/sett_lag_status.py --orgnr 123456789 --i-lista
   ```
-- Nettsida: filter **Status** (medlem, potensiell, utmeld, ikkje aktuell, nedlagt, ukjent), **Frå søkjefiler** (Ungdom* / Grend* / Bygd*), og **Vis luka ut** for `skjul: true`. Sjå `oppsett/nu_status_forklaring.txt`.
+- Nettsida: filter **Status** (medlem, potensiell, inaktiv, utmeld, ikkje aktuell, nedlagt, ukjent), **Frå søkjefiler** (Ungdom* / Grend* / Bygd*), og **Vis luka ut** for `skjul: true`. Sjå `oppsett/nu_status_forklaring.txt`.
 
 ## Nettvising (GitHub Pages)
 

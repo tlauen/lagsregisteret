@@ -571,6 +571,9 @@ def hovud() -> int:
     for org9, rad in per_org.items():
         taggar = lister_per_org.get(org9)
         rad["liste"] = slaa_saman_liste_tags(taggar) if taggar else LISTE_UNGDOMSLAG
+        rad.setdefault("nu_mr_status", "")
+        rad.setdefault("nu_mr_overordna", "")
+        rad.setdefault("nu_mr_orgtype", "")
     utdatafilsti.parent.mkdir(parents=True, exist_ok=True)
     kolonnenamn = [
         "lagsnavn",
@@ -584,6 +587,9 @@ def hovud() -> int:
         "kjelde_type",
         "kjelde_url",
         "liste",
+        "nu_mr_status",
+        "nu_mr_overordna",
+        "nu_mr_orgtype",
         "henta_dato",
     ]
     sortert = sorted(

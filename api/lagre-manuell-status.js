@@ -54,11 +54,11 @@ function validerInnhald(inn) {
     }
     if (Object.prototype.hasOwnProperty.call(v, "nu") && v.nu != null) {
       if (
-        !["medlem", "utmeld", "potensiell_medlem", "ikkje_aktuell"].includes(
+        !["medlem", "utmeld", "potensiell_medlem", "ikkje_aktuell", "inaktiv_medlem"].includes(
           v.nu
         )
       ) {
-        return `Ugyldig nu for ${k} (medlem, utmeld, potensiell_medlem, ikkje_aktuell)`;
+        return `Ugyldig nu for ${k} (medlem, utmeld, potensiell_medlem, ikkje_aktuell, inaktiv_medlem)`;
       }
     }
     if (Object.prototype.hasOwnProperty.call(v, "skjul") && v.skjul != null) {

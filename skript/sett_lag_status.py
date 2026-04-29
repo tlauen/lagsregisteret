@@ -29,7 +29,14 @@ def hovud() -> int:
     t.add_argument("--orgnr", required=True, help="9-sifra organisasjonsnummer")
     t.add_argument(
         "--nu",
-        choices=("medlem", "utmeld", "potensiell_medlem", "ikkje_aktuell", "tom"),
+        choices=(
+            "medlem",
+            "utmeld",
+            "potensiell_medlem",
+            "ikkje_aktuell",
+            "inaktiv_medlem",
+            "tom",
+        ),
         default=None,
         help="NU-status (vel «tom» for å tømme feltet)",
     )

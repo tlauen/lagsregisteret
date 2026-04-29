@@ -273,6 +273,16 @@
       tr:has(.rad-merke-dempanu):hover > td {
         background: rgba(139, 156, 173, 0.2) !important;
       }
+      .register-brett .gridjs-tbody tr:has(.rad-merke-inaktivnu) > td,
+      tr:has(.rad-merke-inaktivnu) > td {
+        background: rgba(88, 166, 200, 0.14) !important;
+        color: var(--tekst) !important;
+        border-color: var(--ramme) !important;
+      }
+      .register-brett .gridjs-tbody tr:has(.rad-merke-inaktivnu):hover > td,
+      tr:has(.rad-merke-inaktivnu):hover > td {
+        background: rgba(88, 166, 200, 0.24) !important;
+      }
       .rad-merke-gron {
         color: #b4f0c0;
         font-weight: 500;
@@ -287,6 +297,10 @@
       }
       .rad-merke-dempanu {
         color: #b5c3d4;
+        font-weight: 500;
+      }
+      .rad-merke-inaktivnu {
+        color: #9cd8f0;
         font-weight: 500;
       }
       .dome-gron-tekst {
@@ -342,6 +356,10 @@
       }
       .merke-ikkjeaktuell {
         color: #8b9cad;
+        font-weight: 500;
+      }
+      .merke-inaktivnu {
+        color: #79c0ff;
         font-weight: 500;
       }
       .verkty input[type="checkbox"] {
@@ -533,6 +551,7 @@
             <option value="ukjent">Ukjent / ikkje sett</option>
             <option value="medlem">Medlem</option>
             <option value="potensiell_medlem">Potensiell medlem</option>
+            <option value="inaktiv_medlem">Inaktiv medlem</option>
             <option value="utmeld">Utmeld</option>
             <option value="ikkje_aktuell">Ikkje aktuell</option>
             <option value="nedlagt_f">Nedlagt</option>
@@ -637,6 +656,15 @@
           { nøkk: "merknad_hand", titt: "Merknad" },
           { nøkk: "orgnr", titt: "Org.nr" },
           { nøkk: "liste", titt: "Liste" },
+          { nøkk: "nu_mr_status", titt: "NU (medlemsregister)" },
+          {
+            nøkk: "nu_mr_overordna",
+            titt: "Ovanståande org. (NU)",
+          },
+          {
+            nøkk: "nu_mr_orgtype",
+            titt: "Org.type (NU)",
+          },
           { nøkk: "kommune", titt: "Kommune" },
           { nøkk: "fylke", titt: "Fylke" },
           { nøkk: "adresse", titt: "Adresse" },
@@ -927,6 +955,7 @@
           if (r.nu_raw === "utmeld") return "utmeld";
           if (r.nu_raw === "medlem") return "medlem";
           if (r.nu_raw === "potensiell_medlem") return "potensiell_medlem";
+          if (r.nu_raw === "inaktiv_medlem") return "inaktiv_medlem";
           if (r.nu_raw === "ikkje_aktuell") return "ikkje_aktuell";
           return "";
         }
@@ -952,9 +981,11 @@
                 ? "merke-ut"
                 : raw === "potensiell_medlem"
                   ? "merke-potensiell"
-                  : raw === "ikkje_aktuell"
-                    ? "merke-ikkjeaktuell"
-                    : "";
+                  : raw === "inaktiv_medlem"
+                    ? "merke-inaktivnu"
+                    : raw === "ikkje_aktuell"
+                      ? "merke-ikkjeaktuell"
+                      : "";
           return merke
             ? gridjs.html(
                 '<span class="' + merke + '">' + vikHtml(t) + "</span>"
@@ -983,6 +1014,9 @@
             "<option" +
             (v === "potensiell_medlem" ? " selected" : "") +
             ' value="potensiell_medlem">Potensiell medlem</option>' +
+            "<option" +
+            (v === "inaktiv_medlem" ? " selected" : "") +
+            ' value="inaktiv_medlem">Inaktiv medlem</option>' +
             "<option" +
             (v === "utmeld" ? " selected" : "") +
             ' value="utmeld">Utmeld</option>' +
@@ -1093,6 +1127,11 @@
             reknRadGron(r);
             return;
           }
+          if (r.nu_raw === "inaktiv_medlem") {
+            r.nu_vis_tekst = "Inaktiv medlem";
+            reknRadGron(r);
+            return;
+          }
           var iNu = nulOrgnFraListe && nulOrgnFraListe.has(o);
           if (iNu) {
             r.nu_raw = "medlem";
@@ -1104,6 +1143,8 @@
             r.nu_vis_tekst = "Medlem";
           } else if (r.nu_raw === "potensiell_medlem") {
             r.nu_vis_tekst = "Potensiell medlem";
+          } else if (r.nu_raw === "inaktiv_medlem") {
+            r.nu_vis_tekst = "Inaktiv medlem";
           } else if (r.nu_raw === "ikkje_aktuell") {
             r.nu_vis_tekst = "Ikkje aktuell";
           } else {
@@ -1131,7 +1172,9 @@
             } else {
               var iNu =
                 o.length === 9 && orgnrFraNuliste && orgnrFraNuliste.has(o);
-              if (iNu && !r.nedlagt_flag) {
+              if (nmu === "inaktiv_medlem" && !r.nedlagt_flag) {
+                r.nu_raw = "inaktiv_medlem";
+              } else if (iNu && !r.nedlagt_flag) {
                 r.nu_raw = "medlem";
               } else if (nmu === "medlem") {
                 r.nu_raw = "medlem";
@@ -1151,6 +1194,8 @@
               r.nu_vis_tekst = "Utmeld";
             } else if (r.nu_raw === "potensiell_medlem") {
               r.nu_vis_tekst = "Potensiell medlem";
+            } else if (r.nu_raw === "inaktiv_medlem") {
+              r.nu_vis_tekst = "Inaktiv medlem";
             } else if (r.nu_raw === "ikkje_aktuell") {
               r.nu_vis_tekst = "Ikkje aktuell";
             } else {
@@ -1208,6 +1253,8 @@
                 var gron = r.rad_nu_gron;
                 var amber =
                   r.nu_raw === "potensiell_medlem" && !r.nedlagt_flag;
+                var cyan =
+                  r.nu_raw === "inaktiv_medlem" && !r.nedlagt_flag;
                 var dempa = r.nu_raw === "ikkje_aktuell" && !r.nedlagt_flag;
                 var kl = raud
                   ? "rad-merke-raud"
@@ -1215,7 +1262,9 @@
                     ? "rad-merke-gron"
                     : amber
                       ? "rad-merke-amber"
-                      : dempa
+                      : cyan
+                        ? "rad-merke-inaktivnu"
+                        : dempa
                         ? "rad-merke-dempanu"
                         : "";
                 if (kl) {
@@ -1283,6 +1332,10 @@
               d = d.filter(function (r) {
                 return r.nu_raw === "potensiell_medlem" && !r.nedlagt_flag;
               });
+            } else if (nuF === "inaktiv_medlem") {
+              d = d.filter(function (r) {
+                return r.nu_raw === "inaktiv_medlem" && !r.nedlagt_flag;
+              });
             } else if (nuF === "utmeld") {
               d = d.filter(function (r) {
                 return r.nu_raw === "utmeld" && !r.nedlagt_flag;
@@ -1314,6 +1367,7 @@
               r.nu_raw === "medlem" ||
               r.nu_raw === "utmeld" ||
               r.nu_raw === "potensiell_medlem" ||
+              r.nu_raw === "inaktiv_medlem" ||
               r.nu_raw === "ikkje_aktuell"
             ) {
               b.nu = r.nu_raw;
@@ -1461,6 +1515,7 @@
                     v === "medlem" ||
                     v === "utmeld" ||
                     v === "potensiell_medlem" ||
+                    v === "inaktiv_medlem" ||
                     v === "ikkje_aktuell";
                   heileSett[i].nu_raw = gyldNu ? v : "";
                 }

@@ -9,9 +9,8 @@ For kvar orgnr:
   - `utmeld`  — utmeldt (raud merke)
   - `potensiell_medlem` — potensiell medlem (mellomting)
   - `ikkje_aktuell` — ikkje aktuell for registeret / NU likevel
-  - utelat felt eller tom `""` — ikkje vurdert / ukjent
-
-- **skjul** — `true` dersom rada ikkje skal visast i hovudlista (f.eks. ikkje ungdomslag, ikkje frilynde, feil i register). Standard er `false` eller at feltet ikkje finst.
+  - `inaktiv_medlem` — framleis på medlemslista i NU men merka **inaktiv** (som i medlemsregisteret)
+  - utelat felt eller tom `""` — ikkje vurdert / ukjent `true` dersom rada ikkje skal visast i hovudlista (f.eks. ikkje ungdomslag, ikkje frilynde, feil i register). Standard er `false` eller at feltet ikkje finst.
 
 - **nedlagt** — `true` dersom laget er oppløyst / ikkje lenger aktivt; får same **raud** rad-merke som `utmeld` (raud går føre grøn).
 

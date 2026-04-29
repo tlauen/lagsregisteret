@@ -70,6 +70,7 @@
       ["", "— (ikkje sett) —"],
       ["medlem", "medlem i NU"],
       ["potensiell_medlem", "potensiell medlem"],
+      ["inaktiv_medlem", "inaktiv medlem (NU)"],
       ["utmeld", "utmeld"],
       ["ikkje_aktuell", "ikkje aktuell"],
     ].forEach(
