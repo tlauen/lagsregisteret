@@ -376,6 +376,39 @@
         background: #2d333b;
         color: #79c0ff;
       }
+      .nu_dup_verkty {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.55rem 1rem;
+        align-items: flex-end;
+        margin: 0.4rem 0 0;
+        max-width: 58rem;
+      }
+      .nu_dup_verkty label.nu_dup_lab {
+        display: flex;
+        flex-direction: column;
+        gap: 0.2rem;
+        font-size: 0.92rem;
+      }
+      .nu_dup_verkty select {
+        background: var(--kort);
+        color: var(--tekst);
+        border: 1px solid var(--ramme);
+        border-radius: 6px;
+        padding: 0.3rem 0.35rem;
+        max-width: 24rem;
+        font-size: 0.86rem;
+      }
+      .nu_dup_knappar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.4rem;
+        align-items: center;
+      }
+      #nu_dup_liste_act {
+        margin: 0.45rem 0 0.15rem;
+        padding-left: 1.1rem;
+      }
       .merke-nu {
         color: #3fb950;
         font-weight: 500;
@@ -598,6 +631,40 @@
           <div id="kolonne_kryss" class="kolonne_kryss" aria-label="Vel synlege kolonnar"></div>
         </details>
       </div>
+      <details class="verkty-rad-2 dempa-ny" id="det_nu_dup_omtrekk" style="margin: 0.25rem 0 0">
+        <summary>NU: kopier mellom duplikat (to orgnr)</summary>
+        <p class="dempa_status" style="margin: 0.35rem 0 0.5rem">
+          Når eit lag gjeld som to Brreg‑rader (same stad, UL og ungdomslag o.l.), kan du kopiere NU‑felt
+          (<strong>Status</strong>, <strong>Ovanståande org.</strong>, <strong>Org.type</strong>) frå ei rad til ei anna.
+          Det vert lagra i denne nettlesaren og gjeld neste gang du lastar sida. Last ned JSON for å køyre
+          <code
+            ><span style="user-select: all">python3 skript/bruk_medlemas_ul_jamfor_valg.py</span></code
+          >
+          i depotet eller for handverk mot <code>docs/data/lag.csv</code>.
+        </p>
+        <div class="nu_dup_verkty">
+          <label class="nu_dup_lab" for="nu_dup_vel_frå">
+            Kopier NU frå
+            <select id="nu_dup_vel_frå">
+              <option value="">— vel org.nr —</option>
+            </select>
+          </label>
+          <label class="nu_dup_lab" for="nu_dup_vel_til">
+            til rad med org.nr
+            <select id="nu_dup_vel_til">
+              <option value="">— vel org.nr —</option>
+            </select>
+          </label>
+          <button type="button" id="nu_dup_kjor">Utfør kopiering</button>
+          <button type="button" id="last_ned_nu_dup">Last ned kopiliste (.json til git)</button>
+          <button type="button" id="nu_dup_tom_lagra">Tøm alle NU‑kopiar (last sida på nytt)</button>
+        </div>
+        <p id="nu_dup_melding" class="dempa_status" aria-live="polite" style="margin: 0.4rem 0 0"></p>
+        <p class="dempa-ny" style="margin: 0.35rem 0 0">
+          Aktive kopiar (som vert brukt att ved neste oppstart av sida):
+        </p>
+        <ul id="nu_dup_liste_act" class="dempa-ny"></ul>
+      </details>
       <div id="rediger_felt" class="verkty-rediger" hidden>
         <span class="dempa_status" style="flex: 1 1 12rem"
           >Endringar vert lagra i denne nettlesaren (ikkje på GitHub automatisk).</span
@@ -716,6 +783,7 @@
         var LAGR_API_LAGRING = "lagreg_api_grunnurl";
         var LAGREG_MANUELL_LOKAL = "lagreg_manuell_status_lokal";
         var LAGREG_FILTR_STATUS = "lagreg_filtr_statustypar";
+        var LAGREG_NU_KOPIAR = "lagreg_nu_kopiar_lokal";
         var NU_FILTR_TASTAR = [
           ["medlem", "Medlem (aktiv)"],
           ["potensiell_medlem", "Potensiell medlem"],
@@ -769,6 +837,214 @@
           var a = document.createElement("a");
           a.href = URL.createObjectURL(blob);
           a.download = "manuell_status.json";
+          a.click();
+          setTimeout(function () {
+            try {
+              URL.revokeObjectURL(a.href);
+            } catch (e) {
+              /* */
+            }
+          }, 2e3);
+        }
+
+        function finnRadVedOrgnr(o9raw) {
+          var o = sikreTekst(o9raw).replace(/\D/g, "");
+          if (o.length !== 9) return null;
+          for (var i = 0; i < heileSett.length; i++) {
+            if (reintO(heileSett[i]) === o) return heileSett[i];
+          }
+          return null;
+        }
+
+        function lesNuKopiarListe() {
+          try {
+            var t = localStorage.getItem(LAGREG_NU_KOPIAR);
+            if (!t) return [];
+            var p = JSON.parse(t);
+            return Array.isArray(p) ? p : [];
+          } catch (e) {
+            return [];
+          }
+        }
+
+        function lagreNuKopiarListe(lista) {
+          try {
+            localStorage.setItem(LAGREG_NU_KOPIAR, JSON.stringify(lista));
+          } catch (e) {
+            /* */
+          }
+        }
+
+        function brukAlleNuKopiarFråListe() {
+          var lista = lesNuKopiarListe();
+          lista.forEach(function (kp) {
+            var oa = sikreTekst(kp.frå_orgnr || "").replace(/\D/g, "");
+            var ob = sikreTekst(kp.til_orgnr || "").replace(/\D/g, "");
+            if (oa.length !== 9 || ob.length !== 9 || oa === ob) return;
+            var rf = finnRadVedOrgnr(oa);
+            var rt = finnRadVedOrgnr(ob);
+            if (!rf || !rt) return;
+            rt.nu_mr_status = sikreTekst(rf.nu_mr_status);
+            rt.nu_mr_overordna = sikreTekst(rf.nu_mr_overordna);
+            rt.nu_mr_orgtype = sikreTekst(rf.nu_mr_orgtype);
+            try {
+              fiksNuEtterKjelde(rt);
+            } catch (e) {
+              /* */
+            }
+            reknRadGron(rt);
+          });
+        }
+
+        function byggNuDupOrgVeljar() {
+          var sf = document.getElementById("nu_dup_vel_frå");
+          var st = document.getElementById("nu_dup_vel_til");
+          if (!sf || !st) return;
+          var gammFr = sf.value;
+          var gammTil = st.value;
+          var lim = [];
+          heileSett.forEach(function (r) {
+            var o = reintO(r);
+            if (o.length !== 9) return;
+            var ln = sikreTekst(r.lagsnavn).trim() || "(utan namn)";
+            lim.push({
+              o: o,
+              t:
+                ln.length > 62
+                  ? ln.slice(0, 60) + "…"
+                  : ln,
+            });
+          });
+          lim.sort(function (a, b) {
+            return a.t.localeCompare(b.t, "no");
+          });
+          function fyll(sel) {
+            sel.textContent = "";
+            var p0 = document.createElement("option");
+            p0.value = "";
+            p0.textContent = "— vel org.nr —";
+            sel.appendChild(p0);
+            lim.forEach(function (x) {
+              var ox = document.createElement("option");
+              ox.value = x.o;
+              ox.textContent = x.t + " (" + x.o + ")";
+              sel.appendChild(ox);
+            });
+          }
+          fyll(sf);
+          fyll(st);
+          if (
+            gammFr &&
+            lim.some(function (x) {
+              return x.o === gammFr;
+            })
+          )
+            sf.value = gammFr;
+          if (
+            gammTil &&
+            lim.some(function (x) {
+              return x.o === gammTil;
+            })
+          )
+            st.value = gammTil;
+        }
+
+        function oppfriskNuDupListeUI() {
+          var ul = document.getElementById("nu_dup_liste_act");
+          if (!ul) return;
+          ul.textContent = "";
+          var lista = lesNuKopiarListe();
+          if (!lista.length) {
+            var lia = document.createElement("li");
+            lia.style.listStyle = "none";
+            lia.style.marginLeft = "-1rem";
+            lia.style.color = "var(--dempa)";
+            lia.textContent = "(ingen kopiar lagra — ennå)";
+            ul.appendChild(lia);
+            return;
+          }
+          lista.forEach(function (kp) {
+            var li = document.createElement("li");
+            li.textContent =
+              "Org.nr " +
+              sikreTekst(kp.til_orgnr) +
+              " får NU‑felt frå org.nr " +
+              sikreTekst(kp.frå_orgnr) +
+              ".";
+            ul.appendChild(li);
+          });
+        }
+
+        function utførNuDupkopieringsknapp() {
+          var mf = document.getElementById("nu_dup_melding");
+          var sf = document.getElementById("nu_dup_vel_frå");
+          var st = document.getElementById("nu_dup_vel_til");
+          if (!sf || !st) return;
+          var ofr = sf.value.trim();
+          var otl = st.value.trim();
+          if (!ofr || !otl) {
+            if (mf) mf.textContent = "Vel begge nedtrekk før du kopier.";
+            return;
+          }
+          if (ofr === otl) {
+            if (mf) mf.textContent = "Vel to ulike org.nr.";
+            return;
+          }
+          var rf = finnRadVedOrgnr(ofr);
+          var rt = finnRadVedOrgnr(otl);
+          if (!rf || !rt) {
+            if (mf) mf.textContent = "Finn ikkje ein av orgnr‑a i registret.";
+            return;
+          }
+          rt.nu_mr_status = sikreTekst(rf.nu_mr_status);
+          rt.nu_mr_overordna = sikreTekst(rf.nu_mr_overordna);
+          rt.nu_mr_orgtype = sikreTekst(rf.nu_mr_orgtype);
+          try {
+            fiksNuEtterKjelde(rt);
+          } catch (e) {
+            /* */
+          }
+          reknRadGron(rt);
+          var fo = reintO(rf);
+          var tk = reintO(rt);
+          var ny = lesNuKopiarListe().filter(function (x) {
+            return (
+              sikreTekst(x.til_orgnr).replace(/\D/g, "") !== tk
+            );
+          });
+          ny.push({ frå_orgnr: fo, til_orgnr: tk });
+          lagreNuKopiarListe(ny);
+          nulleGridFleirSyn();
+          teiknaRegister();
+          oppfriskNuDupListeUI();
+          if (mf) {
+            mf.textContent =
+              "Kopiert NU‑felt til org.nr " + tk + ". Lagra i nettlesaren.";
+          }
+        }
+
+        function lastNedNuKopiarTilGitJson() {
+          var rå = lesNuKopiarListe();
+          var ut = {
+            forklaring:
+              "Frå lagsregisteret-sida (lokal lagring). Legg i data/medlemas_ul_jamfor_valg.json eller køyr skript.",
+            kopier_nu_felt: rå.map(function (x) {
+              return {
+                frå_orgnr: sikreTekst(x.frå_orgnr || "").replace(/\D/g, ""),
+                til_orgnr: sikreTekst(x.til_orgnr || "").replace(/\D/g, ""),
+              };
+            }).filter(function (y) {
+              return (
+                String(y.frå_orgnr || "").length === 9 &&
+                String(y.til_orgnr || "").length === 9
+              );
+            }),
+          };
+          var txt = JSON.stringify(ut, null, 2) + "\n";
+          var blob = new Blob([txt], { type: "application/json;charset=utf-8" });
+          var a = document.createElement("a");
+          a.href = URL.createObjectURL(blob);
+          a.download = "medlemas_ul_jamfor_valg.json";
           a.click();
           setTimeout(function () {
             try {
@@ -2127,6 +2403,7 @@
                 return;
               }
               heileSett = slaaSamanStatus(felta, statusKart, orgnrFraNuliste);
+              brukAlleNuKopiarFråListe();
               heileSett.forEach(function (r) {
                 var lz = sikreTekst(r.liste).trim();
                 if (!lz) r.liste = "ungdomslag";
@@ -2142,6 +2419,8 @@
               byggKolonnePanel();
               byggNuStatusFiltrPanel();
               byggFylkeVal();
+              byggNuDupOrgVeljar();
+              oppfriskNuDupListeUI();
               setRedigerSyn(true);
               teiknaRegister();
               document
@@ -2176,6 +2455,28 @@
                 .addEventListener("click", køyrLagreTilVercel);
               var lnm = document.getElementById("last_ned_manuell");
               if (lnm) lnm.addEventListener("click", lastNedManuellJson);
+              var ndK = document.getElementById("nu_dup_kjor");
+              if (ndK) ndK.addEventListener("click", utførNuDupkopieringsknapp);
+              var ndL = document.getElementById("last_ned_nu_dup");
+              if (ndL) ndL.addEventListener("click", lastNedNuKopiarTilGitJson);
+              var ndTom = document.getElementById("nu_dup_tom_lagra");
+              if (ndTom) {
+                ndTom.addEventListener("click", function () {
+                  if (
+                    !window.confirm(
+                      "Tøme alle NU‑kopiar lagra i denne nettlesaren og laste sida på nytt?"
+                    )
+                  ) {
+                    return;
+                  }
+                  try {
+                    localStorage.removeItem(LAGREG_NU_KOPIAR);
+                  } catch (e) {
+                    /* */
+                  }
+                  window.location.reload();
+                });
+              }
               var bFle = document.getElementById("last_inn_fleire_reg");
               if (bFle) {
                 bFle.addEventListener("click", function () {
