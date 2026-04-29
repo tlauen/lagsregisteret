@@ -362,6 +362,14 @@
         color: #79c0ff;
         font-weight: 500;
       }
+      .nu-mr-plain {
+        color: var(--tekst);
+        font-weight: 500;
+      }
+      .nu-mr-forvelj {
+        margin-bottom: 0.35rem;
+        line-height: 1.35;
+      }
       .verkty input[type="checkbox"] {
         width: 1rem;
         height: 1rem;
@@ -656,7 +664,6 @@
           { nøkk: "merknad_hand", titt: "Merknad" },
           { nøkk: "orgnr", titt: "Org.nr" },
           { nøkk: "liste", titt: "Liste" },
-          { nøkk: "nu_mr_status", titt: "NU (medlemsregister)" },
           {
             nøkk: "nu_mr_overordna",
             titt: "Ovanståande org. (NU)",
@@ -950,6 +957,46 @@
           return delar.length ? delar.join(", ") : "—";
         }
 
+        /** NU medlemsregister (Excel), ikkje same som manuell `nu_raw`. */
+        function nuMrTekstLav(r) {
+          return sikreTekst(r.nu_mr_status || "").trim().toLowerCase();
+        }
+
+        function nuMrSomUtmeld(r) {
+          var n = nuMrTekstLav(r);
+          return n.length > 0 && n.indexOf("utmel") !== -1;
+        }
+
+        function nuMrSomNedlagt(r) {
+          var n = nuMrTekstLav(r);
+          return n.length > 0 && n.indexOf("nedlag") !== -1;
+        }
+
+        function nuMrSomInaktiv(r) {
+          var n = nuMrTekstLav(r);
+          if (!n) return false;
+          if (n === "inaktiv") return true;
+          return /\binaktiv/i.test(sikreTekst(r.nu_mr_status || ""));
+        }
+
+        /** «Aktiv» i register, men ikkje «inaktiv». */
+        function nuMrSomAktivLik(r) {
+          var n = nuMrTekstLav(r);
+          if (!n) return false;
+          if (nuMrSomInaktiv(r)) return false;
+          return n.indexOf("aktiv") !== -1;
+        }
+
+        /** CSS-merke etter tekst i `nu_mr_status` (NU er førande kjelde). */
+        function merkeKlassForNuMrRad(r) {
+          if (!sikreTekst(r.nu_mr_status || "").trim()) return "";
+          if (nuMrSomUtmeld(r)) return "merke-ut";
+          if (nuMrSomNedlagt(r)) return "merke-nedlagt";
+          if (nuMrSomInaktiv(r)) return "merke-inaktivnu";
+          if (nuMrSomAktivLik(r)) return "merke-nu";
+          return "";
+        }
+
         function statusVerdiFøreVelj(r) {
           if (r.nedlagt_flag) return "nedlagt";
           if (r.nu_raw === "utmeld") return "utmeld";
@@ -960,10 +1007,8 @@
           return "";
         }
 
-        function statusCelle(r) {
-          if (fårRedigerILista()) {
-            return statusCelleInteraktiv(r);
-          }
+        /** Manuell rad — berre når `nu_mr_status` i CSV er tom. */
+        function manuellFallbackStatusVis(r) {
           if (r.nedlagt_flag) {
             return gridjs.html(
               '<span class="merke-nedlagt">' + vikHtml("Nedlagt") + "</span>"
@@ -993,16 +1038,47 @@
             : "—";
         }
 
-        function statusCelleInteraktiv(r) {
+        /** Éin statuskolonne: NU‑medlemsregister fører; elles manuell. */
+        function nuStatusCelle(r) {
+          if (fårRedigerILista()) {
+            return nuStatusCelleInteraktiv(r);
+          }
+          var nmr = sikreTekst(r.nu_mr_status || "").trim();
+          if (nmr) {
+            var mk = merkeKlassForNuMrRad(r);
+            return mk
+              ? gridjs.html(
+                  '<span class="' + mk + '">' + vikHtml(nmr) + "</span>"
+                )
+              : gridjs.html(
+                  '<span class="nu-mr-plain">' + vikHtml(nmr) + "</span>"
+                );
+          }
+          return manuellFallbackStatusVis(r);
+        }
+
+        function nuStatusCelleInteraktiv(r) {
           var o = reintO(r);
           if (o.length !== 9) {
             return "—";
           }
           var v = statusVerdiFøreVelj(r);
+          var nmr = sikreTekst(r.nu_mr_status || "").trim();
+          var nuLinje = "";
+          if (nmr) {
+            var mk = merkeKlassForNuMrRad(r);
+            var kl = mk || "nu-mr-plain";
+            nuLinje =
+              '<div class="nu-mr-forvelj"><span class="' +
+              kl +
+              '">' +
+              vikHtml(nmr) +
+              "</span></div>";
+          }
           var s =
             '<select class="nu-velj" data-o="' +
             vikHtml(o) +
-            '" aria-label="Status for ' +
+            '" aria-label="Manuell påverknad (under NU-register) for ' +
             vikHtml(sikreTekst(r.lagsnavn)) +
             '">' +
             "<option" +
@@ -1027,7 +1103,7 @@
             (v === "nedlagt" ? " selected" : "") +
             ' value="nedlagt">Nedlagt</option>' +
             "</select>";
-          return gridjs.html(s);
+          return gridjs.html(nuLinje + s);
         }
 
         function hovudCelle(r) {
@@ -1249,13 +1325,24 @@
             return akt.map(function (k) {
               if (k.nøkk === "lagsnavn") {
                 var navn = sikreTekst(r.lagsnavn);
-                var raud = r.nu_raw === "utmeld" || r.nedlagt_flag;
-                var gron = r.rad_nu_gron;
+                var nmrS = sikreTekst(r.nu_mr_status || "").trim();
+                var raud = nmrS
+                  ? nuMrSomUtmeld(r) || nuMrSomNedlagt(r)
+                  : r.nu_raw === "utmeld" || r.nedlagt_flag;
+                var gron =
+                  !raud &&
+                  (nmrS ? nuMrSomAktivLik(r) : r.rad_nu_gron);
                 var amber =
-                  r.nu_raw === "potensiell_medlem" && !r.nedlagt_flag;
-                var cyan =
-                  r.nu_raw === "inaktiv_medlem" && !r.nedlagt_flag;
-                var dempa = r.nu_raw === "ikkje_aktuell" && !r.nedlagt_flag;
+                  !nmrS &&
+                  r.nu_raw === "potensiell_medlem" &&
+                  !r.nedlagt_flag;
+                var cyan = nmrS
+                  ? nuMrSomInaktiv(r) && !raud
+                  : r.nu_raw === "inaktiv_medlem" && !r.nedlagt_flag;
+                var dempa =
+                  !nmrS &&
+                  r.nu_raw === "ikkje_aktuell" &&
+                  !r.nedlagt_flag;
                 var kl = raud
                   ? "rad-merke-raud"
                   : gron
@@ -1274,7 +1361,7 @@
                 }
                 return navn;
               }
-              if (k.nøkk === "__status__") return statusCelle(r);
+              if (k.nøkk === "__status__") return nuStatusCelle(r);
               if (k.nøkk === "merknad_hand") return merknadCelle(r);
               if (k.nøkk === "i_hovudlista") return hovudCelle(r);
               if (k.nøkk === "nettstad" || k.nøkk === "kjelde_url")
@@ -1322,11 +1409,15 @@
           if (nuF !== "alle") {
             if (nuF === "ukjent") {
               d = d.filter(function (r) {
-                return !r.nedlagt_flag && !r.nu_raw;
+                if (r.nedlagt_flag || r.nu_raw) return false;
+                if (nuMrTekstLav(r)) return false;
+                return true;
               });
             } else if (nuF === "medlem") {
               d = d.filter(function (r) {
-                return r.nu_raw === "medlem" && !r.nedlagt_flag;
+                if (r.nedlagt_flag) return false;
+                if (r.nu_raw === "medlem") return true;
+                return nuMrSomAktivLik(r);
               });
             } else if (nuF === "potensiell_medlem") {
               d = d.filter(function (r) {
@@ -1334,11 +1425,16 @@
               });
             } else if (nuF === "inaktiv_medlem") {
               d = d.filter(function (r) {
-                return r.nu_raw === "inaktiv_medlem" && !r.nedlagt_flag;
+                if (r.nedlagt_flag) return false;
+                return (
+                  r.nu_raw === "inaktiv_medlem" ||
+                  nuMrSomInaktiv(r)
+                );
               });
             } else if (nuF === "utmeld") {
               d = d.filter(function (r) {
-                return r.nu_raw === "utmeld" && !r.nedlagt_flag;
+                if (r.nedlagt_flag) return false;
+                return r.nu_raw === "utmeld" || nuMrSomUtmeld(r);
               });
             } else if (nuF === "ikkje_aktuell") {
               d = d.filter(function (r) {
@@ -1346,7 +1442,7 @@
               });
             } else if (nuF === "nedlagt_f") {
               d = d.filter(function (r) {
-                return r.nedlagt_flag;
+                return r.nedlagt_flag || nuMrSomNedlagt(r);
               });
             }
           }
@@ -1593,7 +1689,7 @@
             var c = { name: k.titt, sort: true };
             if (k.nøkk === "adresse") c.width = "200px";
             if (fårRedigerILista()) {
-              if (k.nøkk === "__status__") c.width = "9.5rem";
+              if (k.nøkk === "__status__") c.width = "11.5rem";
               if (k.nøkk === "i_hovudlista") c.width = "3.2rem";
               if (k.nøkk === "merknad_hand") c.width = "14rem";
             }
