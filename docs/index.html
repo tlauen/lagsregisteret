@@ -358,6 +358,10 @@
       .register-fleire {
         margin: 0.5rem 0 0.25rem;
         padding: 0 0.1rem;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.45rem 0.6rem;
+        align-items: center;
       }
       .register-fleire button {
         background: var(--kort);
@@ -633,6 +637,9 @@
           <button type="button" id="last_inn_fleire_reg" hidden>
             Last inn fleire
           </button>
+          <button type="button" id="vis_alle_rader_reg" hidden>
+            Vis alle rader
+          </button>
         </p>
       </div>
       <section id="nu_manglar_omtrekk" class="nu-manglar" hidden>
@@ -901,6 +908,78 @@
             if (vis) delar.push(vis);
           });
           return delar.length ? delar.join(", ") : "—";
+        }
+
+        function stadNøkkel(s) {
+          return sikreTekst(s).trim().toLocaleLowerCase("nb-NO");
+        }
+
+        /**
+         * Éin raske til fylkesfilter: «Troms» og «Troms - Romsa - Tromssa» → same nøkkel.
+         */
+        function fylkeGruppeNøkkel(s) {
+          var t = sikreTekst(s).trim();
+          if (!t) return "";
+          var lav = t.toLocaleLowerCase("nb-NO");
+          var parts = lav.split(/\s*-\s*/);
+          return parts.length >= 2 ? parts[0] : lav;
+        }
+
+        /** Vel mellom jamførande kommune-variantar — gjev føretrekk til naturleg skriveform. */
+        function velBestKommuneVisning(variants) {
+          if (!variants.length) return "";
+          if (variants.length === 1) return finjusterKommuneEitt(variants[0]);
+          var lauv = [];
+          var i;
+          for (i = 0; i < variants.length; i++) {
+            var vi = variants[i];
+            if (vi !== vi.toLocaleUpperCase("nb-NO")) lauv.push(vi);
+          }
+          if (lauv.length) {
+            lauv.sort(function (a, b) {
+              return a.localeCompare(b, "no");
+            });
+            return lauv[0];
+          }
+          return finjusterKommuneEitt(variants[0]);
+        }
+
+        /** Fyll ut store bokstavar (Brreg‑stil) til vanleg tittelisering. */
+        function finjusterKommuneEitt(s) {
+          var t = sikreTekst(s).trim();
+          if (!t) return "";
+          var up = t.toLocaleUpperCase("nb-NO");
+          if (t !== up) return t;
+          var delar = t.toLocaleLowerCase("nb-NO").split(/(\s+|[\-–—])/u);
+          var bi = "";
+          var j;
+          for (j = 0; j < delar.length; j++) {
+            var d = delar[j];
+            if (!d) continue;
+            if (/^\s+$/.test(d) || /^[\-–—]+$/.test(d)) {
+              bi += d;
+              continue;
+            }
+            bi +=
+              d.charAt(0).toLocaleUpperCase("nb-NO") +
+              d.slice(1).toLocaleLowerCase("nb-NO");
+          }
+          return bi;
+        }
+
+        /** Lengste variant = fullstatleg namn frå kommune‑til‑fylke‑kartet osb. */
+        function velBestFylkeVisning(variants) {
+          var best = variants[0];
+          var mx = best.length;
+          var hi;
+          for (hi = 1; hi < variants.length; hi++) {
+            var v = variants[hi];
+            if (v.length > mx) {
+              mx = v.length;
+              best = v;
+            }
+          }
+          return best;
         }
 
         /** NU medlemsregister (Excel), ikkje same som manuell `nu_raw`. */
@@ -1390,22 +1469,51 @@
         }
 
         function byggFylkeVal() {
-          var s = new Set();
+          var grupper = {};
           kandidatFylkeRader().forEach(function (r) {
             var f = sikreTekst(r.fylke).trim();
-            if (f) s.add(f);
-          });
-          var lista = Array.from(s).sort(function (a, b) {
-            return a.localeCompare(b, "no");
+            if (!f) return;
+            var g = fylkeGruppeNøkkel(f);
+            if (!g) return;
+            if (!grupper[g]) grupper[g] = [];
+            if (grupper[g].indexOf(f) === -1) grupper[g].push(f);
           });
           var sel = document.getElementById("fylke_val");
-          while (sel.options.length > 1) sel.remove(1);
-          lista.forEach(function (f) {
+          var gamm = sel.value;
+          while (sel.options.length > 1) {
+            sel.remove(1);
+          }
+          var nøklar = Object.keys(grupper);
+          nøklar.sort(function (a, b) {
+            return velBestFylkeVisning(grupper[a]).localeCompare(
+              velBestFylkeVisning(grupper[b]),
+              "no"
+            );
+          });
+          nøklar.forEach(function (g) {
             var o = document.createElement("option");
-            o.value = f;
-            o.textContent = f;
+            o.value = g;
+            o.textContent = velBestFylkeVisning(grupper[g]);
             sel.appendChild(o);
           });
+          if (gamm !== "alle") {
+            var har = false;
+            var qi;
+            for (qi = 0; qi < sel.options.length; qi++) {
+              if (sel.options[qi].value === gamm) {
+                har = true;
+                break;
+              }
+            }
+            if (har) {
+              sel.value = gamm;
+            } else {
+              var gj = fylkeGruppeNøkkel(gamm);
+              if (gj && Object.prototype.hasOwnProperty.call(grupper, gj)) {
+                sel.value = gj;
+              } else sel.value = "alle";
+            }
+          }
           byggKommuneVal();
         }
 
@@ -1431,25 +1539,40 @@
           kSel.disabled = false;
           var oAlle = document.createElement("option");
           oAlle.value = "alle";
-          oAlle.textContent = "— alle kommunar i «" + fy + "» —";
+          var fyltekst =
+            (fSel.selectedOptions &&
+              fSel.selectedOptions[0] &&
+              fSel.selectedOptions[0].textContent) ||
+            fy;
+          oAlle.textContent = "— alle kommunar i «" + fyltekst + "» —";
           kSel.appendChild(oAlle);
-          var komm = {};
+          var kommGrupper = {};
           kandidatFylkeRader().forEach(function (r) {
-            if (sikreTekst(r.fylke).trim() !== fy) return;
+            if (fylkeGruppeNøkkel(sikreTekst(r.fylke)) !== fy) return;
             var kk = sikreTekst(r.kommune).trim();
-            if (kk) komm[kk] = true;
+            if (!kk) return;
+            var nk = stadNøkkel(kk);
+            if (!kommGrupper[nk]) kommGrupper[nk] = [];
+            if (kommGrupper[nk].indexOf(kk) === -1) kommGrupper[nk].push(kk);
           });
-          Object.keys(komm)
-            .sort(function (a, b) {
-              return a.localeCompare(b, "no");
-            })
-            .forEach(function (ko) {
-              var o = document.createElement("option");
-              o.value = ko;
-              o.textContent = ko;
-              kSel.appendChild(o);
-            });
-          if (gammKom !== "alle" && komm[gammKom]) kSel.value = gammKom;
+          var knøkl = Object.keys(kommGrupper);
+          knøkl.sort(function (a, b) {
+            return velBestKommuneVisning(kommGrupper[a]).localeCompare(
+              velBestKommuneVisning(kommGrupper[b]),
+              "no"
+            );
+          });
+          knøkl.forEach(function (nk) {
+            var o = document.createElement("option");
+            o.value = nk;
+            o.textContent = velBestKommuneVisning(kommGrupper[nk]);
+            kSel.appendChild(o);
+          });
+          var ønsktKom = gammKom;
+          if (ønsktKom !== "alle" && !kommGrupper[ønsktKom]) {
+            ønsktKom = stadNøkkel(ønsktKom);
+          }
+          if (ønsktKom !== "alle" && kommGrupper[ønsktKom]) kSel.value = ønsktKom;
           else kSel.value = "alle";
         }
 
@@ -1508,12 +1631,12 @@
           });
           if (fylke !== "alle") {
             d = d.filter(function (r) {
-              return sikreTekst(r.fylke).trim() === fylke;
+              return fylkeGruppeNøkkel(sikreTekst(r.fylke)) === fylke;
             });
           }
           if (kommune !== "alle") {
             d = d.filter(function (r) {
-              return sikreTekst(r.kommune).trim() === kommune;
+              return stadNøkkel(sikreTekst(r.kommune)) === kommune;
             });
           }
           if (bruksStatusFiltr) {
@@ -1780,16 +1903,21 @@
           });
           var rRender = gridDyr.render(container);
           var bFle = document.getElementById("last_inn_fleire_reg");
-          if (bFle) {
+          var bAlle = document.getElementById("vis_alle_rader_reg");
+          if (bFle || bAlle) {
             var reSt = dyr.length - gridSynsGrense;
             if (reSt > 0) {
-              bFle.textContent =
-                reSt <= GRID_RADER_PÅ_OPPSTART
-                  ? "Vis resten (" + reSt + (reSt === 1 ? " rad)" : " rader)")
-                  : "Last inn " + GRID_RADER_PÅ_OPPSTART + " til";
-              bFle.removeAttribute("hidden");
+              if (bFle) {
+                bFle.textContent =
+                  reSt <= GRID_RADER_PÅ_OPPSTART
+                    ? "Vis resten (" + reSt + (reSt === 1 ? " rad)" : " rader)")
+                    : "Last inn " + GRID_RADER_PÅ_OPPSTART + " til";
+                bFle.removeAttribute("hidden");
+              }
+              if (bAlle) bAlle.removeAttribute("hidden");
             } else {
-              bFle.setAttribute("hidden", "");
+              if (bFle) bFle.setAttribute("hidden", "");
+              if (bAlle) bAlle.setAttribute("hidden", "");
             }
           }
           var setteRullingAtt = function () {
@@ -2006,6 +2134,14 @@
                     dList.length,
                     gridSynsGrense + GRID_RADER_PÅ_OPPSTART
                   );
+                  teiknaRegister();
+                });
+              }
+              var bAlle = document.getElementById("vis_alle_rader_reg");
+              if (bAlle) {
+                bAlle.addEventListener("click", function () {
+                  var dList = filtrerRader();
+                  gridSynsGrense = dList.length;
                   teiknaRegister();
                 });
               }
