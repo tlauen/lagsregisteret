@@ -901,6 +901,27 @@
             .replace(/"/g, "&quot;");
         }
 
+        /** Visningsnamn for tag i kolonne «Liste» (samsvar med søkjeknappane). */
+        function listeTagTilVisning(tag) {
+          var r = sikreTekst(tag).trim();
+          var t = r.toLowerCase();
+          if (t === "ungdomslag") return "Ungdom*";
+          if (t === "grendelag") return "Grend*";
+          if (t === "bygdelag") return "Bygd*";
+          return r;
+        }
+
+        function listeKolonneVisning(rå) {
+          var lz = sikreTekst(rå).trim();
+          if (!lz) return "—";
+          var delar = [];
+          lz.split(",").forEach(function (bit) {
+            var vis = listeTagTilVisning(bit);
+            if (vis) delar.push(vis);
+          });
+          return delar.length ? delar.join(", ") : "—";
+        }
+
         function statusVerdiFøreVelj(r) {
           if (r.nedlagt_flag) return "nedlagt";
           if (r.nu_raw === "utmeld") return "utmeld";
@@ -1210,8 +1231,7 @@
               if (k.nøkk === "nettstad" || k.nøkk === "kjelde_url")
                 return lenkjeCelle(r[k.nøkk]);
               if (k.nøkk === "liste") {
-                var lz = sikreTekst(r.liste).trim();
-                return lz ? lz.replace(/,/g, ", ") : "—";
+                return listeKolonneVisning(r.liste);
               }
               return sikreTekst(r[k.nøkk]);
             });

@@ -32,8 +32,9 @@ Oversikt over frilynde ungdomslag og liknande lag i Noreg, bygd på opne kjelder
 | `skript/sett_lag_status.py` | CLI: oppdater éi orgnr-oppføring i `data/manuell_status.json`. |
 | `skript/bygg_kommune_til_fylke.py` | OPPDATER: last ned siste kommune → fylke frå SSB (bruk sjeldan). |
 | `skript/jamfoer_nu_lokallag.py` | Jamfører [nu.no/lokallag](https://www.ungdomslag.no/lokallag) (markdown med `##` per lag) med `docs/data/lag.csv` — sjekk samsvar manuelt, ikkje blind stol på likskapsdøme. |
+| `skript/jamfoer_excel_mot_register.py` | Jamfør **Excel eller CSV** (NU‑liste med orgnr og ev. status) mot `lag.csv` og `manuell_status.json` — berre rapport; til dømes `pip install openpyxl` før `.xlsx`. |
 | `skript/trygg_nett.py` | Hjelpemodul for SSL (bruk saman med `certifi`, sjå under). |
-| `requirements.txt` | Anbefalt: `certifi` slik at HTTPS mot Brreg/SSB fungerer på t.d. macOS. |
+| `requirements.txt` | Anbefalt: `certifi` (+ `openpyxl` om du brukar jamfør‑skript mot `.xlsx`). |
 
 ## Køyre
 

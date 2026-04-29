@@ -21,3 +21,7 @@ U.L
 U.L.
 UL
 bondeungdom
+leikarring
+leikarringen
+folkedanslag
+folkedanslaget
