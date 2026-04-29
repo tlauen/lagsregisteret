@@ -2,6 +2,11 @@
 """
 Flett NU medlemsregister (Excel) inn i lag.csv → nu_mr_status, nu_mr_overordna, nu_mr_orgtype.
 
+Rader der Excel har **organisasjonsnummer** som **ikkje finst** etter innhent frå Brreg
+(felt i `lag.csv` som kjem frå søkjefragment‑treff) vert også **lagde til**, med
+kjelde «nu_mr_orgnr_ikkje_i_brreg» at alle NU‑«Aktive» kan teljast på nettsida.
+Vel ``--ikkje-vedlegg-orgnr-utanfor-brreg`` om du ikkje vil ha dei.
+
 Rader i Excel **utan organisasjonsnummer** som ikkje vert koplast til ei Brreg‑rad, vert som standard
 **lagt til** i CSV med tom orgnr og kjelde «nu_mr_utan_orgnr», slik at dei visast på nettsida.
 Vel ``--ikkje-vedlegg-utan-orgnr`` om du ikkje vil ha slike tilleggsrader.
@@ -136,6 +141,15 @@ def lik_namn(a: str, b: str) -> float:
 
 
 KJELDE_NU_UTAN_ORGNR = "nu_mr_utan_orgnr"
+KJELDE_NU_ORGNR_IKKJE_BRREG = "nu_mr_orgnr_ikkje_i_brreg"
+
+
+def liste_frå_nu_orgtype(orgtype_tekst: str | None) -> str:
+    """Ungdom* vs Bygd* i «liste», etter NU sin organisasjonstype."""
+    kt = (orgtype_tekst or "").strip().lower()
+    if kt and "fylke" in kt:
+        return "bygdelag"
+    return "ungdomslag"
 
 
 def namn_komm_fylk_lik(
@@ -187,6 +201,14 @@ def hovud() -> int:
         help=(
             "Ikkje legg til nye CSV‑rader for NU‑Excel utan orgnr som ikkje allereie "
             "finst i registeret (vanlegvis vil du ha dei med)."
+        ),
+    )
+    p.add_argument(
+        "--ikkje-vedlegg-orgnr-utanfor-brreg",
+        action="store_true",
+        help=(
+            "Ikkje legg til NU‑Excel‑rader med orgnr som ikkje kom med i Brreg‑innhenting "
+            "(standard: legg dei til — trengst for at alle Aktive tel med)."
         ),
     )
     val = p.parse_args()
@@ -358,12 +380,13 @@ def hovud() -> int:
         for k in nye_k:
             rad.setdefault(k, "")
 
+    dags_i_dag = date.today().isoformat()
+
     ubrukt_indexes = [i for i in range(len(ex_utan_org)) if i not in brukt_utan_org]
     vedlegg_utan_org = 0
     hop_duplikat = 0
     hop_tomme_namn = 0
     if not val.ikkje_vedlegg_utan_orgnr:
-        dags = date.today().isoformat()
         for ei in ubrukt_indexes:
             ex = ex_utan_org[ei]
             navn = (ex.get(k_namn) or "").strip()
@@ -382,18 +405,35 @@ def hovud() -> int:
             ny["fylke"] = fylk
             ny["kjelde_type"] = KJELDE_NU_UTAN_ORGNR
             ny["kjelde_url"] = ""
-            if k_type:
-                kt_lav = (ex.get(k_type) or "").strip().lower()
-                if "fylke" in kt_lav:
-                    ny["liste"] = "bygdelag"
-                else:
-                    ny["liste"] = "ungdomslag"
-            else:
-                ny["liste"] = "ungdomslag"
-            ny["henta_dato"] = dags
+            ny["liste"] = liste_frå_nu_orgtype(ex.get(k_type) if k_type else None)
+            ny["henta_dato"] = dags_i_dag
             fyll_nu_felt(ny, ex)
             rader.append(ny)
             vedlegg_utan_org += 1
+
+    orgnr_i_register = {o for o in (reint_orgnr(r.get("orgnr", "")) for r in rader) if o}
+    vedlegg_orgnr_utanfor = 0
+    if not val.ikkje_vedlegg_orgnr_utanfor_brreg:
+        for org9 in sorted(excel_per_org.keys()):
+            if org9 in orgnr_i_register:
+                continue
+            ex = excel_per_org[org9]
+            navn = (ex.get(k_namn) or "").strip()
+            if not navn:
+                continue
+            ny = {k: "" for k in felt}
+            ny["lagsnavn"] = navn
+            ny["orgnr"] = org9
+            ny["kommune"] = (ex.get(k_komm) or "").strip()
+            ny["fylke"] = (ex.get(k_fylk) or "").strip()
+            ny["kjelde_type"] = KJELDE_NU_ORGNR_IKKJE_BRREG
+            ny["kjelde_url"] = ""
+            ny["liste"] = liste_frå_nu_orgtype(ex.get(k_type) if k_type else None)
+            ny["henta_dato"] = dags_i_dag
+            fyll_nu_felt(ny, ex)
+            rader.append(ny)
+            orgnr_i_register.add(org9)
+            vedlegg_orgnr_utanfor += 1
 
     # Backup
     backup = csv_sti.with_suffix(".csv.før_nu_medlemsregister.bak")
@@ -421,6 +461,13 @@ def hovud() -> int:
                 f"samme lag finst alt i CSV {hop_duplikat})",
                 file=sys.stderr,
             )
+
+    if not val.ikkje_vedlegg_orgnr_utanfor_brreg:
+        print(
+            f"  Nye rader lagt til (orgnr frå NU, ikkje i Brreg‑innhenting før): "
+            f"{vedlegg_orgnr_utanfor}",
+            file=sys.stderr,
+        )
 
     excel_ikkje_brreg = [
         o for o in excel_per_org if o not in {reint_orgnr(r.get("orgnr", "")) for r in rader if reint_orgnr(r.get("orgnr", ""))}

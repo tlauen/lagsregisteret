@@ -144,6 +144,40 @@
         accent-color: var(--lenkje);
         margin: 0;
       }
+      #nu_filtr_omtrekk summary {
+        cursor: pointer;
+        color: var(--lenkje);
+        user-select: none;
+        font-size: 0.92rem;
+        list-style: none;
+      }
+      #nu_filtr_omtrekk summary::-webkit-details-marker {
+        display: none;
+      }
+      .nu_filtr_kryss {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.35rem 1rem;
+        padding: 0.45rem 0 0;
+        max-width: 58rem;
+      }
+      .nu_filtr_kryss label {
+        display: flex;
+        align-items: center;
+        gap: 0.35rem;
+        cursor: pointer;
+        font-size: 0.89rem;
+        white-space: nowrap;
+      }
+      .nu_filtr_kryss input {
+        width: 0.9rem;
+        height: 0.9rem;
+        accent-color: var(--lenkje);
+        margin: 0;
+      }
+      #kommune_val[disabled] {
+        opacity: 0.55;
+      }
       .feil {
         background: #3d1f1f;
         border: 1px solid #7a2e2e;
@@ -470,15 +504,14 @@
           >Brønnøysundregistera</a
         >
         (opne data), pluss lokale filtreringar i repositoriet (søkjefragment,
-        utelatingsfrasar, ev. «norsk tilhald» ved innhenting). Dei tre
-        <strong>Ungdom* / Grend* / Bygd*</strong>-knappane viser berre treff som
-        vart funne med søkje­fragment frå høvesvis
-        <code>sokjefragment.txt</code>,
-        <code>sokjefragment_grende.txt</code> og
-        <code>sokjefragment_bygd.txt</code> — ikkje «reine» typar i Brreg.
+        utelatingsfrasar, ev. «norsk tilhald» ved innhenting). Kolonne
+        <strong>Liste</strong> kan vise korleis laget kom med (<code>Ungdom*</code>,
+        <code>Grend*</code>,
+        <code>Bygd*</code> etter kva søkjefil som gav Brreg‑treff).
       </p>
       <p class="leiar">
-        Søk i alle felt, snevre etter fylke og <strong>status</strong>, eller bruk
+        Søk i alle felt, snevre etter fylke og kommune, og <strong>skru av statustypar</strong>
+        under — eller bruk
         <strong>Rediger i lista</strong> for å setja NU-status (medlem, potensiell
         medlem, utmeld, ikkje aktuell, nedlagt) og
         <strong>luka ut</strong> rett i tabellen —
@@ -504,43 +537,6 @@
           >Raud tone</strong> for utmeld eller nedlagt. Utmelding gjev føretré over
         grønt.
       </p>
-      <div
-        id="liste_val_krins"
-        class="liste-val"
-        role="toolbar"
-        aria-label="Vis berre lag treft med søkjefiler (Ungdom* / Grend* / Bygd*)"
-      >
-        <span class="liste-val-etikett" id="liste_val_etikett">Frå søkjefiler</span>
-        <div id="liste_val_knappar" class="liste-val-knappar">
-          <button
-            type="button"
-            class="liste-knapp liste-knapp-valt"
-            data-liste="ungdomslag"
-            aria-pressed="true"
-            title="Treff der Brreg-match kjem frå sokjefragment.txt"
-          >
-            Ungdom*
-          </button>
-          <button
-            type="button"
-            class="liste-knapp"
-            data-liste="grendelag"
-            aria-pressed="false"
-            title="Treff der Brreg-match kjem frå sokjefragment_grende.txt"
-          >
-            Grend*
-          </button>
-          <button
-            type="button"
-            class="liste-knapp"
-            data-liste="bygdelag"
-            aria-pressed="false"
-            title="Treff der Brreg-match kjem frå sokjefragment_bygd.txt"
-          >
-            Bygd*
-          </button>
-        </div>
-      </div>
       <div id="feil" class="feil" style="display: none" hidden></div>
       <div class="verkty">
         <label for="fylke_val">
@@ -549,20 +545,14 @@
             <option value="alle">— alle —</option>
           </select>
         </label>
-        <label for="nu_val">
-          Status
+        <label for="kommune_val" id="kommune_lab">
+          Kommune
           <select
-            id="nu_val"
-            title="Filtrer etter NU-status eller nedlagt"
+            id="kommune_val"
+            title="Når du har val fylke: snevre til éin kommune"
+            disabled
           >
-            <option value="alle">— alle —</option>
-            <option value="ukjent">Ukjent / ikkje sett</option>
-            <option value="medlem">Medlem</option>
-            <option value="potensiell_medlem">Potensiell medlem</option>
-            <option value="inaktiv_medlem">Inaktiv medlem</option>
-            <option value="utmeld">Utmeld</option>
-            <option value="ikkje_aktuell">Ikkje aktuell</option>
-            <option value="nedlagt_f">Nedlagt</option>
+            <option value="alle">— vel fylke fyrst —</option>
           </select>
         </label>
         <label class="verkty-skjul" for="vis_skjul">
@@ -575,6 +565,14 @@
         </label>
         <span id="tal_rader" aria-live="polite"></span>
       </div>
+      <details class="verkty-rad-2 dempa-ny" id="nu_filtr_omtrekk" style="margin: 0.25rem 0 0">
+        <summary>Vis / skjul statustypar (NU / manuell)</summary>
+        <div
+          id="nu_filtr_kryss"
+          class="nu_filtr_kryss"
+          aria-label="Kryss av statustypar som skal visast"
+        ></div>
+      </details>
       <div class="verkty-rad-2" id="kolonne_verkty_omgrepp">
         <details id="det_kolonnar" class="dempa-ny" style="margin: 0">
           <summary>Vis / skjul kolonnar</summary>
@@ -695,68 +693,16 @@
         var nulOrgnFraListe = null;
         var LAGR_API_LAGRING = "lagreg_api_grunnurl";
         var LAGREG_MANUELL_LOKAL = "lagreg_manuell_status_lokal";
-        var LAGREG_VALGT_LISTE = "lagreg_valgt_liste";
-
-        function fåValgtListe() {
-          var grp = document.getElementById("liste_val_knappar");
-          if (!grp) return "ungdomslag";
-          var valt = grp.querySelector('.liste-knapp[aria-pressed="true"]');
-          var id = valt && valt.getAttribute("data-liste");
-          if (
-            id === "ungdomslag" ||
-            id === "grendelag" ||
-            id === "bygdelag"
-          ) {
-            return id;
-          }
-          return "ungdomslag";
-        }
-
-        function radIHøverRegisterliste(r, listeId) {
-          var raw = sikreTekst(r.liste).trim().toLowerCase();
-          if (!raw) return listeId === "ungdomslag";
-          var taggar = raw.split(",").map(function (x) {
-            return x.trim().toLowerCase();
-          }).filter(Boolean);
-          var lid = listeId.toLowerCase();
-          return taggar.indexOf(lid) !== -1;
-        }
-
-        function settListeKnappSyn(listeId) {
-          var grp = document.getElementById("liste_val_knappar");
-          if (!grp) return;
-          var knappa = grp.querySelectorAll(".liste-knapp");
-          for (var ki = 0; ki < knappa.length; ki++) {
-            var b = knappa[ki];
-            var er =
-              sikreTekst(b.getAttribute("data-liste")).toLowerCase() ===
-              listeId.toLowerCase();
-            b.setAttribute("aria-pressed", er ? "true" : "false");
-            if (er) b.classList.add("liste-knapp-valt");
-            else b.classList.remove("liste-knapp-valt");
-          }
-        }
-
-        function settValgtRegisterliste(listeId, berreSyn) {
-          if (
-            listeId !== "ungdomslag" &&
-            listeId !== "grendelag" &&
-            listeId !== "bygdelag"
-          ) {
-            listeId = "ungdomslag";
-          }
-          settListeKnappSyn(listeId);
-          try {
-            localStorage.setItem(LAGREG_VALGT_LISTE, listeId);
-          } catch (e) {
-            /* gjev opp */
-          }
-          if (!berreSyn) {
-            nulleGridFleirSyn();
-            byggFylkeVal();
-            teiknaRegister();
-          }
-        }
+        var LAGREG_FILTR_STATUS = "lagreg_filtr_statustypar";
+        var NU_FILTR_TASTAR = [
+          ["medlem", "Medlem (aktiv)"],
+          ["potensiell_medlem", "Potensiell medlem"],
+          ["inaktiv_medlem", "Inaktiv"],
+          ["utmeld", "Utmeld"],
+          ["ikkje_aktuell", "Ikkje aktuell"],
+          ["nedlagt_f", "Nedlagt"],
+          ["ukjent", "Ukjent / ikkje klassifisert"],
+        ];
 
         function lesLokalManuellKartRå() {
           try {
@@ -979,12 +925,81 @@
           return /\binaktiv/i.test(sikreTekst(r.nu_mr_status || ""));
         }
 
-        /** «Aktiv» i register, men ikkje «inaktiv». */
+        /** Aktiv i NU: «Aktiv», «Medlem» … ikkje utmeldt/inaktiv/nedlagt i same felt. */
         function nuMrSomAktivLik(r) {
           var n = nuMrTekstLav(r);
           if (!n) return false;
           if (nuMrSomInaktiv(r)) return false;
-          return n.indexOf("aktiv") !== -1;
+          if (nuMrSomUtmeld(r) || nuMrSomNedlagt(r)) return false;
+          if (n.indexOf("aktiv") !== -1) return true;
+          return n === "medlem";
+        }
+
+        function fåAlleStatustyparSanne() {
+          var n = {};
+          for (var i = 0; i < NU_FILTR_TASTAR.length; i++) {
+            n[NU_FILTR_TASTAR[i][0]] = true;
+          }
+          return n;
+        }
+
+        function lesLagretFiltrStatus() {
+          try {
+            var t = localStorage.getItem(LAGREG_FILTR_STATUS);
+            if (!t) return null;
+            var p = JSON.parse(t);
+            if (p == null || typeof p !== "object" || Array.isArray(p)) {
+              return null;
+            }
+            return p;
+          } catch (e) {
+            return null;
+          }
+        }
+
+        function lagreFiltrStatus(kart) {
+          try {
+            localStorage.setItem(LAGREG_FILTR_STATUS, JSON.stringify(kart));
+          } catch (e) {
+            /* gjev opp */
+          }
+        }
+
+        function fåFiltrStatusKart() {
+          var def = fåAlleStatustyparSanne();
+          var l = lesLagretFiltrStatus();
+          if (!l) return def;
+          var ut = {};
+          for (var i = 0; i < NU_FILTR_TASTAR.length; i++) {
+            var ke = NU_FILTR_TASTAR[i][0];
+            ut[ke] =
+              Object.prototype.hasOwnProperty.call(l, ke) ? !!l[ke] : true;
+          }
+          return ut;
+        }
+
+        function aktiveFiltrIkkeAlleSant(fs) {
+          if (!fs) return false;
+          for (var i = 0; i < NU_FILTR_TASTAR.length; i++) {
+            if (!fs[NU_FILTR_TASTAR[i][0]]) return true;
+          }
+          return false;
+        }
+
+        /**
+         * Éin kubekategori per rad til fleirval‑filter — same prioritering som
+         * filtrering før (nedlagt, utmelding, NU‑felt førande …).
+         */
+        function radSinStatusKube(r) {
+          if (r.nedlagt_flag || nuMrSomNedlagt(r)) return "nedlagt_f";
+          if (r.nu_raw === "utmeld" || nuMrSomUtmeld(r)) return "utmeld";
+          if (r.nu_raw === "inaktiv_medlem" || nuMrSomInaktiv(r)) {
+            return "inaktiv_medlem";
+          }
+          if (r.nu_raw === "potensiell_medlem") return "potensiell_medlem";
+          if (r.nu_raw === "ikkje_aktuell") return "ikkje_aktuell";
+          if (r.nu_raw === "medlem" || nuMrSomAktivLik(r)) return "medlem";
+          return "ukjent";
         }
 
         /** CSS-merke etter tekst i `nu_mr_status` (NU er førande kjelde). */
@@ -1391,11 +1406,101 @@
             o.textContent = f;
             sel.appendChild(o);
           });
+          byggKommuneVal();
+        }
+
+        /** Kommuneliste når eitt fylke er vald (bygg på synlege rader i fylket). */
+        function byggKommuneVal() {
+          var fSel = document.getElementById("fylke_val");
+          var kSel = document.getElementById("kommune_val");
+          if (!fSel || !kSel) return;
+          var fy = fSel.value;
+          var gammKom = kSel.value || "alle";
+          while (kSel.options.length) {
+            kSel.remove(0);
+          }
+          if (fy === "alle") {
+            kSel.disabled = true;
+            var o0 = document.createElement("option");
+            o0.value = "alle";
+            o0.textContent = "— vel fylke fyrst —";
+            kSel.appendChild(o0);
+            kSel.value = "alle";
+            return;
+          }
+          kSel.disabled = false;
+          var oAlle = document.createElement("option");
+          oAlle.value = "alle";
+          oAlle.textContent = "— alle kommunar i «" + fy + "» —";
+          kSel.appendChild(oAlle);
+          var komm = {};
+          kandidatFylkeRader().forEach(function (r) {
+            if (sikreTekst(r.fylke).trim() !== fy) return;
+            var kk = sikreTekst(r.kommune).trim();
+            if (kk) komm[kk] = true;
+          });
+          Object.keys(komm)
+            .sort(function (a, b) {
+              return a.localeCompare(b, "no");
+            })
+            .forEach(function (ko) {
+              var o = document.createElement("option");
+              o.value = ko;
+              o.textContent = ko;
+              kSel.appendChild(o);
+            });
+          if (gammKom !== "alle" && komm[gammKom]) kSel.value = gammKom;
+          else kSel.value = "alle";
+        }
+
+        function byggNuStatusFiltrPanel() {
+          var boks = document.getElementById("nu_filtr_kryss");
+          if (!boks) return;
+          boks.textContent = "";
+          var kart = fåFiltrStatusKart();
+          NU_FILTR_TASTAR.forEach(function (pair) {
+            var kk = pair[0];
+            var txt = pair[1];
+            var keId = kk.replace(/[^\w\-]/g, "_");
+            var inp = document.createElement("input");
+            inp.type = "checkbox";
+            inp.id = "nu_filtr_ke_" + keId;
+            inp.setAttribute("data-ke", kk);
+            inp.checked = kart[kk] !== false;
+            inp.addEventListener("change", function () {
+              var inpList = boks.querySelectorAll('input[type="checkbox"]');
+              var n = {};
+              var på = 0;
+              for (var ii = 0; ii < inpList.length; ii++) {
+                var q = inpList[ii];
+                var ke = q.getAttribute("data-ke");
+                if (!ke) continue;
+                n[ke] = !!q.checked;
+                if (n[ke]) på++;
+              }
+              if (på === 0) {
+                inp.checked = true;
+                return;
+              }
+              lagreFiltrStatus(n);
+              nulleGridFleirSyn();
+              teiknaRegister();
+            });
+            var lab = document.createElement("label");
+            lab.appendChild(inp);
+            lab.appendChild(document.createTextNode(txt));
+            boks.appendChild(lab);
+          });
         }
 
         function filtrerRader() {
-          var fylke = document.getElementById("fylke_val").value;
-          var nuF = document.getElementById("nu_val").value;
+          var fylkeEl = document.getElementById("fylke_val");
+          var kommuneEl = document.getElementById("kommune_val");
+          var fylke = fylkeEl ? fylkeEl.value : "alle";
+          var kommune =
+            kommuneEl && !kommuneEl.disabled ? kommuneEl.value : "alle";
+          var fs = fåFiltrStatusKart();
+          var bruksStatusFiltr = aktiveFiltrIkkeAlleSant(fs);
           var v = document.getElementById("vis_skjul");
           var visSkjul = v && v.checked;
           var d = heileSett.filter(function (r) {
@@ -1406,50 +1511,16 @@
               return sikreTekst(r.fylke).trim() === fylke;
             });
           }
-          if (nuF !== "alle") {
-            if (nuF === "ukjent") {
-              d = d.filter(function (r) {
-                if (r.nedlagt_flag || r.nu_raw) return false;
-                if (nuMrTekstLav(r)) return false;
-                return true;
-              });
-            } else if (nuF === "medlem") {
-              d = d.filter(function (r) {
-                if (r.nedlagt_flag) return false;
-                if (r.nu_raw === "medlem") return true;
-                return nuMrSomAktivLik(r);
-              });
-            } else if (nuF === "potensiell_medlem") {
-              d = d.filter(function (r) {
-                return r.nu_raw === "potensiell_medlem" && !r.nedlagt_flag;
-              });
-            } else if (nuF === "inaktiv_medlem") {
-              d = d.filter(function (r) {
-                if (r.nedlagt_flag) return false;
-                return (
-                  r.nu_raw === "inaktiv_medlem" ||
-                  nuMrSomInaktiv(r)
-                );
-              });
-            } else if (nuF === "utmeld") {
-              d = d.filter(function (r) {
-                if (r.nedlagt_flag) return false;
-                return r.nu_raw === "utmeld" || nuMrSomUtmeld(r);
-              });
-            } else if (nuF === "ikkje_aktuell") {
-              d = d.filter(function (r) {
-                return r.nu_raw === "ikkje_aktuell" && !r.nedlagt_flag;
-              });
-            } else if (nuF === "nedlagt_f") {
-              d = d.filter(function (r) {
-                return r.nedlagt_flag || nuMrSomNedlagt(r);
-              });
-            }
+          if (kommune !== "alle") {
+            d = d.filter(function (r) {
+              return sikreTekst(r.kommune).trim() === kommune;
+            });
           }
-          var listeVal = fåValgtListe();
-          d = d.filter(function (r) {
-            return radIHøverRegisterliste(r, listeVal);
-          });
+          if (bruksStatusFiltr) {
+            d = d.filter(function (r) {
+              return fs[radSinStatusKube(r)] === true;
+            });
+          }
           return d;
         }
 
@@ -1884,18 +1955,6 @@
               });
               manuellGrunnKart = JSON.parse(JSON.stringify(statusKart));
               try {
-                var salvListe = localStorage.getItem(LAGREG_VALGT_LISTE);
-                if (
-                  salvListe === "ungdomslag" ||
-                  salvListe === "grendelag" ||
-                  salvListe === "bygdelag"
-                ) {
-                  settValgtRegisterliste(salvListe, true);
-                }
-              } catch (e) {
-                /* gjev opp */
-              }
-              try {
                 var apiL = localStorage.getItem(LAGR_API_LAGRING);
                 var iael = document.getElementById("inline_api");
                 if (iael && apiL && !iael.value) iael.value = apiL;
@@ -1903,6 +1962,7 @@
                 /* gjev opp */
               }
               byggKolonnePanel();
+              byggNuStatusFiltrPanel();
               byggFylkeVal();
               setRedigerSyn(true);
               teiknaRegister();
@@ -1910,32 +1970,14 @@
                 .getElementById("fylke_val")
                 .addEventListener("change", function () {
                   nulleGridFleirSyn();
+                  byggKommuneVal();
                   teiknaRegister();
                 });
-              document
-                .getElementById("nu_val")
-                .addEventListener("change", function () {
+              var kVal = document.getElementById("kommune_val");
+              if (kVal) {
+                kVal.addEventListener("change", function () {
                   nulleGridFleirSyn();
                   teiknaRegister();
-                });
-              var lk = document.getElementById("liste_val_knappar");
-              if (lk) {
-                lk.addEventListener("click", function (ev) {
-                  var tg =
-                    ev.target && ev.target.closest
-                      ? ev.target.closest("[data-liste]")
-                      : null;
-                  if (!tg) return;
-                  var nid = tg.getAttribute("data-liste");
-                  if (
-                    nid !== "ungdomslag" &&
-                    nid !== "grendelag" &&
-                    nid !== "bygdelag"
-                  ) {
-                    return;
-                  }
-                  if (nid === fåValgtListe()) return;
-                  settValgtRegisterliste(nid, false);
                 });
               }
               document
