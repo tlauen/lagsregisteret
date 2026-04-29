@@ -12,7 +12,7 @@
 
 <h3 id="hjelp-kjelde" class="hjelp-acc-h hjelp-acc-h-framst">Kjelde</h3>
 
-Kvar rad gjeld **éi organisasjon** i [frivillighetsregisteret](https://www.brreg.no/frivillighetsregisteret/) hjå [Brønnøysund](https://www.brreg.no/) (opne data). Sjølve registret legg inn fleire lokale avgrensingar før treff på Brreg‑sida vert med — liste over korleis (fragment og utelatingar) kjem nedst her. Lista er jamført med uttrekk over lag registrert i Hypersys.
+Kvar rad gjeld **éi organisasjon** i [frivillighetsregisteret](https://www.brreg.no/frivillighetsregisteret/) hjå [Brønnøysund](https://www.brreg.no/) (opne data). Sjølve registret legg inn fleire lokale avgrensingar før treff på Brreg‑sida vert med — liste over korleis (fragment og utelatingar) kjem nedst her. Lista er jamført med uttrekk over lag registrert i Hypersys **29.4.2026**.
 
 Kolonne **Liste** (`Ungdom*`, `Grend*`, `Bygd*`, ev. kombinasjon med komma) seier kva søkestreng som gjorde at laget dukka opp ved innhenting.
 
