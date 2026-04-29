@@ -7,7 +7,7 @@
   <a href="#hjelp-nedlasting">Excel</a><span aria-hidden="true">·</span>
   <a href="#hjelp-yting">Mange lag</a><span aria-hidden="true">·</span>
   <a href="#hjelp-farger">Fargar</a><span aria-hidden="true">·</span>
-  <a href="#hjelp-gjennomsikt">Gjennomsikt</a>
+  <a href="#hjelp-gjennomsikt">Søkjefragment</a>
 </nav>
 
 <h3 id="hjelp-kjelde" class="hjelp-acc-h hjelp-acc-h-framst">Kjelde</h3>
@@ -44,7 +44,7 @@ Brei tabell: dra eller scroll **vassrett under tabellen**, eller bruk <kbd>Tab</
 
 <hr class="hjelp-skilje" />
 
-<h3 id="hjelp-gjennomsikt" class="hjelp-acc-h">Gjennomsikt: søkjefragment ved innhenting (frå depotet)</h3>
+<h3 id="hjelp-gjennomsikt" class="hjelp-acc-h">Søkjefragment ved innhenting (frå depotet)</h3>
 
 Nedanfor kjem dei same fragmenta og utelatingsfrasane som ligg under `oppsett/` og som vert kopiert til `docs/data/oppsett/` ved køying av `publiser_data_til_nettside.py`. Ved visning nedanfor hopp me over tomme liner og liner som byrjar med `#`.
 
